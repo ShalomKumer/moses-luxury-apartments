@@ -5,8 +5,19 @@ import { join } from 'node:path';
 
 /** Permissive licences: they do not oblige us to publish our own source. */
 const ALLOWED = new Set([
-  'MIT', 'MIT-0', 'ISC', '0BSD', 'BSD-2-Clause', 'BSD-3-Clause', 'Apache-2.0', 'BlueOak-1.0.0',
-  'CC0-1.0', 'CC-BY-4.0', 'Unlicense', 'Python-2.0', 'Zlib',
+  'MIT',
+  'MIT-0',
+  'ISC',
+  '0BSD',
+  'BSD-2-Clause',
+  'BSD-3-Clause',
+  'Apache-2.0',
+  'BlueOak-1.0.0',
+  'CC0-1.0',
+  'CC-BY-4.0',
+  'Unlicense',
+  'Python-2.0',
+  'Zlib',
 ]);
 
 /**
@@ -14,9 +25,10 @@ const ALLOWED = new Set([
  * (the pages and the server bundle); each is listed with the reason it is accepted.
  */
 const BUILD_ONLY_EXCEPTIONS = {
-  // Proposed 2026-10-31, waiting for the user's approval (docs/compliance.md, C4).
-  '@img/sharp-win32-x64': 'LGPL-3.0 libvips binary; installed by Astro and Wrangler for image tools we turned off; never shipped',
-  lightningcss: 'MPL-2.0 (file-level copyleft); Vite\'s CSS tool at build time; its code is not in our output',
+  // Approved by the user, 2026-11-01 (docs/compliance.md, C4).
+  '@img/sharp-win32-x64':
+    "LGPL-3.0 libvips binary; used by the photo script (scripts/photos) on the owner's machine; never shipped",
+  lightningcss: "MPL-2.0 (file-level copyleft); Vite's CSS tool at build time; its code is not in our output",
   'lightningcss-win32-x64-msvc': 'MPL-2.0; the native binary of lightningcss above',
 };
 
