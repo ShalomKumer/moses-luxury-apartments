@@ -26,7 +26,7 @@ const t = getMessages(locale).facts;
     <div><dt>{t.checkOut}</dt><dd>{fillTemplate(t.until, { time: '' })}<bdi>{SITE.checkOutTime}</bdi></dd></div>
   </dl>
   <h3>{t.featuresHeading}</h3>
-  <ul class="cabin-facts__features">
+  <ul class="cabin-facts__features" role="list">
     {features.map((feature) => <li>{feature}</li>)}
   </ul>
 </section>

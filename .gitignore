@@ -10,3 +10,6 @@ dist/
 
 # graphify output (generated; rebuilt with `graphify update .`)
 graphify-out/
+
+# Local Claude Code settings (per machine)
+.claude/settings.local.json
