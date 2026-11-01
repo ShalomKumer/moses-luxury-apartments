@@ -1,0 +1,26 @@
+---
+/** A legal or accessibility page in one language: /privacy, /terms, /cancellation, /accessibility. */
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@components/layout/BaseLayout.astro';
+import Prose from '@components/ui/Prose.astro';
+import UpdatedDate from '@components/ui/UpdatedDate.astro';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  /** The page's entry: its id is "<language>/<page>". */
+  entry: CollectionEntry<'legal'>;
+  locale: Locale;
+}
+
+const { entry, locale } = Astro.props;
+const slug = entry.id.split('/')[1];
+const { Content } = await render(entry);
+---
+
+<BaseLayout locale={locale} path={`/${slug}`} title={entry.data.title} description={entry.data.description}>
+  <div class="container section">
+    <h1>{entry.data.title}</h1>
+    <UpdatedDate locale={locale} date={entry.data.updated} />
+    <Prose><Content /></Prose>
+  </div>
+</BaseLayout>

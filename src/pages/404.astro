@@ -1,0 +1,32 @@
+---
+/**
+ * Page not found. The host serves this one file for every missing address, in both languages, so it says it in both:
+ * each block declares its own language and direction (S4).
+ */
+import BaseLayout from '@components/layout/BaseLayout.astro';
+import { getMessages } from '@i18n/get-messages';
+import { directionOf, LOCALES } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+
+const he = getMessages('he');
+---
+
+<BaseLayout locale="he" path="/" title={he.notFound.title}>
+  <div class="container section">
+    {LOCALES.map((locale) => {
+      const t = getMessages(locale).notFound;
+      return (
+        <section lang={locale} dir={directionOf(locale)} class="not-found">
+          <h1>{t.title}</h1>
+          <p>{t.body} <a href={localizedPath('/', locale)}>{t.back}</a></p>
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found + .not-found {
+    margin-top: var(--space-8);
+  }
+</style>

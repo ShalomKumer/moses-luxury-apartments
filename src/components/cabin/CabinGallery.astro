@@ -1,0 +1,108 @@
+---
+/**
+ * A cabin's photos. Each thumbnail is a link to the full photo, so it works without JavaScript; the controller turns it
+ * into a viewer dialog with keyboard control (A3). Every label is in the page's language.
+ */
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  name: string;
+  /** The photos, with their alt text already in the page's language. */
+  photos: { src: string; alt: string; width: number; height: number }[];
+}
+
+const { locale, name, photos } = Astro.props;
+const t = getMessages(locale).gallery;
+---
+
+<section class="gallery" data-gallery data-position-template={t.position} aria-labelledby="gallery-title">
+  <h2 id="gallery-title" class="visually-hidden">{fillTemplate(t.heading, { name })}</h2>
+  <ul role="list" class="gallery__grid">
+    {photos.map((photo, index) => (
+      <li>
+        <a
+          href={photo.src}
+          data-gallery-item={index}
+          data-alt={photo.alt}
+          aria-label={fillTemplate(t.open, { n: index + 1, total: photos.length, alt: photo.alt })}
+        >
+          <img src={photo.src} alt="" width={photo.width} height={photo.height} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <dialog class="gallery__dialog" data-gallery-dialog aria-label={fillTemplate(t.dialog, { name })}>
+    <figure class="gallery__figure">
+      <img data-gallery-image src={photos[0].src} alt={photos[0].alt} />
+      <figcaption data-gallery-caption aria-live="polite"></figcaption>
+    </figure>
+    <div class="gallery__controls">
+      <button type="button" class="button button--secondary" data-gallery-prev>{t.previous}</button>
+      <button type="button" class="button button--secondary" data-gallery-next>{t.next}</button>
+      <button type="button" class="button" data-gallery-close>{t.close}</button>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  import { initGallery } from './gallery-controller';
+
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach(initGallery);
+</script>
+
+<style>
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--space-3);
+  }
+
+  .gallery__grid a {
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .gallery__grid img {
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .gallery__dialog {
+    width: min(100% - 2rem, 60rem);
+    padding: var(--space-4);
+    border: none;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+
+  .gallery__dialog::backdrop {
+    background: rgb(0 0 0 / 0.75);
+  }
+
+  .gallery__figure {
+    margin: 0;
+  }
+
+  .gallery__figure img {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+
+  .gallery__figure figcaption {
+    padding-block: var(--space-2);
+  }
+
+  .gallery__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+</style>

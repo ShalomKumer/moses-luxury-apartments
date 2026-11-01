@@ -1,0 +1,83 @@
+# Code structure
+
+Set on 2026-10-31, updated the same day after availability was removed from the site (`docs/architecture.md`). Modular and
+component-based: one responsibility per file, small functions, UI, business logic and API calls in separate layers.
+Every exported function carries a one-line comment saying what it does.
+
+## Folder tree (as it is now)
+
+```
+/
+├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
+├── package.json                    # scripts: dev, build, test, verify, licenses:check, launch:check
+├── tsconfig.json                   # strict; path aliases per layer (@domain, @server, ...)
+├── vitest.config.ts
+├── .env.example                    # empty today (no variables)
+│
+├── public/
+│   ├── _headers                    # security headers: CSP, HSTS, nosniff, frame (S2, S10)
+│   ├── brand/                      # the owner's logo, cropped (docs/design/brand.md)
+│   ├── photos/<cabin-id>/          # cabin photos; source and rights in src/content/photos.md (C3)
+│   └── robots.txt
+│
+├── src/
+│   ├── content.config.ts           # collection schemas; photo alt is required (A2)
+│   ├── content/                    # data, no logic: cabins/<id>.md (both languages in one file), legal/{he,en}/<page>.md, photos.md
+│   ├── i18n/                       # PURE: locales (he, en, direction), paths (the address of a page in a language), pick,
+│   │   │                           #   get-messages, messages/{he,en,types}.ts (every text of the site, same keys)
+│   ├── config/
+│   │   ├── site.ts                 # brand, business details, phones, email, logo (L11)
+│   │   └── availability.ts         # limits of the kept availability service (not wired)
+│   │
+│   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
+│   │   ├── dates/                  # date-key, date-range, format-date, month
+│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link
+│   │   ├── text/                   # fill-template, paragraphs
+│   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
+│   │
+│   ├── server/                     # KEPT, UNWIRED: calendar source, fetch, cache, service (for a future admin view)
+│   │
+│   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
+│   │   ├── layout/   BaseLayout, SkipLink, SampleBanner, SiteHeader (logo), SiteFooter
+│   │   ├── cabin/    CabinCard, CabinGallery + gallery-controller.ts, CabinFacts
+│   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
+│   │   ├── booking/  BookingPanel + booking-controller.ts, BookingNotice
+│   │   └── ui/       Prose, UpdatedDate
+│   │
+│   ├── styles/       tokens.css (the logo's palette), global.css
+│   └── pages/        index, cabins/[id], [legal], 404, and the same three under en/     # ROUTES: thin files over components/pages
+│
+├── scripts/
+│   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
+│   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7)
+│   └── check-launch-ready.mjs      # no placeholder or sample content left (L11, C3)
+│
+├── tests/
+│   ├── unit/                       # domain/ and server/
+│   └── policy/                     # rules as tests: layers, no-third-party + no raw HTML, headers, contrast,
+│                                   #   no-public-availability
+└── docs/                           # architecture, structure, compliance, roadmap, design/, archive/
+```
+
+## Layer rules
+
+Who may import whom. `tests/policy/layers.test.ts` reads every import and fails on a breach.
+
+| Layer          | May import                                                | Never                                            |
+| -------------- | --------------------------------------------------------- | ------------------------------------------------ |
+| `domain/`      | `domain/`, `config/`                                      | `server/`, `components/`, any I/O                |
+| `server/`      | `domain/`, `config/`                                      | `components/`, `pages/`                          |
+| `components/`  | `domain/`, `config/`, `i18n/`, `components/`              | `server/`, the availability code                 |
+| `pages/`       | `components/`, `config/`, `i18n/`, content                | `server/`, the availability code, API routes     |
+| `i18n/`        | itself only                                               | every other layer                                |
+
+`fetch` appears only in `server/` (and in a future `api-client/`). A browser-to-API layer (`api-client/`) comes back
+only with a feature that needs one; its rule then is: it imports `domain/` only.
+
+## File rules
+
+- One responsibility per file; a file that needs "and" to describe it is split.
+- Functions small and single-purpose; a function over ~30 lines is a sign to split it.
+- Each exported function has a one-line comment (`/** ... */`) saying what it does, not how.
+- English names; kebab-case for `.ts` files, PascalCase for `.astro` components.
+- Pure functions in `domain/` and services in `server/` have unit tests in `tests/unit/`.

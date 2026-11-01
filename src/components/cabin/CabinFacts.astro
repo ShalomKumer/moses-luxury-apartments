@@ -1,0 +1,62 @@
+---
+/** A cabin's capacity, rooms, times and features, in the page's language. */
+import { SITE } from '@config/site';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  maxGuests: number;
+  bedrooms: number;
+  /** The features, already in the page's language. */
+  features: string[];
+}
+
+const { locale, maxGuests, bedrooms, features } = Astro.props;
+const t = getMessages(locale).facts;
+---
+
+<section class="cabin-facts" aria-labelledby="facts-title">
+  <h2 id="facts-title">{t.heading}</h2>
+  <dl class="cabin-facts__list">
+    <div><dt>{t.guests}</dt><dd>{fillTemplate(t.upTo, { count: maxGuests })}</dd></div>
+    <div><dt>{t.bedrooms}</dt><dd>{bedrooms}</dd></div>
+    <div><dt>{t.checkIn}</dt><dd>{fillTemplate(t.from, { time: '' })}<bdi>{SITE.checkInTime}</bdi></dd></div>
+    <div><dt>{t.checkOut}</dt><dd>{fillTemplate(t.until, { time: '' })}<bdi>{SITE.checkOutTime}</bdi></dd></div>
+  </dl>
+  <h3>{t.featuresHeading}</h3>
+  <ul class="cabin-facts__features" role="list">
+    {features.map((feature) => <li>{feature}</li>)}
+  </ul>
+</section>
+
+<style>
+  .cabin-facts__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: var(--space-3);
+    margin: 0 0 var(--space-6);
+  }
+
+  .cabin-facts__list div {
+    padding: var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .cabin-facts__list dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .cabin-facts__list dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .cabin-facts__features {
+    padding-inline-start: var(--space-6);
+  }
+</style>
