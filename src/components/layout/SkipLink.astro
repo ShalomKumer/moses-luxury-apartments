@@ -10,7 +10,9 @@ interface Props {
 const { locale } = Astro.props;
 ---
 
-<a class="skip-link" href="#main">{getMessages(locale).common.skipToMain}</a>
+<a class="skip-link" href="#main">
+  {getMessages(locale).common.skipToMain}
+</a>
 
 <style>
   .skip-link {

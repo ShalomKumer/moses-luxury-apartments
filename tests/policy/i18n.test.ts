@@ -37,7 +37,8 @@ describe('both languages, everywhere (A2, A6, L1-L3)', () => {
 
 describe('the language is the address, nothing else (L3, L4)', () => {
   it('stores no choice and does not guess a language from the browser', () => {
-    const guessing = /navigator\.language|Accept-Language|localStorage|sessionStorage|document\.cookie|cookies\.(set|get)/g;
+    const guessing =
+      /navigator\.language|Accept-Language|localStorage|sessionStorage|document\.cookie|cookies\.(set|get)/g;
     const found = listFiles('src', ['.astro', '.ts']).flatMap((file) => {
       const text = readText(file);
       return [...text.matchAll(guessing)].map((match) => `${projectPath(file)}:${lineOf(text, match.index)}`);
@@ -48,10 +49,13 @@ describe('the language is the address, nothing else (L3, L4)', () => {
 
 describe('works in both directions (A3)', () => {
   it('uses only logical CSS properties, so right-to-left and left-to-right both lay out', () => {
-    const physical = /(margin|padding|border)-(left|right)\b|\b(left|right)\s*:\s*[\d.-]|text-align\s*:\s*(left|right)|float\s*:\s*(left|right)/g;
+    const physical =
+      /(margin|padding|border)-(left|right)\b|\b(left|right)\s*:\s*[\d.-]|text-align\s*:\s*(left|right)|float\s*:\s*(left|right)/g;
     const found = listFiles('src', ['.astro', '.css']).flatMap((file) => {
       const text = readText(file);
-      return [...text.matchAll(physical)].map((match) => `${projectPath(file)}:${lineOf(text, match.index)}: ${match[0]}`);
+      return [...text.matchAll(physical)].map(
+        (match) => `${projectPath(file)}:${lineOf(text, match.index)}: ${match[0]}`,
+      );
     });
     expect(found).toEqual([]);
   });

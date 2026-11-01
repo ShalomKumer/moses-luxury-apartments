@@ -33,7 +33,9 @@ const alternates = alternatesOf(path);
     <meta name="description" content={description ?? t.brand.description} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />)}
+    {alternates.map((alternate) => (
+      <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />
+    ))}
     <link rel="alternate" hreflang="x-default" href={alternates[0].href} />
     <title>{fullTitle}</title>
   </head>

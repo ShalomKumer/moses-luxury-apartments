@@ -34,7 +34,8 @@ const cover = photos[0];
     <p>{summary}</p>
     <p class="cabin-card__meta">{fillTemplate(t.cabin.guestsUpTo, { count: maxGuests })}</p>
     <a class="button" href={localizedPath(`/cabins/${cabin.id}`, locale)}>
-      {t.cabin.details}<span class="visually-hidden"> - {name}</span>
+      {t.cabin.details}
+      <span class="visually-hidden"> - {name}</span>
     </a>
   </div>
 </article>

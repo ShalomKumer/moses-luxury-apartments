@@ -34,7 +34,8 @@ describe('no third-party loads (L6, L7)', () => {
   });
 
   it('no analytics, pixel or tracking code exists', () => {
-    const tracking = /\b(gtag|googletagmanager|google-analytics|fbq|hotjar|clarity\.ms|plausible|cloudflareinsights)\b/gi;
+    const tracking =
+      /\b(gtag|googletagmanager|google-analytics|fbq|hotjar|clarity\.ms|plausible|cloudflareinsights)\b/gi;
     const found = listFiles('src', ['.astro', '.ts']).filter((file) => tracking.test(readText(file)));
     expect(found.map(projectPath)).toEqual([]);
   });

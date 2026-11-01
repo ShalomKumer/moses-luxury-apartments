@@ -9,9 +9,10 @@ Every exported function carries a one-line comment saying what it does.
 ```
 /
 ├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
-├── package.json                    # scripts: dev, build, test, verify, secrets:check, licenses:check, launch:check
+├── package.json                    # scripts: dev, build, test, format, lint, verify, photos:add, photos:check, budget:check, secrets:check, licenses:check, launch:check
 ├── scripts/secret-scan/            # the secret scan (S19): patterns, scan-text, forbidden-files, list-sources,
 │                                   #   parse-history + scan-history, report, reviewed-findings, check-secrets (entry)
+├── .prettierrc.json, eslint.config.mjs   # formatting (code only) and lint, both in verify
 ├── tsconfig.json                   # strict; path aliases per layer (@domain, @server, ...)
 ├── vitest.config.ts
 ├── .env.example                    # empty today (no variables)
@@ -52,7 +53,10 @@ Every exported function carries a one-line comment saying what it does.
 ├── scripts/
 │   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
 │   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7)
-│   └── check-launch-ready.mjs      # no placeholder or sample content left (L11, C3)
+│   ├── check-launch-ready.mjs      # no placeholder or sample content left (L11, C3)
+│   ├── budget/                     # the performance budget: limits, page-weight (pure), check-budget (entry)
+│   └── photos/                     # the photo pipeline (C3, L8): limits, plan-variants, encode (sharp), output-path,
+│                                   #   add-photo (entry); webp-chunks + photo-rules + check-photos (the check)
 │
 ├── tests/
 │   ├── unit/                       # domain/ and server/

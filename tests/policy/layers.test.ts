@@ -4,8 +4,19 @@ import { lineOf, listFiles, projectPath, readText, ROOT } from './helpers/source
 
 /** A layer of src/, or a kind of import that is not a project file. */
 type Layer =
-  | 'domain' | 'server' | 'api' | 'api-client' | 'components' | 'config' | 'pages' | 'styles' | 'content' | 'i18n'
-  | 'astro-virtual' | 'package' | 'other';
+  | 'domain'
+  | 'server'
+  | 'api'
+  | 'api-client'
+  | 'components'
+  | 'config'
+  | 'pages'
+  | 'styles'
+  | 'content'
+  | 'i18n'
+  | 'astro-virtual'
+  | 'package'
+  | 'other';
 
 /** Who may import whom (docs/structure.md, "Layer rules"). Imports inside the same layer are always allowed. */
 const ALLOWED: Partial<Record<Layer, Layer[]>> = {
@@ -28,7 +39,8 @@ const ALIASES: Record<string, string> = {
   '@styles/': 'src/styles/',
 };
 
-const IMPORT_PATTERN = /(?:import|export)\s+(?:type\s+)?[^'"`;]*?from\s*['"]([^'"]+)['"]|import\s*['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g;
+const IMPORT_PATTERN =
+  /(?:import|export)\s+(?:type\s+)?[^'"`;]*?from\s*['"]([^'"]+)['"]|import\s*['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g;
 
 /** Says which layer a project file belongs to. */
 function layerOfPath(path: string): Layer {
@@ -36,7 +48,17 @@ function layerOfPath(path: string): Layer {
   if (rel.startsWith('src/pages/api/')) return 'api';
   const match = /^src\/([^/]+)\//.exec(rel);
   const top = match?.[1];
-  const known: Layer[] = ['domain', 'server', 'api-client', 'components', 'config', 'pages', 'styles', 'content', 'i18n'];
+  const known: Layer[] = [
+    'domain',
+    'server',
+    'api-client',
+    'components',
+    'config',
+    'pages',
+    'styles',
+    'content',
+    'i18n',
+  ];
   return known.includes(top as Layer) ? (top as Layer) : 'other';
 }
 

@@ -14,10 +14,26 @@ function walk(dir) {
 /** Each check: what it forbids, in which files, and the pattern that finds it. */
 const CHECKS = [
   { what: 'a source map', files: /\.map$/, test: () => true },
-  { what: 'a secret calendar address', files: /\.(m?js|html|json|css)$/, test: (text) => /calendar\.google\.com\/calendar\/ical/i.test(text) },
-  { what: 'an inline script (blocked by the CSP)', files: /\.html$/, test: (text) => /<script\b(?![^>]*\bsrc=)[^>]*>/i.test(text) },
-  { what: 'an inline style (blocked by the CSP)', files: /\.html$/, test: (text) => /<style\b|\sstyle\s*=/i.test(text) },
-  { what: 'a script or stylesheet from another host', files: /\.html$/, test: (text) => /<(?:script|link)\b[^>]*(?:src|href)\s*=\s*["']?(?:https?:)?\/\//i.test(text) },
+  {
+    what: 'a secret calendar address',
+    files: /\.(m?js|html|json|css)$/,
+    test: (text) => /calendar\.google\.com\/calendar\/ical/i.test(text),
+  },
+  {
+    what: 'an inline script (blocked by the CSP)',
+    files: /\.html$/,
+    test: (text) => /<script\b(?![^>]*\bsrc=)[^>]*>/i.test(text),
+  },
+  {
+    what: 'an inline style (blocked by the CSP)',
+    files: /\.html$/,
+    test: (text) => /<style\b|\sstyle\s*=/i.test(text),
+  },
+  {
+    what: 'a script or stylesheet from another host',
+    files: /\.html$/,
+    test: (text) => /<(?:script|link)\b[^>]*(?:src|href)\s*=\s*["']?(?:https?:)?\/\//i.test(text),
+  },
 ];
 
 const problems = [];

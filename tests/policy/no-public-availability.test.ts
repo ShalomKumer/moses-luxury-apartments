@@ -11,7 +11,9 @@ import { lineOf, listFiles, projectPath, readText, ROOT } from './helpers/source
 describe('no availability for visitors', () => {
   it('has no API route and no page that runs on request', () => {
     expect(existsSync(join(ROOT, 'src/pages/api'))).toBe(false);
-    const onDemand = listFiles('src/pages', ['.astro', '.ts']).filter((file) => /prerender\s*=\s*false/.test(readText(file)));
+    const onDemand = listFiles('src/pages', ['.astro', '.ts']).filter((file) =>
+      /prerender\s*=\s*false/.test(readText(file)),
+    );
     expect(onDemand.map(projectPath)).toEqual([]);
   });
 
@@ -21,7 +23,9 @@ describe('no availability for visitors', () => {
       .filter((file) => /^src\/(pages|components)\//.test(projectPath(file)))
       .flatMap((file) => {
         const text = readText(file);
-        return [...text.matchAll(importsAvailability)].map((match) => `${projectPath(file)}:${lineOf(text, match.index)}`);
+        return [...text.matchAll(importsAvailability)].map(
+          (match) => `${projectPath(file)}:${lineOf(text, match.index)}`,
+        );
       });
     expect(offenders).toEqual([]);
   });

@@ -21,7 +21,10 @@ export function projectPaths() {
     encoding: 'utf8',
     maxBuffer: 64_000_000,
   });
-  return out.split('\0').filter(Boolean).filter((path) => existsSync(path));
+  return out
+    .split('\0')
+    .filter(Boolean)
+    .filter((path) => existsSync(path));
 }
 
 /** The paths to scan: the project's own files and the build output. */

@@ -9,7 +9,9 @@ import { pick } from '@i18n/pick';
 /** Lists the dotted path of every text in a message tree. */
 function keysOf(tree: unknown, prefix = ''): string[] {
   if (typeof tree === 'string') return [prefix];
-  return Object.entries(tree as Record<string, unknown>).flatMap(([key, value]) => keysOf(value, prefix ? `${prefix}.${key}` : key));
+  return Object.entries(tree as Record<string, unknown>).flatMap(([key, value]) =>
+    keysOf(value, prefix ? `${prefix}.${key}` : key),
+  );
 }
 
 /** Lists the {slot} names a text uses, sorted. */

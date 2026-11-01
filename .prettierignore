@@ -1,0 +1,13 @@
+# Generated, installed or archived: never formatted.
+node_modules/
+dist/
+.astro/
+.wrangler/
+graphify-out/
+docs/archive/
+package-lock.json
+
+# Prose, tables and exploration pages keep the author's layout.
+*.md
+*.html
+*.svg

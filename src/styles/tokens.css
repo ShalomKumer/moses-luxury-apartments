@@ -28,7 +28,7 @@
   --color-selected-bg: #201f20;
   --color-selected-text: #ffffff;
 
-  --font-body: system-ui, "Segoe UI", Arial, "Noto Sans Hebrew", sans-serif;
+  --font-body: system-ui, 'Segoe UI', Arial, 'Noto Sans Hebrew', sans-serif;
   --text-sm: 0.9375rem;
   --text-base: 1.0625rem;
   --text-lg: 1.25rem;

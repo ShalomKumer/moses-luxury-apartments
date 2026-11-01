@@ -17,10 +17,14 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 
 ## Commands
 
-- `npm run verify`: type check + tests + build + build-output check + secret scan + licence allow-list + `npm audit`. Must be green
-  before every commit.
+- `npm run verify`: Prettier check + ESLint + type check + tests + build + build-output check + performance budget + photo
+  check + secret scan + licence allow-list + `npm audit`. Must be green before every commit.
 - `npm test`: unit and policy tests (the fast loop).
 - `npm run dev`: the site on :4321.
+- `npm run format` writes the Prettier formatting (code, not `.md`/`.html`); `npm run format:check` and `npm run lint` are inside `verify`.
+- `npm run photos:add -- <file> <apartment> <name>`: the only way a photo enters the repo (WebP, three widths, no EXIF or GPS,
+  at most 250 KB a file); `npm run photos:check` (inside `verify`) fails on a picture that skipped it (C3, L8).
+- `npm run budget:check`: after a build, fails when a page is over its JS, code or total weight (`scripts/budget/limits.mjs`).
 - `npm run secrets:check`: the secret scan (iron rule S19) over the files, `dist/` and the whole git history; prints
   file, place and risk, never the value. Inside `verify`. `secret-scan:allow` on a line marks a reviewed false positive.
 - `npm run licenses:check`: fails on a package whose licence is not on the allow-list (iron rule C4).
@@ -172,7 +176,7 @@ Check the session's skill list at the start of every session for their exact nam
    image of ours) is `docs/standards.md` section 5; structured data (LodgingBusiness) carries real details only, and no
    rating, review or price markup appears without a real source (H1, H2).
 
-Where each is built: `docs/roadmap.md`, "Committed next" (`chore/tooling`).
+Where each is built: `docs/roadmap.md`, "Committed next" (`chore/tooling` built rules 2 to 5; `chore/browser-tests` builds rule 6).
 
 ## Design
 

@@ -3,10 +3,17 @@
 
 /** [commit (short id), file, rule, reason] */
 const REVIEWED = [
-  ['06e9532', 'tests/unit/server/calendar-source.test.ts', 'calendar-secret-address', 'a made-up address (abc/private-xyz) used by a unit test; no real calendar'],
+  [
+    '06e9532',
+    'tests/unit/server/calendar-source.test.ts',
+    'calendar-secret-address',
+    'a made-up address (abc/private-xyz) used by a unit test; no real calendar',
+  ],
 ];
 
 /** True when a finding from the history is one of the reviewed ones. */
 export function isReviewed(finding) {
-  return REVIEWED.some(([commit, file, rule]) => finding.commit === commit && finding.file === file && finding.rule === rule);
+  return REVIEWED.some(
+    ([commit, file, rule]) => finding.commit === commit && finding.file === file && finding.rule === rule,
+  );
 }

@@ -23,22 +23,32 @@ function contrast(a: string, b: string): number {
 
 /** Text on background: 4.5:1. Every pair the pages use is listed here. */
 const TEXT_PAIRS: [string, string][] = [
-  ['text', 'bg'], ['text', 'surface'],
-  ['text-muted', 'bg'], ['text-muted', 'surface'],
-  ['link', 'bg'], ['link', 'surface'], ['link-hover', 'bg'], ['link-hover', 'surface'],
-  ['on-accent', 'accent'], ['on-accent', 'accent-hover'],
+  ['text', 'bg'],
+  ['text', 'surface'],
+  ['text-muted', 'bg'],
+  ['text-muted', 'surface'],
+  ['link', 'bg'],
+  ['link', 'surface'],
+  ['link-hover', 'bg'],
+  ['link-hover', 'surface'],
+  ['on-accent', 'accent'],
+  ['on-accent', 'accent-hover'],
   ['notice-text', 'notice-bg'],
   ['free-text', 'free-bg'],
-  ['taken-text', 'taken-bg'], ['taken-text', 'surface'],
+  ['taken-text', 'taken-bg'],
+  ['taken-text', 'surface'],
   ['unknown-text', 'unknown-bg'],
   ['selected-text', 'selected-bg'],
 ];
 
 /** Edges of controls and the focus ring: 3:1. */
 const EDGE_PAIRS: [string, string][] = [
-  ['border', 'bg'], ['border', 'surface'],
-  ['focus', 'bg'], ['focus', 'surface'],
-  ['unknown-text', 'surface'], ['selected-bg', 'surface'],
+  ['border', 'bg'],
+  ['border', 'surface'],
+  ['focus', 'bg'],
+  ['focus', 'surface'],
+  ['unknown-text', 'surface'],
+  ['selected-bg', 'surface'],
 ];
 
 describe('colour contrast (A1)', () => {
