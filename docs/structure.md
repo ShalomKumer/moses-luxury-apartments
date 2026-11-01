@@ -9,10 +9,11 @@ Every exported function carries a one-line comment saying what it does.
 ```
 /
 ├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
-├── package.json                    # scripts: dev, build, test, format, lint, verify, photos:add, photos:check, budget:check, secrets:check, licenses:check, launch:check
+├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, budget:check, secrets:check, licenses:check, launch:check
 ├── scripts/secret-scan/            # the secret scan (S19): patterns, scan-text, forbidden-files, list-sources,
 │                                   #   parse-history + scan-history, report, reviewed-findings, check-secrets (entry)
-├── .prettierrc.json, eslint.config.mjs   # formatting (code only) and lint, both in verify
+├── .prettierrc.json, eslint.config.mjs   # formatting (code only) and lint (with the a11y template rules), both in verify
+├── playwright.config.ts            # the browser tests: desktop 1280 px and phone 375 px, the test server
 ├── tsconfig.json                   # strict; path aliases per layer (@domain, @server, ...)
 ├── vitest.config.ts
 ├── .env.example                    # empty today (no variables)
@@ -59,7 +60,11 @@ Every exported function carries a one-line comment saying what it does.
 │                                   #   add-photo (entry); webp-chunks + photo-rules + check-photos (the check)
 │
 ├── tests/
-│   ├── unit/                       # domain/ and server/
+│   ├── unit/                       # domain/ and server/, scripts/, e2e/ (the test server)
+│   ├── e2e/                        # browser tests (Playwright + axe) over dist/client, run by `npm run test:e2e`:
+│   │   ├── server/                 #   a read-only static server that sends the real `_headers` (headers-file, serve-static, start)
+│   │   ├── helpers/                #   built-pages, run-axe, page-problems, focus-obscured (2.4.11)
+│   │   └── *.spec.ts               #   pages (every page x 2 widths), gallery (keyboard), checkers (the checks fail on bad pages)
 │   └── policy/                     # rules as tests: layers, no-third-party + no raw HTML, headers, contrast,
 │                                   #   no-public-availability
 └── docs/                           # architecture, structure, compliance, roadmap, design/, archive/

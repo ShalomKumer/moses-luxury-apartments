@@ -17,9 +17,12 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 
 ## Commands
 
-- `npm run verify`: Prettier check + ESLint + type check + tests + build + build-output check + performance budget + photo
-  check + secret scan + licence allow-list + `npm audit`. Must be green before every commit.
+- `npm run verify`: Prettier check + ESLint + type check + tests + build + build-output check + browser tests + performance
+  budget + photo check + secret scan + licence allow-list + `npm audit`. Must be green before every commit.
 - `npm test`: unit and policy tests (the fast loop).
+- `npm run test:e2e`: the browser tests (Playwright + axe, WCAG 2.2 AA) over every page of `dist/client`, at 1280 px and
+  375 px, plus the photo viewer by keyboard; run `npm run build` first. Once per machine: `npx playwright install chromium
+  --only-shell`. Inside `verify`.
 - `npm run dev`: the site on :4321.
 - `npm run format` writes the Prettier formatting (code, not `.md`/`.html`); `npm run format:check` and `npm run lint` are inside `verify`.
 - `npm run photos:add -- <file> <apartment> <name>`: the only way a photo enters the repo (WebP, three widths, no EXIF or GPS,
@@ -176,7 +179,7 @@ Check the session's skill list at the start of every session for their exact nam
    image of ours) is `docs/standards.md` section 5; structured data (LodgingBusiness) carries real details only, and no
    rating, review or price markup appears without a real source (H1, H2).
 
-Where each is built: `docs/roadmap.md`, "Committed next" (`chore/tooling` built rules 2 to 5; `chore/browser-tests` builds rule 6).
+Where each is built: `docs/roadmap.md`, "Committed next" (`chore/tooling` built rules 2 to 5; `chore/browser-tests` built rule 6).
 
 ## Design
 
