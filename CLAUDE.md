@@ -17,10 +17,12 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 
 ## Commands
 
-- `npm run verify`: type check + tests + build + build-output check + licence allow-list + `npm audit`. Must be green
+- `npm run verify`: type check + tests + build + build-output check + secret scan + licence allow-list + `npm audit`. Must be green
   before every commit.
 - `npm test`: unit and policy tests (the fast loop).
 - `npm run dev`: the site on :4321.
+- `npm run secrets:check`: the secret scan (iron rule S19) over the files, `dist/` and the whole git history; prints
+  file, place and risk, never the value. Inside `verify`. `secret-scan:allow` on a line marks a reviewed false positive.
 - `npm run licenses:check`: fails on a package whose licence is not on the allow-list (iron rule C4).
 - `npm run launch:check`: fails while any placeholder or sample content is left (expected until launch).
 

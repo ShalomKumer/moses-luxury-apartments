@@ -34,12 +34,15 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 A snapshot, not a history. Last update: 2026-11-01.
 
-- **Stage 1 is done and merged** (PR #1, merge commit `25ba6a5` on `dev`, 2026-11-01; `main` is still the empty first
-  commit). It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code
-  structure (`docs/structure.md`), the first bilingual site on sample content (92 tests, the build and its output check
-  green, walked in the browser), the working rules and skills (`CLAUDE.md`, `.claude/skills/`), and the chosen home
-  design. **Open: the user's yes to close stage 1 and open stage 2** (secret scan and tooling) in a new session.
-  Progress: stage 1 100%, the project about 33% (9 of 27 points; an estimate).
+- **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
+  It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
+  (`docs/structure.md`), the first bilingual site on sample content, the working rules and skills (`CLAUDE.md`,
+  `.claude/skills/`), and the chosen home design.
+- **Stage 2 is open** (the user approved it, 2026-11-01, in the same session once). `chore/secret-scan` is built on its
+  branch (`npm run secrets:check` inside `verify`; 127 tests; S19 and S13 are Met) and waits for `/ship` and the merge.
+  Left in stage 2: `chore/tooling` (Prettier and ESLint, Playwright with axe at WCAG 2.2, the performance budget, the
+  photo script, `docs/owner-guide.md`). Progress after the merge: stage 2 about 33% (1 of 3 points), the project about
+  37% (10 of 27 points; an estimate).
 - **Waiting for the user's approval** (carried from stage 1): three build-only licence exceptions in
   `scripts/check-licenses.mjs` (the sharp libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; C4). Fourteen
   code-review findings were recorded and not fixed on purpose; they are picked up in stage 2 or with the page they touch.
@@ -83,7 +86,7 @@ In this order; each one is its own branch, and nothing starts before the one abo
 
 1. Stage 1, `chore/foundations` (2): **done and merged, 2026-11-01.**
 2. Stage 1, `chore/astro-7` (1): **done** (part of the first commit).
-3. Stage 2, `chore/secret-scan` (1): the secret scan of row S19 (sources, docs, `dist/`, git history), inside `npm run verify`.
+3. Stage 2, `chore/secret-scan` (1): **built 2026-11-01, waiting for merge** - the secret scan of row S19 (files, `dist/`, git history), inside `npm run verify`.
 3b. Stage 2, `chore/tooling` (2): the rules the user added on 2026-10-31 (`CLAUDE.md`): Prettier and ESLint, Playwright
    with axe, the performance budget check, the photo script, `docs/owner-guide.md`. Each new dependency through the
    licence check; axe-core (MPL-2.0) and the photo tool need the user's yes as build-only exceptions. Also from the UI/UX

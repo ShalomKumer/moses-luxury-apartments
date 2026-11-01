@@ -3,7 +3,7 @@ import { CalendarNotConfiguredError, parseCalendarUrlMap, resolveCalendarUrl } f
 import { CalendarFetchError, fetchCalendarText } from '@server/fetch-calendar';
 
 const allowed = ['calendar.google.com'];
-const goodUrl = 'https://calendar.google.com/calendar/ical/abc/private-xyz/basic.ics';
+const goodUrl = 'https://calendar.google.com/calendar/ical/abc/private-xyz/basic.ics'; // secret-scan:allow a made-up address for the test
 
 describe('parseCalendarUrlMap', () => {
   it('reads a JSON object of strings and drops the rest', () => {

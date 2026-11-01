@@ -12,8 +12,9 @@
     "check": "astro check",
     "test": "vitest run",
     "licenses:check": "node scripts/check-licenses.mjs",
+    "secrets:check": "node scripts/secret-scan/check-secrets.mjs --history",
     "audit:prod": "npm audit --audit-level=high",
-    "verify": "npm run check && npm run test && npm run build && node scripts/check-build-output.mjs && npm run licenses:check && npm run audit:prod",
+    "verify": "npm run check && npm run test && npm run build && node scripts/check-build-output.mjs && npm run secrets:check && npm run licenses:check && npm run audit:prod",
     "launch:check": "node scripts/check-launch-ready.mjs"
   },
   "devDependencies": {

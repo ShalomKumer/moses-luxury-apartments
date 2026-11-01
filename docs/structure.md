@@ -9,7 +9,9 @@ Every exported function carries a one-line comment saying what it does.
 ```
 /
 ├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
-├── package.json                    # scripts: dev, build, test, verify, licenses:check, launch:check
+├── package.json                    # scripts: dev, build, test, verify, secrets:check, licenses:check, launch:check
+├── scripts/secret-scan/            # the secret scan (S19): patterns, scan-text, forbidden-files, list-sources,
+│                                   #   parse-history + scan-history, report, reviewed-findings, check-secrets (entry)
 ├── tsconfig.json                   # strict; path aliases per layer (@domain, @server, ...)
 ├── vitest.config.ts
 ├── .env.example                    # empty today (no variables)
