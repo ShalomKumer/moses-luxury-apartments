@@ -1,0 +1,69 @@
+---
+/** Business details and the legal links, on every page (L1-L3, H4, A6, L11), in the page's language. */
+import { getCollection } from 'astro:content';
+import { SITE } from '@config/site';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getMessages(locale);
+const legalPages = (await getCollection('legal'))
+  .filter((page) => page.id.startsWith(`${locale}/`))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <section aria-labelledby="footer-business">
+      <h2 id="footer-business" class="site-footer__title">{t.brand.name}</h2>
+      <p>
+        {t.business.legalName}, {t.business.businessNumber}<br />
+        {t.business.address}
+      </p>
+      <p>
+        {SITE.phones.map((phone) => (
+          <>{t.common.phone}: <a href={`tel:${phone.display}`}><bdi>{phone.display}</bdi></a><br /></>
+        ))}
+        {t.common.email}: <a href={`mailto:${SITE.email}`}><bdi dir="ltr">{SITE.email}</bdi></a>
+      </p>
+    </section>
+    <nav aria-labelledby="footer-legal">
+      <h2 id="footer-legal" class="site-footer__title">{t.footer.legalHeading}</h2>
+      <ul role="list">
+        {legalPages.map((page) => (
+          <li><a href={localizedPath(`/${page.id.split('/')[1]}`, locale)}>{page.data.title}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-12);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+
+  .site-footer__inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-8);
+    padding-block: var(--space-8);
+  }
+
+  .site-footer__title {
+    font-size: var(--text-base);
+  }
+
+  .site-footer li a {
+    display: inline-block;
+    padding-block: var(--space-2);
+  }
+</style>

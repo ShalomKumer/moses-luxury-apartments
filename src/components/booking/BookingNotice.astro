@@ -1,0 +1,29 @@
+---
+/** The notice beside the booking buttons: where the message goes, the policies, the minimum age (L5, L10, H4). */
+import { SITE } from '@config/site';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getMessages(locale).notice;
+---
+
+<p class="booking-notice">
+  {t.before}<a href={localizedPath('/privacy', locale)}>{t.privacyLink}</a>{t.between}<a
+    href={localizedPath('/cancellation', locale)}>{t.cancellationLink}</a
+  >{fillTemplate(t.after, { age: SITE.minimumAge })}
+</p>
+
+<style>
+  .booking-notice {
+    margin: var(--space-4) 0 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+  }
+</style>

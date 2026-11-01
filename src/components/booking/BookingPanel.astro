@@ -1,0 +1,100 @@
+---
+/**
+ * The booking panel: the number of guests and the WhatsApp and email links, in the page's language. The site shows no
+ * availability, so the guest writes the dates in the message. The links work without JavaScript; the controller adds
+ * the guest count.
+ */
+import { SITE, WHATSAPP_PHONE } from '@config/site';
+import { buildBookingMessage, buildBookingSubject } from '@domain/booking/booking-message';
+import { mailtoLink } from '@domain/booking/mailto-link';
+import { toInternationalDigits } from '@domain/booking/phone-number';
+import { whatsappLink } from '@domain/booking/whatsapp-link';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import BookingNotice from './BookingNotice.astro';
+
+interface Props {
+  locale: Locale;
+  cabinId: string;
+  /** The cabin's name in the page's language. */
+  cabinName: string;
+  maxGuests: number;
+}
+
+const { locale, cabinId, cabinName, maxGuests } = Astro.props;
+const t = getMessages(locale).booking;
+const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
+const message = buildBookingMessage(t.message, cabinName, null);
+const guestOptions = Array.from({ length: maxGuests }, (_, index) => index + 1);
+---
+
+<section
+  class="booking"
+  aria-labelledby="booking-title"
+  data-booking-panel
+  data-cabin-name={cabinName}
+  data-phone-digits={phoneDigits ?? ''}
+  data-email={SITE.email}
+  data-texts={JSON.stringify(t.message)}
+>
+  <h2 id="booking-title">{t.heading}</h2>
+  <p>{t.intro}</p>
+  <div class="booking__field">
+    <label for={`guests-${cabinId}`}>{t.guests}</label>
+    <select id={`guests-${cabinId}`} data-booking-guests>
+      <option value="">{t.guestsNone}</option>
+      {guestOptions.map((count) => <option value={count}>{count}</option>)}
+    </select>
+  </div>
+  <div class="booking__actions">
+    {phoneDigits && (
+      <a class="button" data-booking-whatsapp href={whatsappLink(phoneDigits, message)} rel="noopener">
+        {t.whatsapp}<span class="visually-hidden"> - {fillTemplate(t.whatsappHint, { name: cabinName })}</span>
+      </a>
+    )}
+    <a class="button button--secondary" data-booking-email href={mailtoLink(SITE.email, buildBookingSubject(t.message, cabinName), message)}>
+      {t.email}<span class="visually-hidden"> - {fillTemplate(t.emailHint, { name: cabinName })}</span>
+    </a>
+  </div>
+  <BookingNotice locale={locale} />
+</section>
+
+<script>
+  import { initBookingPanel } from './booking-controller';
+
+  document.querySelectorAll<HTMLElement>('[data-booking-panel]').forEach(initBookingPanel);
+</script>
+
+<style>
+  .booking {
+    padding: var(--space-6);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .booking__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-width: 12rem;
+    margin-bottom: var(--space-4);
+  }
+
+  .booking__field select {
+    min-height: var(--target-size);
+    padding-inline: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+  }
+
+  .booking__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>

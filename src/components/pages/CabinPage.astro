@@ -1,0 +1,77 @@
+---
+/** One cabin in one language: photos, details and the booking request. It shows no availability. */
+import type { CollectionEntry } from 'astro:content';
+import BookingPanel from '@components/booking/BookingPanel.astro';
+import CabinFacts from '@components/cabin/CabinFacts.astro';
+import CabinGallery from '@components/cabin/CabinGallery.astro';
+import BaseLayout from '@components/layout/BaseLayout.astro';
+import Prose from '@components/ui/Prose.astro';
+import { splitParagraphs } from '@domain/text/paragraphs';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+import { pick } from '@i18n/pick';
+
+interface Props {
+  cabin: CollectionEntry<'cabins'>;
+  locale: Locale;
+}
+
+const { cabin, locale } = Astro.props;
+const t = getMessages(locale);
+const { maxGuests, bedrooms } = cabin.data;
+const name = pick(cabin.data.name, locale);
+const summary = pick(cabin.data.summary, locale);
+const paragraphs = splitParagraphs(pick(cabin.data.description, locale));
+const features = cabin.data.features.map((feature) => pick(feature, locale));
+const photos = cabin.data.photos.map((photo) => ({ ...photo, alt: pick(photo.alt, locale) }));
+---
+
+<BaseLayout locale={locale} path={`/cabins/${cabin.id}`} title={name} description={summary}>
+  <div class="container section cabin">
+    <nav aria-label={t.nav.breadcrumb} class="cabin__back">
+      <a href={`${localizedPath('/', locale)}#cabins`}>{t.nav.allCabins}</a>
+    </nav>
+    <h1>{name}</h1>
+    <p class="cabin__summary">{summary}</p>
+    <CabinGallery locale={locale} name={name} photos={photos} />
+    <div class="cabin__columns">
+      <div>
+        <Prose>{paragraphs.map((paragraph) => <p>{paragraph}</p>)}</Prose>
+        <CabinFacts locale={locale} maxGuests={maxGuests} bedrooms={bedrooms} features={features} />
+      </div>
+      <div class="cabin__booking">
+        <BookingPanel locale={locale} cabinId={cabin.id} cabinName={name} maxGuests={maxGuests} />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .cabin__back {
+    margin-bottom: var(--space-4);
+  }
+
+  .cabin__summary {
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+
+  .cabin__columns {
+    display: grid;
+    gap: var(--space-8);
+    margin-top: var(--space-8);
+  }
+
+  .cabin__booking {
+    display: grid;
+    gap: var(--space-6);
+    align-content: start;
+  }
+
+  @media (min-width: 62rem) {
+    .cabin__columns {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

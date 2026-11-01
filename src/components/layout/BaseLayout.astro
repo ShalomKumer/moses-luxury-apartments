@@ -1,0 +1,49 @@
+---
+/** The page shell: the language and direction of the page, skip link, header, main and footer, and the language alternates. */
+import '../../styles/global.css';
+import { SITE } from '@config/site';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import { directionOf, type Locale } from '@i18n/locales';
+import { alternatesOf } from '@i18n/paths';
+import SampleBanner from './SampleBanner.astro';
+import SiteFooter from './SiteFooter.astro';
+import SiteHeader from './SiteHeader.astro';
+import SkipLink from './SkipLink.astro';
+
+interface Props {
+  locale: Locale;
+  /** The page's own address without a language ("/", "/cabins/gefen", "/privacy"); the alternates are built from it. */
+  path: string;
+  title: string;
+  description?: string;
+}
+
+const { locale, path, title, description } = Astro.props;
+const t = getMessages(locale);
+const fullTitle = title === t.brand.name ? title : fillTemplate(t.common.pageTitle, { title, site: t.brand.name });
+const alternates = alternatesOf(path);
+---
+
+<!doctype html>
+<html lang={locale} dir={directionOf(locale)}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description ?? t.brand.description} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {alternates.map((alternate) => <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />)}
+    <link rel="alternate" hreflang="x-default" href={alternates[0].href} />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <SkipLink locale={locale} />
+    {SITE.isSample && <SampleBanner locale={locale} />}
+    <SiteHeader locale={locale} path={path} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter locale={locale} />
+  </body>
+</html>

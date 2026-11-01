@@ -1,0 +1,30 @@
+---
+/** The first link on every page: jumps keyboard and screen reader users past the header (A3). */
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<a class="skip-link" href="#main">{getMessages(locale).common.skipToMain}</a>
+
+<style>
+  .skip-link {
+    position: absolute;
+    inset-inline-start: var(--space-4);
+    top: -100px;
+    z-index: 10;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    border-radius: var(--radius);
+  }
+
+  .skip-link:focus {
+    top: var(--space-2);
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+/** How to reach the owner: WhatsApp, phones, email, and the way there as links, never an embedded map (L7). */
+import { SITE, WHATSAPP_PHONE } from '@config/site';
+import { toInternationalDigits } from '@domain/booking/phone-number';
+import { whatsappLink } from '@domain/booking/whatsapp-link';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getMessages(locale);
+const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container">
+    <h2 id="contact-title">{t.contact.heading}</h2>
+    <ul role="list" class="contact__list">
+      {phoneDigits && (
+        <li>
+          <a href={whatsappLink(phoneDigits, fillTemplate(t.contact.whatsappMessage, { name: t.brand.name }))} rel="noopener">
+            {t.contact.whatsapp}<span class="visually-hidden"> {t.contact.whatsappHint}</span>
+          </a>
+        </li>
+      )}
+      {SITE.phones.map((phone) => (
+        <li>{t.common.phone}: <a href={`tel:${phone.display}`}><bdi>{phone.display}</bdi></a></li>
+      ))}
+      <li>{t.common.email}: <a href={`mailto:${SITE.email}`}><bdi dir="ltr">{SITE.email}</bdi></a></li>
+      {SITE.location && (
+        <li>
+          <a href={SITE.location.waze} rel="noopener">Waze</a> ·
+          <a href={SITE.location.googleMaps} rel="noopener">Google Maps</a>
+        </li>
+      )}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact__list {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .contact__list a {
+    display: inline-block;
+    padding-block: var(--space-2);
+  }
+</style>

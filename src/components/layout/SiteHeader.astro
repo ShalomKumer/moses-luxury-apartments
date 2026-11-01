@@ -1,0 +1,78 @@
+---
+/** The logo, the main navigation and the language switch. */
+import { SITE } from '@config/site';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+import LanguageSwitch from './LanguageSwitch.astro';
+
+interface Props {
+  locale: Locale;
+  path: string;
+}
+
+const { locale, path } = Astro.props;
+const t = getMessages(locale);
+const home = localizedPath('/', locale);
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="site-header__logo" href={home}>
+      <img
+        src={SITE.logo.name}
+        alt={t.brand.logoAlt}
+        width={SITE.logo.width}
+        height={SITE.logo.nameHeight}
+        decoding="async"
+      />
+    </a>
+    <nav aria-label={t.nav.main}>
+      <ul role="list" class="site-header__links">
+        <li><a href={`${home}#cabins`}>{t.nav.cabins}</a></li>
+        <li><a href={`${home}#contact`}>{t.nav.contact}</a></li>
+        <li><LanguageSwitch locale={locale} path={path} /></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+  }
+
+  .site-header__logo {
+    display: block;
+    line-height: 0;
+  }
+
+  /* The logo is a JPEG on white; multiply drops the white so it sits on any light surface. */
+  .site-header__logo img {
+    height: 3.75rem;
+    width: auto;
+    mix-blend-mode: multiply;
+  }
+
+  .site-header__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .site-header__links a:not([data-lang-switch]) {
+    display: inline-block;
+    padding-block: var(--space-2);
+  }
+</style>
