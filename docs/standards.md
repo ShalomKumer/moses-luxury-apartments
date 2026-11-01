@@ -254,7 +254,7 @@ budget and its check are rule 3 of `CLAUDE.md`.
 several screen sizes; RTL and LTR; keyboard and screen-reader pass; readable text and clear hierarchy; hover, focus, active
 and disabled; loading, empty, success and error states where they exist; no unwanted horizontal scroll; no needless
 re-render or script; fit to the product's purpose. The skills `design-critique` and `accessibility-review`, the Browser
-pane at 375 px and desktop, and (from `chore/tooling`) Playwright with axe carry it out. Before starting a design the AI
+pane at 375 px and desktop, and (`npm run test:e2e`, from `chore/browser-tests`) Playwright with axe carry it out. Before starting a design the AI
 confirms the purpose of the page; it never designs on its own initiative.
 
 ## What was merged (existing rule -> kept wording)

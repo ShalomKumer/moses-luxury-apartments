@@ -30,6 +30,10 @@ const BUILD_ONLY_EXCEPTIONS = {
     "LGPL-3.0 libvips binary; used by the photo script (scripts/photos) on the owner's machine; never shipped",
   lightningcss: "MPL-2.0 (file-level copyleft); Vite's CSS tool at build time; its code is not in our output",
   'lightningcss-win32-x64-msvc': 'MPL-2.0; the native binary of lightningcss above',
+  // Approved by the user, 2026-11-01 (the plan of chore/browser-tests; docs/compliance.md, C4).
+  'axe-core':
+    'MPL-2.0 (file-level copyleft); the accessibility checker of the browser tests; injected into test pages only',
+  '@axe-core/playwright': 'MPL-2.0; connects axe-core above to Playwright; used by tests/e2e only, never shipped',
 };
 
 /** Reads a package's licence as one SPDX expression, or null if it has none. */
