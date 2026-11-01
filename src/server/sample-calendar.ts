@@ -16,7 +16,13 @@ function icalDay(key: DateKey): string {
  */
 export function buildSampleCalendar(cabinId: string, today: DateKey): string {
   const seed = seedOf(cabinId);
-  const stays = [[1 + seed, 2], [6 + seed, 3], [15 + seed, 2], [24 + seed, 4], [40 + seed, 2]];
+  const stays = [
+    [1 + seed, 2],
+    [6 + seed, 3],
+    [15 + seed, 2],
+    [24 + seed, 4],
+    [40 + seed, 2],
+  ];
   const events = stays.flatMap(([offset, nights]) => [
     'BEGIN:VEVENT',
     `DTSTART;VALUE=DATE:${icalDay(addDays(today, offset))}`,

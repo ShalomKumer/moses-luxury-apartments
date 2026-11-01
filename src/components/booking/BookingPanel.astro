@@ -44,17 +44,25 @@ const guestOptions = Array.from({ length: maxGuests }, (_, index) => index + 1);
     <label for={`guests-${cabinId}`}>{t.guests}</label>
     <select id={`guests-${cabinId}`} data-booking-guests>
       <option value="">{t.guestsNone}</option>
-      {guestOptions.map((count) => <option value={count}>{count}</option>)}
+      {guestOptions.map((count) => (
+        <option value={count}>{count}</option>
+      ))}
     </select>
   </div>
   <div class="booking__actions">
     {phoneDigits && (
       <a class="button" data-booking-whatsapp href={whatsappLink(phoneDigits, message)} rel="noopener">
-        {t.whatsapp}<span class="visually-hidden"> - {fillTemplate(t.whatsappHint, { name: cabinName })}</span>
+        {t.whatsapp}
+        <span class="visually-hidden"> - {fillTemplate(t.whatsappHint, { name: cabinName })}</span>
       </a>
     )}
-    <a class="button button--secondary" data-booking-email href={mailtoLink(SITE.email, buildBookingSubject(t.message, cabinName), message)}>
-      {t.email}<span class="visually-hidden"> - {fillTemplate(t.emailHint, { name: cabinName })}</span>
+    <a
+      class="button button--secondary"
+      data-booking-email
+      href={mailtoLink(SITE.email, buildBookingSubject(t.message, cabinName), message)}
+    >
+      {t.email}
+      <span class="visually-hidden"> - {fillTemplate(t.emailHint, { name: cabinName })}</span>
     </a>
   </div>
   <BookingNotice locale={locale} />

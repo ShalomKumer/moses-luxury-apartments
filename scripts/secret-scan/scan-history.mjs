@@ -8,9 +8,17 @@ import { COMMIT_MARKER, parseHistory } from './parse-history.mjs';
  * 'a/' and 'b/' prefixes whatever the user's git config says, and file names printed as they are.
  */
 const LOG_ARGS = [
-  '-c', 'core.quotepath=false',
-  'log', '--all', '--cc', '--no-color', '--no-ext-diff', '--no-renames',
-  '--src-prefix=a/', '--dst-prefix=b/', `--format=${COMMIT_MARKER}%H`,
+  '-c',
+  'core.quotepath=false',
+  'log',
+  '--all',
+  '--cc',
+  '--no-color',
+  '--no-ext-diff',
+  '--no-renames',
+  '--src-prefix=a/',
+  '--dst-prefix=b/',
+  `--format=${COMMIT_MARKER}%H`,
 ];
 
 /** Scans every added line in every commit of every branch; returns the findings and the number of commits read. */

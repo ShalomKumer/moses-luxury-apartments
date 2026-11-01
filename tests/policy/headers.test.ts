@@ -20,7 +20,11 @@ function siteHeaders(): Map<string, string> {
 /** Splits a CSP into its directives. */
 function cspDirectives(csp: string): Map<string, string[]> {
   return new Map(
-    csp.split(';').map((part) => part.trim().split(/\s+/)).filter((parts) => parts[0]).map(([name, ...values]) => [name, values]),
+    csp
+      .split(';')
+      .map((part) => part.trim().split(/\s+/))
+      .filter((parts) => parts[0])
+      .map(([name, ...values]) => [name, values]),
   );
 }
 

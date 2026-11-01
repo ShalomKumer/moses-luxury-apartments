@@ -21,6 +21,8 @@ const { Content } = await render(entry);
   <div class="container section">
     <h1>{entry.data.title}</h1>
     <UpdatedDate locale={locale} date={entry.data.updated} />
-    <Prose><Content /></Prose>
+    <Prose>
+      <Content />
+    </Prose>
   </div>
 </BaseLayout>

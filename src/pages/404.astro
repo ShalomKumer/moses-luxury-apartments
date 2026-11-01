@@ -18,7 +18,9 @@ const he = getMessages('he');
       return (
         <section lang={locale} dir={directionOf(locale)} class="not-found">
           <h1>{t.title}</h1>
-          <p>{t.body} <a href={localizedPath('/', locale)}>{t.back}</a></p>
+          <p>
+            {t.body} <a href={localizedPath('/', locale)}>{t.back}</a>
+          </p>
         </section>
       );
     })}

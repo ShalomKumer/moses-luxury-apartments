@@ -20,23 +20,39 @@ const legalPages = (await getCollection('legal'))
 <footer class="site-footer">
   <div class="container site-footer__inner">
     <section aria-labelledby="footer-business">
-      <h2 id="footer-business" class="site-footer__title">{t.brand.name}</h2>
+      <h2 id="footer-business" class="site-footer__title">
+        {t.brand.name}
+      </h2>
       <p>
-        {t.business.legalName}, {t.business.businessNumber}<br />
+        {t.business.legalName}, {t.business.businessNumber}
+        <br />
         {t.business.address}
       </p>
       <p>
         {SITE.phones.map((phone) => (
-          <>{t.common.phone}: <a href={`tel:${phone.display}`}><bdi>{phone.display}</bdi></a><br /></>
+          <>
+            {t.common.phone}:{' '}
+            <a href={`tel:${phone.display}`}>
+              <bdi>{phone.display}</bdi>
+            </a>
+            <br />
+          </>
         ))}
-        {t.common.email}: <a href={`mailto:${SITE.email}`}><bdi dir="ltr">{SITE.email}</bdi></a>
+        {t.common.email}:{' '}
+        <a href={`mailto:${SITE.email}`}>
+          <bdi dir="ltr">{SITE.email}</bdi>
+        </a>
       </p>
     </section>
     <nav aria-labelledby="footer-legal">
-      <h2 id="footer-legal" class="site-footer__title">{t.footer.legalHeading}</h2>
+      <h2 id="footer-legal" class="site-footer__title">
+        {t.footer.legalHeading}
+      </h2>
       <ul role="list">
         {legalPages.map((page) => (
-          <li><a href={localizedPath(`/${page.id.split('/')[1]}`, locale)}>{page.data.title}</a></li>
+          <li>
+            <a href={localizedPath(`/${page.id.split('/')[1]}`, locale)}>{page.data.title}</a>
+          </li>
         ))}
       </ul>
     </nav>

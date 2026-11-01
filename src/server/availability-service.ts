@@ -54,7 +54,9 @@ export function createAvailabilityService(deps: AvailabilityServiceDeps) {
         return unknownResult('not_configured');
       }
       deps.log(cabinId, 'fetch_failed');
-      return cached ? withFreshness(cached.result, now, deps.config.staleAfterMs) : unknownResult('calendar_unavailable');
+      return cached
+        ? withFreshness(cached.result, now, deps.config.staleAfterMs)
+        : unknownResult('calendar_unavailable');
     }
   };
 }

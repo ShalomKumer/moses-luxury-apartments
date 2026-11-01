@@ -29,7 +29,11 @@ const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.d
     <div class="container">
       <h2 id="cabins-title">{t.home.cabinsHeading}</h2>
       <ul role="list" class="cabins">
-        {cabins.map((cabin) => <li><CabinCard cabin={cabin} locale={locale} /></li>)}
+        {cabins.map((cabin) => (
+          <li>
+            <CabinCard cabin={cabin} locale={locale} />
+          </li>
+        ))}
       </ul>
     </div>
   </section>

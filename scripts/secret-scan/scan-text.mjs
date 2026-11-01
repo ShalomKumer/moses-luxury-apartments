@@ -27,7 +27,9 @@ export function rulesInLine(line) {
  * @returns {Finding[]}
  */
 export function scanText(file, text) {
-  return text.split(/\r?\n/).flatMap((line, index) =>
-    rulesInLine(line).map((rule) => ({ file, line: index + 1, rule: rule.id, risk: rule.risk, what: rule.what })),
-  );
+  return text
+    .split(/\r?\n/)
+    .flatMap((line, index) =>
+      rulesInLine(line).map((rule) => ({ file, line: index + 1, rule: rule.id, risk: rule.risk, what: rule.what })),
+    );
 }

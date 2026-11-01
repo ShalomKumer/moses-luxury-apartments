@@ -20,14 +20,34 @@ const t = getMessages(locale).facts;
 <section class="cabin-facts" aria-labelledby="facts-title">
   <h2 id="facts-title">{t.heading}</h2>
   <dl class="cabin-facts__list">
-    <div><dt>{t.guests}</dt><dd>{fillTemplate(t.upTo, { count: maxGuests })}</dd></div>
-    <div><dt>{t.bedrooms}</dt><dd>{bedrooms}</dd></div>
-    <div><dt>{t.checkIn}</dt><dd>{fillTemplate(t.from, { time: '' })}<bdi>{SITE.checkInTime}</bdi></dd></div>
-    <div><dt>{t.checkOut}</dt><dd>{fillTemplate(t.until, { time: '' })}<bdi>{SITE.checkOutTime}</bdi></dd></div>
+    <div>
+      <dt>{t.guests}</dt>
+      <dd>{fillTemplate(t.upTo, { count: maxGuests })}</dd>
+    </div>
+    <div>
+      <dt>{t.bedrooms}</dt>
+      <dd>{bedrooms}</dd>
+    </div>
+    <div>
+      <dt>{t.checkIn}</dt>
+      <dd>
+        {fillTemplate(t.from, { time: '' })}
+        <bdi>{SITE.checkInTime}</bdi>
+      </dd>
+    </div>
+    <div>
+      <dt>{t.checkOut}</dt>
+      <dd>
+        {fillTemplate(t.until, { time: '' })}
+        <bdi>{SITE.checkOutTime}</bdi>
+      </dd>
+    </div>
   </dl>
   <h3>{t.featuresHeading}</h3>
   <ul class="cabin-facts__features" role="list">
-    {features.map((feature) => <li>{feature}</li>)}
+    {features.map((feature) => (
+      <li>{feature}</li>
+    ))}
   </ul>
 </section>
 

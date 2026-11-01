@@ -28,8 +28,12 @@ describe('booking message in Hebrew', () => {
     expect(buildBookingMessage(texts, null, 2, { from: '10.11.2026', to: '13.11.2026', nights: 3 })).toBe(
       'שלום, אשמח לבדוק זמינות והזמנה.\nתאריכים: 10.11.2026 עד 13.11.2026 (3 לילות)\nמספר אורחים: 2',
     );
-    expect(buildBookingMessage(texts, null, null, { from: '10.11.2026', to: '11.11.2026', nights: 1 })).toContain('(לילה אחד)');
-    expect(buildBookingMessage(texts, null, null, { from: '10.11.2026', to: null, nights: null })).toContain('תאריך כניסה: 10.11.2026');
+    expect(buildBookingMessage(texts, null, null, { from: '10.11.2026', to: '11.11.2026', nights: 1 })).toContain(
+      '(לילה אחד)',
+    );
+    expect(buildBookingMessage(texts, null, null, { from: '10.11.2026', to: null, nights: null })).toContain(
+      'תאריך כניסה: 10.11.2026',
+    );
   });
 
   it('drops a dangling dash from the subject when no apartment is named', () => {
@@ -45,7 +49,9 @@ describe('booking message in English', () => {
       "Hello, I'd like to check availability and book Gefen Apartment.\nThe dates that suit me: \nNumber of guests: 2",
     );
     expect(buildBookingSubject(texts, 'Gefen Apartment')).toBe('Booking request - Gefen Apartment');
-    expect(buildBookingMessage(texts, null, 1, { from: '10.11.2026', to: '11.11.2026', nights: 1 })).toContain('(1 night)');
+    expect(buildBookingMessage(texts, null, 1, { from: '10.11.2026', to: '11.11.2026', nights: 1 })).toContain(
+      '(1 night)',
+    );
   });
 });
 

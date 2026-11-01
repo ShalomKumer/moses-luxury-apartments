@@ -78,10 +78,16 @@ describe('scanText', () => {
 });
 
 describe('forbiddenFileKind', () => {
-  it.each(['.env', '.env.local', 'config/.env.production', '.dev.vars', 'server.pem', 'a/b/site.key', 'id_rsa', 'credentials.json'])(
-    'forbids %s',
-    (path) => expect(forbiddenFileKind(path)).not.toBeNull(),
-  );
+  it.each([
+    '.env',
+    '.env.local',
+    'config/.env.production',
+    '.dev.vars',
+    'server.pem',
+    'a/b/site.key',
+    'id_rsa',
+    'credentials.json',
+  ])('forbids %s', (path) => expect(forbiddenFileKind(path)).not.toBeNull());
 
   it.each(['.env.example', 'src/environment.ts', 'README.md', 'monkey.ts', 'public/robots.txt'])('allows %s', (path) =>
     expect(forbiddenFileKind(path)).toBeNull(),
@@ -97,9 +103,24 @@ describe('parseHistory', () => {
   const log = (body: string) => `${COMMIT_MARKER}1234567890abcdef\n${body}\n`;
 
   it('finds a secret on an added line, with the commit and the new line number', () => {
-    const diff = ['diff --git a/src/a.ts b/src/a.ts', '--- a/src/a.ts', '+++ b/src/a.ts', '@@ -1,2 +10,3 @@', ' context', `+${fake.aws}`, ' tail'].join('\n');
+    const diff = [
+      'diff --git a/src/a.ts b/src/a.ts',
+      '--- a/src/a.ts',
+      '+++ b/src/a.ts',
+      '@@ -1,2 +10,3 @@',
+      ' context',
+      `+${fake.aws}`,
+      ' tail',
+    ].join('\n');
     expect(parseHistory(log(diff))).toEqual([
-      { file: 'src/a.ts', line: 11, rule: 'aws-access-key', risk: 'high', what: 'an AWS access key id', commit: '1234567' },
+      {
+        file: 'src/a.ts',
+        line: 11,
+        rule: 'aws-access-key',
+        risk: 'high',
+        what: 'an AWS access key id',
+        commit: '1234567',
+      },
     ]);
   });
 
@@ -153,7 +174,11 @@ describe('reports and reviewed findings', () => {
   });
 
   it('accepts only the exact reviewed finding', () => {
-    const base = { commit: '06e9532', file: 'tests/unit/server/calendar-source.test.ts', rule: 'calendar-secret-address' };
+    const base = {
+      commit: '06e9532',
+      file: 'tests/unit/server/calendar-source.test.ts',
+      rule: 'calendar-secret-address',
+    };
     expect(isReviewed(base)).toBe(true);
     expect(isReviewed({ ...base, commit: 'ffffff0' })).toBe(false);
     expect(isReviewed({ ...base, rule: 'jwt' })).toBe(false);
@@ -175,12 +200,17 @@ describe('check-secrets, run in a small throw-away git repository', () => {
     return folder;
   }
   const git = (folder: string, ...args: string[]) =>
-    execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@example.com', '-c', 'commit.gpgsign=false', ...args], { cwd: folder, encoding: 'utf8' });
+    execFileSync(
+      'git',
+      ['-c', 'user.name=t', '-c', 'user.email=t@example.com', '-c', 'commit.gpgsign=false', ...args],
+      { cwd: folder, encoding: 'utf8' },
+    );
   const commitAll = (folder: string, message: string) => {
     git(folder, 'add', '-A');
     git(folder, 'commit', '-q', '-m', message);
   };
-  const scan = (folder: string, ...flags: string[]) => spawnSync('node', [entry, ...flags], { cwd: folder, encoding: 'utf8' });
+  const scan = (folder: string, ...flags: string[]) =>
+    spawnSync('node', [entry, ...flags], { cwd: folder, encoding: 'utf8' });
 
   it('passes on a clean repository, with and without the history', () => {
     const folder = newRepo();

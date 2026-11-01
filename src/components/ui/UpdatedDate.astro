@@ -12,4 +12,6 @@ interface Props {
 const { locale, date } = Astro.props;
 ---
 
-<p>{getMessages(locale).common.lastUpdated}: <time datetime={date}>{formatDateKey(date)}</time></p>
+<p>
+  {getMessages(locale).common.lastUpdated}: <time datetime={date}>{formatDateKey(date)}</time>
+</p>

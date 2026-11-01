@@ -15,9 +15,11 @@ const t = getMessages(locale).notice;
 ---
 
 <p class="booking-notice">
-  {t.before}<a href={localizedPath('/privacy', locale)}>{t.privacyLink}</a>{t.between}<a
-    href={localizedPath('/cancellation', locale)}>{t.cancellationLink}</a
-  >{fillTemplate(t.after, { age: SITE.minimumAge })}
+  {t.before}
+  <a href={localizedPath('/privacy', locale)}>{t.privacyLink}</a>
+  {t.between}
+  <a href={localizedPath('/cancellation', locale)}>{t.cancellationLink}</a>
+  {fillTemplate(t.after, { age: SITE.minimumAge })}
 </p>
 
 <style>

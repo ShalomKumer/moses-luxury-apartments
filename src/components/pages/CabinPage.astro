@@ -37,7 +37,11 @@ const photos = cabin.data.photos.map((photo) => ({ ...photo, alt: pick(photo.alt
     <CabinGallery locale={locale} name={name} photos={photos} />
     <div class="cabin__columns">
       <div>
-        <Prose>{paragraphs.map((paragraph) => <p>{paragraph}</p>)}</Prose>
+        <Prose>
+          {paragraphs.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </Prose>
         <CabinFacts locale={locale} maxGuests={maxGuests} bedrooms={bedrooms} features={features} />
       </div>
       <div class="cabin__booking">

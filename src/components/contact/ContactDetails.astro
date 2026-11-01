@@ -22,19 +22,38 @@ const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
     <ul role="list" class="contact__list">
       {phoneDigits && (
         <li>
-          <a href={whatsappLink(phoneDigits, fillTemplate(t.contact.whatsappMessage, { name: t.brand.name }))} rel="noopener">
-            {t.contact.whatsapp}<span class="visually-hidden"> {t.contact.whatsappHint}</span>
+          <a
+            href={whatsappLink(phoneDigits, fillTemplate(t.contact.whatsappMessage, { name: t.brand.name }))}
+            rel="noopener"
+          >
+            {t.contact.whatsapp}
+            <span class="visually-hidden"> {t.contact.whatsappHint}</span>
           </a>
         </li>
       )}
       {SITE.phones.map((phone) => (
-        <li>{t.common.phone}: <a href={`tel:${phone.display}`}><bdi>{phone.display}</bdi></a></li>
+        <li>
+          {t.common.phone}:{' '}
+          <a href={`tel:${phone.display}`}>
+            <bdi>{phone.display}</bdi>
+          </a>
+        </li>
       ))}
-      <li>{t.common.email}: <a href={`mailto:${SITE.email}`}><bdi dir="ltr">{SITE.email}</bdi></a></li>
+      <li>
+        {t.common.email}:{' '}
+        <a href={`mailto:${SITE.email}`}>
+          <bdi dir="ltr">{SITE.email}</bdi>
+        </a>
+      </li>
       {SITE.location && (
         <li>
-          <a href={SITE.location.waze} rel="noopener">Waze</a> ·
-          <a href={SITE.location.googleMaps} rel="noopener">Google Maps</a>
+          <a href={SITE.location.waze} rel="noopener">
+            Waze
+          </a>{' '}
+          ·
+          <a href={SITE.location.googleMaps} rel="noopener">
+            Google Maps
+          </a>
         </li>
       )}
     </ul>

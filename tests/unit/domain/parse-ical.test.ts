@@ -3,8 +3,7 @@ import { parseIcal } from '@domain/availability/parse-ical';
 import { toTakenNights } from '@domain/availability/to-taken-nights';
 
 /** Wraps events in a minimal calendar, with CRLF endings as Google sends them. */
-const calendar = (...events: string[]) =>
-  ['BEGIN:VCALENDAR', 'VERSION:2.0', ...events, 'END:VCALENDAR'].join('\r\n');
+const calendar = (...events: string[]) => ['BEGIN:VCALENDAR', 'VERSION:2.0', ...events, 'END:VCALENDAR'].join('\r\n');
 
 const allDayBooking = [
   'BEGIN:VEVENT',
@@ -70,10 +69,6 @@ describe('toTakenNights', () => {
       { start: '2026-11-06', end: '2026-11-08' },
       { start: '2026-10-30', end: '2026-11-02' },
     ];
-    expect(toTakenNights(spans, '2026-11-01', '2026-11-07')).toEqual([
-      '2026-11-01',
-      '2026-11-05',
-      '2026-11-06',
-    ]);
+    expect(toTakenNights(spans, '2026-11-01', '2026-11-07')).toEqual(['2026-11-01', '2026-11-05', '2026-11-06']);
   });
 });

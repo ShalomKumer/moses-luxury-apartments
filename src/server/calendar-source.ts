@@ -22,7 +22,11 @@ export function parseCalendarUrlMap(raw: string | undefined): Record<string, str
  * Finds a cabin's calendar address. The request only ever names a cabin id; the address comes from the
  * server's secret and must be HTTPS on an allowed host, so the server cannot be sent anywhere else (S11).
  */
-export function resolveCalendarUrl(cabinId: string, urlMap: Record<string, string>, allowedHosts: readonly string[]): URL {
+export function resolveCalendarUrl(
+  cabinId: string,
+  urlMap: Record<string, string>,
+  allowedHosts: readonly string[],
+): URL {
   const raw = Object.hasOwn(urlMap, cabinId) ? urlMap[cabinId] : undefined;
   if (!raw || !URL.canParse(raw)) throw new CalendarNotConfiguredError();
   const url = new URL(raw);
