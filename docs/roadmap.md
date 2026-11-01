@@ -76,7 +76,10 @@ In this order; each one is its own branch, and nothing starts before the one abo
 3. Stage 1, `chore/secret-scan` (1): the secret scan of row S19 (sources, docs, `dist/`, git history), inside `npm run verify`.
 3b. Stage 1, `chore/tooling` (2): the rules the user added on 2026-10-31 (`CLAUDE.md`): Prettier and ESLint, Playwright
    with axe, the performance budget check, the photo script, `docs/owner-guide.md`. Each new dependency through the
-   licence check; axe-core (MPL-2.0) and the photo tool need the user's yes as build-only exceptions.
+   licence check; axe-core (MPL-2.0) and the photo tool need the user's yes as build-only exceptions. Also from the UI/UX
+   standard (`docs/standards.md` 8.3): add the missing tokens (semantic success/warning/error/info colours, shadows,
+   breakpoints) in the change that first needs each; run axe with the WCAG 2.2 AA tags; check that a focused link is
+   not covered by another element (2.4.11).
 4. Stage 2, `feature/design-home` (3): **done** (decided 2026-10-31; docs only, `docs/design/home.md`).
 4b. Stage 3, `feature/build-home` (3): build the chosen home page in the code, with the request bar and its tests; needs the
    fonts (the user's yes to download), real photos for the hero and the apartments, and the name decision.

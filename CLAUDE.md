@@ -40,8 +40,9 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
   they do, what may be lost, whether it can be undone, and the safer alternative. A secret that reached git is revoked and
   rotated, not just deleted.
 - Conventional commits (`feat fix refactor docs style test chore perf build ci`), English, subject at most 72 characters.
-- No `gh` CLI. PRs are opened by the user via `<repo>/compare/dev...<branch>?expand=1` (the repository's address is
-  written here once it exists); `/ship` prints the PR text.
+- No `gh` CLI. The repository is `https://github.com/ShalomKumer/moses-luxury-apartments` (private; remote `origin`). PRs
+  are opened by the user via `https://github.com/ShalomKumer/moses-luxury-apartments/compare/dev...<branch>?expand=1`
+  (`<repo>` in the skills means that address); `/ship` prints the PR text.
 - Never commit `.env`. Review `git status` before every commit.
 
 ## Code conventions
@@ -183,12 +184,16 @@ One page at a time, each in full before the next (the user's method from the bot
   mix); the approved page is recorded under `docs/design/` (the decision, the layout, the states).
 - **The owner's logo dictates the style** (the user, 2026-10-31): palette, type, shapes and tone follow
   `docs/design/brand.md`. Gold is a fill and an ornament, never small text; the site is light only.
+- **The full UI/UX standard is `docs/standards.md`, section 8** (the user's document of 2026-11-01): a comparison table
+  with scores and a recommendation before any build; the approved design is the Design Reference and is never changed
+  silently; the design-system token list; component states (hover, focus, active, disabled, loading, empty, error);
+  **WCAG 2.2 AA** as the accessibility target; the "done means checked" list. Read it before any UI work.
 
 ## Docs
 
 - `docs/architecture.md`: decisions, the availability flow, the pages.
-- `docs/standards.md`: the development, security and Git standards (the user's documents of 2026-11-01, merged with the
-  rules above); what was merged is its last section.
+- `docs/standards.md`: the development, security, Git and UI/UX standards (the user's documents of 2026-11-01, merged with
+  the rules above); what was merged is its last section.
 - `docs/structure.md`: the folder tree and the layer rules.
 - `docs/design/brand.md`: what the logo dictates (palette measured from it, type, shapes, the logo file and its rights).
 - `docs/design/home.md`: the home page's five layouts and the decision.

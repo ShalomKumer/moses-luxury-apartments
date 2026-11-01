@@ -1,7 +1,7 @@
 # Development and security standards
 
-Source: the user's three documents of 2026-11-01 (development and security standards; Git standards; the fixed work
-cycle), merged with the rules already in `CLAUDE.md`, the skills in `.claude/skills/` and `docs/compliance.md`. Where two
+Source: the user's documents of 2026-11-01 (development and security standards; Git standards; the fixed work
+cycle; UI/UX and design), merged with the rules already in `CLAUDE.md`, the skills in `.claude/skills/` and `docs/compliance.md`. Where two
 said the same thing, the more precise one is kept and the other points here ("What was merged", at the end).
 
 **Precedence:** the user's explicit instruction in the conversation > the iron rules (law, privacy, accessibility,
@@ -158,7 +158,7 @@ without a real source (H1, H2). Needs the domain (`site` in `astro.config.mjs`) 
 ## 6. Law, privacy and accessibility
 
 The iron rules in `docs/compliance.md` are the precise form of these requirements (licences of fonts, icons, images and
-code with an allow-list script; privacy policy and terms; account deletion; accessibility statement and WCAG 2.1 AA;
+code with an allow-list script; privacy policy and terms; account deletion; accessibility statement and WCAG 2.1 AA, with 2.2 AA as the target: section 8.7;
 affiliate disclosure; age; minimum data; third-party services). The new standard adds two points, now rows L13 and the
 deletion note: **a clear policy for how long data is kept and when it is deleted**, and **deletion of an account must
 remove or anonymise personal data as the law requires, while allowing for legitimate retention duties.**
@@ -183,6 +183,80 @@ remove or anonymise personal data as the law requires, while allowing for legiti
 Secure by Design, server-side authorization, least privilege, a modular architecture and long-term maintainability are
 defaults, not extras.
 
+## 8. UI/UX and design
+
+Source: the user's UI/UX document of 2026-11-01, merged with `CLAUDE.md` ("Design"), `docs/design/brand.md`, the tokens in
+`src/styles/tokens.css` and the rules added on 2026-10-31. Design is product thinking, not decoration: every choice is
+justified by use, hierarchy, consistency or fit to the product, and nothing is called "modern" or "professional" without
+that reason.
+
+**8.1 Choosing a concept (before any new site, system or significant area).**
+Understand the purpose, the audience and the main actions first. Then show **five options that really differ** (in at
+least three of structure, type, colour world, density, the one memorable element - never five colourings of one layout),
+as live mockups in one artifact, one tab each, working on a phone. Each option gives: name and style; the concept; palette;
+type; structure and layout; the style of buttons, cards, forms and components; pros and cons; fit to the audience and the
+purpose. Then a **comparison table** scored 1-10 on usability, aesthetics, accessibility, fit to the product, performance
+and maintainability, and **one recommendation with its reasons** (what makes it fit the product, not only that it is
+prettier), plus what to take from the runner-up. **Nothing is built before the user picks an option or approves the
+recommendation in words.** The approved design is the Design Reference (`docs/design/`): its language is kept for the
+whole project; colours, fonts, spacing and components already approved are not changed arbitrarily, a change is a focused
+proposal, and a problem found in the chosen design is explained to the user with a fix, never altered silently. Five
+options are for the first page of each kind (a new significant area counts as a new kind); later pages are drawn in the
+approved language with all their states and approved on their own.
+
+**8.2 Principles.** An interface the visitor does not have to learn; simplicity over visual load; every element serves a
+purpose; a clear hierarchy of headings, content, actions and secondary information; the primary action stands out from the
+secondary; restrained use of buttons, colours, borders, shadows and motion; consistent spacing and deliberate whitespace;
+alignment and proportion; visible feedback for every action, and never a state where the visitor cannot tell whether an
+action worked, failed or is still running; short flows.
+
+**8.3 Design system.** One system, changed centrally. `src/styles/tokens.css` holds the tokens; no raw value in a
+component. It must cover: primary, secondary and accent colours; background, surface, text and border colours; success,
+warning, error and info colours; type families, weights and sizes; a spacing scale; one radius scale; a restrained shadow
+scale; standard sizes of buttons, inputs, cards and dialogs; the breakpoints. **Today** it has colours (brand, notice,
+focus, selected), `--font-body`, five text sizes, a spacing scale, `--radius`, `--target-size` and `--content-width`.
+**Missing, added in the change that first needs each (not in advance):** semantic success/warning/error/info colours,
+shadows, a second radius, named breakpoints (today one, 62rem), font tokens for the display face. Each new colour pair
+goes into `contrast.test.ts` in the same change. Reusable components in `src/components`; no copied markup, no giant
+stylesheet (global rules in `global.css`, a component's own rules next to it), no inline styles, no second styling
+technology without a reason.
+
+**8.4 Components and their states.** Buttons (primary, secondary, tertiary, danger), forms (visible labels, clear error
+messages, focus), inputs, cards, tables (readable, sortable and filterable where there is a list), navigation (the current
+page marked), dialogs only when justified, notifications, status badges (the same colour always means the same thing),
+loading, empty and error states (what is missing and what to do next). Every interactive element has hover, focus, active
+and disabled states. Today the site has no form, table, badge or loading state; the booking panel has its message preview
+and its notice, and its WhatsApp and email actions are the only primary actions.
+
+**8.5 Responsive.** Mobile first; clear and consistent breakpoints; never a fixed width that breaks the layout; no
+unintended horizontal scroll; forms, menus, cards and tables adapt to a small screen; the hierarchy and navigation fit
+each size; **every action works on a phone.** Tested at several widths, not desktop only.
+
+**8.6 Motion.** Moderate and purposeful; smooth transitions between states; no heavy effects; nothing long or excessive for
+a simple action; `prefers-reduced-motion` respected (met: `global.css`); motion never harms accessibility.
+
+**8.7 Accessibility.** The target is **WCAG 2.2 AA** where relevant (the iron rules say 2.1 AA at least, so 2.2 is the
+stricter reading and is the target). Semantic HTML; contrast (A1); keyboard-only use; clear focus indicators, **and focus
+never hidden behind another element (2.4.11)**; a target of at least 24 px (2.5.8; `--target-size` is larger); a label on
+every field; meaningful alt text; information never by colour alone; ARIA only where HTML cannot say it; dialogs, menus and
+forms accessible; nothing that assistive technology cannot operate. Rows A1-A7 of `docs/compliance.md` are the status.
+
+**8.8 Hebrew, English and direction.** Full RTL and LTR; direction set on the page (met: `lang` and `dir` per language);
+logical CSS properties only (met: a policy test); icons and arrows mirrored where the meaning is directional; numbers,
+dates, prices, phone numbers and addresses correct inside Hebrew text; fonts that support Hebrew well (a licence decision:
+iron rule 26); no uncontrolled mixing of the two languages on one line.
+
+**8.9 Performance of the interface.** No heavy design library without need; lazy-load images and what is below the fold;
+optimised images (the photo pipeline); no costly effects; short load and quick response; checked on a weak phone. The
+budget and its check are rule 3 of `CLAUDE.md`.
+
+**8.10 Done means checked.** Before a page or a significant component is called done: consistency with the design system;
+several screen sizes; RTL and LTR; keyboard and screen-reader pass; readable text and clear hierarchy; hover, focus, active
+and disabled; loading, empty, success and error states where they exist; no unwanted horizontal scroll; no needless
+re-render or script; fit to the product's purpose. The skills `design-critique` and `accessibility-review`, the Browser
+pane at 375 px and desktop, and (from `chore/tooling`) Playwright with axe carry it out. Before starting a design the AI
+confirms the purpose of the page; it never designs on its own initiative.
+
 ## What was merged (existing rule -> kept wording)
 
 | Topic | Before | The new document | Kept |
@@ -205,3 +279,5 @@ defaults, not extras.
 | SEO | rule 8 "honest SEO" | Open Graph, Twitter Cards, canonical, sitemap, robots, dynamic metadata | the new list with the honesty constraint (section 5; rows E1-E6) |
 | Law, privacy, accessibility, licences | iron rules 1-17 and 26-30 | the same topics, less precisely | the iron rules; the two additions are row L13 and the deletion note |
 | Infrastructure | iron rules 19 and 25; rows S2, S3, S8, S17 | plus environments, dependency updates, resource limits, no debug in production, recovery | the new points added as row S18 |
+| UI/UX and design | `CLAUDE.md` "Design" (five layouts, the logo dictates the style), `brand.md`, tokens | a 12-part document: five concepts and a comparison, principles, design system, components and states, responsive, motion, accessibility, RTL/LTR, performance, code organisation, a quality checklist, the AI's conduct | the existing method, plus the comparison table with scores, the Design Reference rule, the states list and the done-checklist (section 8). **WCAG 2.2 AA** is the target (the iron rules say 2.1 AA at least). "Five options for a new significant area" kept as "for the first page of each kind" |
+| Design tokens, components, no inline styles | rule in `CLAUDE.md` (colours only through tokens) | the full token list (semantic colours, shadows, sizes, breakpoints) | the rule, plus the list of what is still missing and is added when first needed (8.3) |

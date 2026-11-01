@@ -62,7 +62,9 @@ of these choices; each says what changes if one of them does.
 
 ## Accessibility
 
-Target: WCAG 2.1 level AA at least. The Israeli standard the regulations point to (SI 5568, which follows WCAG) and its
+Target: WCAG 2.1 level AA at least; the project aims at **WCAG 2.2 AA** (the user's UI/UX standard of 2026-11-01,
+`docs/standards.md` section 8.7), which adds focus not hidden by other content (2.4.11) and a 24 px minimum target
+(2.5.8). The Israeli standard the regulations point to (SI 5568, which follows WCAG) and its
 scope for this business are the lawyer's to confirm. The site is Hebrew, `lang="he" dir="rtl"`.
 
 | Id  | Rule                              | Status | How it is met, or what is missing                                                                                                                                                                                                                                                                                                                                                                                                          | How to check                                   |
