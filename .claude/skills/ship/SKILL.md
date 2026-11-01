@@ -24,11 +24,18 @@ git diff --stat
 ```
 
 Stop if any of these appear: `.env`, `.env.*` (except `.env.example`), `.dev.vars*`, `node_modules/`, `dist/`,
-`.wrangler/`, `graphify-out/`, or any file that looks like a key or credential dump. Also grep the diff for accidental
-secrets: a calendar's secret address (`calendar.google.com/calendar/ical/`), `BEGIN (RSA|EC|OPENSSH) PRIVATE`,
-`api[_-]?(key|secret)\s*[:=]\s*['"][^'"<]{8,}`. If a secret is found, report the **file, the location, the risk level and
-the fix, without printing the full key**; it is revoked and rotated even after it is removed from the code (a deleted
-file stays in history).
+`.wrangler/`, `graphify-out/`, or any file that looks like a key or credential dump. Then run the secret scan, which
+reads the project's files, `dist/` and every commit of every branch (row S19; it is also part of `npm run verify`):
+
+```bash
+npm run secrets:check
+```
+
+If it finds a secret, report the **file, the location, the risk level and the fix, without printing the full key**; it
+is revoked and rotated even after it is removed from the code (a deleted file stays in history). A reviewed false
+positive gets `secret-scan:allow` on its line; a finding inside history is listed in
+`scripts/secret-scan/reviewed-findings.mjs` only with the user's yes. The scan knows common formats only: say so, never
+claim "no secrets".
 
 ## 3. Review
 
