@@ -5,17 +5,28 @@ snapshot a new session reads first. Each stage names the iron rules it closes (`
 
 ## Stages
 
-**One stage is open at a time, and a stage closes only when the user says so**: at its end, describe everything it
-holds and ask whether to move on. After every feature, report the open stage: what it is, what was done, what is left,
-and the percent (a small feature counts 1, a medium one 2, a large one 3; the figure is an estimate and says so).
+Seven stages (the user, 2026-11-01). **One stage is open at a time, and each stage is its own session**: inside a stage
+`/compact` when the context fills; a stage closes only when the user says so - at its end, describe everything it holds
+and ask whether to move on, then open the next one in a new session (or after `/compact`).
 
-| #   | Stage                 | What it holds                                                                                                                      | Status                                                                     |
-| --- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| 1   | Foundations           | Architecture, the iron rules with the client's checklist, the first working site on sample content, the working rules, git flow.  | **Open**: the first commit and push, and Astro 7 after the Node upgrade.   |
-| 2   | Design                | The palette and type (the DNA), then page by page: home (five layouts), cabin page, legal and system pages.                         | **Open**: the home page has five layouts, waiting for the user's decision. |
-| 3   | The design, built     | Each approved page rebuilt in the code, with its states, tests and a browser walk.                                                  | Not started                                                                |
-| 4   | Content from the owner | Business details, real cabins, photos with their rights, the calendars, the cancellation terms.                                   | Not started                                                                |
-| 5   | Launch                | Domain, HTTPS, host rules, the calendar secret, monitoring, axe and screen-reader pass, the lawyer's texts, `launch:check` green. | Not started                                                                |
+**After every merge, before any further work, report two figures:** the open stage's percent and the whole project's
+percent, with what is left. Weights: a small feature counts 1, a medium one 2, a large one 3; percent = points done over
+points. It is an estimate and is said to be one. A feature that turns out bigger is split before it starts, and the table
+is corrected in the same PR.
+
+| #   | Stage                    | What it holds                                                                                                                                  | Pts | Status                        |
+| --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | --- | ----------------------------- |
+| 1   | Foundations              | Architecture, the iron rules with the client's checklist, the first bilingual site on sample content, the working rules, git flow, the choice of the home design (`chore/foundations`, `chore/astro-7`, `feature/i18n-he-en`, `feature/design-home`: 2+1+3+3). | 9   | **Done** (merged 2026-11-01)  |
+| 2   | Safety nets and tooling  | `chore/secret-scan` (1); `chore/tooling` (2): Prettier and ESLint, Playwright with axe at WCAG 2.2, the performance budget, the photo script, `docs/owner-guide.md`. | 3   | Not started                   |
+| 3   | Design                   | The cabin page and the legal and system pages (404 and so on), each with all its states, approved on its own; the missing tokens.             | 3   | Not started                   |
+| 4   | The design, built        | `feature/build-home` (3), the cabin page (2), the legal and system pages (1), with tests and a browser walk. Needs the name, the fonts and photos. | 6   | Not started                   |
+| 5   | Content from the owner   | Business details, the real cabins, photos with their rights through the photo script, the English texts.                                       | 2   | Not started                   |
+| 6   | SEO                      | `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD, absolute `hreflang`; needs the domain.                    | 2   | Not started                   |
+| 7   | Launch                   | Domain, HTTPS, host rules, axe and screen-reader pass, the lawyer's texts, `launch:check` green, the release PR from `dev` to `main`.          | 2   | Not started                   |
+
+Total 27 points; 9 done, about 33% of the project (an estimate). An admin editor for the apartments is not a stage and is
+not counted; it is built only if the user asks (below). Stage 4 starts when the name, the fonts (the user's yes to
+download) and the photos are ready; stage 5 may move before it.
 
 The owner's and the lawyer's own track ("Before launch", at the end of this file) runs beside all of them.
 
@@ -23,16 +34,15 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 A snapshot, not a history. Last update: 2026-11-01.
 
-- **Stage 1** is open. Done: the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the
-  code structure (`docs/structure.md`), the first working site on sample content (pages, legal drafts, the availability
-  endpoint and calendar, the booking panel; 82 tests, the build and its output check green, walked in the browser), and
-  the working rules taken from the trading-bot project (`CLAUDE.md`, `.claude/skills/`). About 80% (an estimate).
-- **Left in stage 1:**
-  - The GitHub repository (the user creates it; no `gh` CLI) and the first commit: `main` gets an empty first commit,
-    `dev` is cut from it, and everything so far goes in `chore/foundations` through `/code-review`, `/security-review`
-    and `/ship`. **Nothing is committed yet: the work exists only in the working folder.** `npm run verify` is now green.
-  - Three build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp libvips binary, LGPL-3.0; lightningcss and
-    its binary, MPL-2.0) wait for the user's approval (C4); they are still installed under Astro 7.
+- **Stage 1 is done and merged** (PR #1, merge commit `25ba6a5` on `dev`, 2026-11-01; `main` is still the empty first
+  commit). It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code
+  structure (`docs/structure.md`), the first bilingual site on sample content (92 tests, the build and its output check
+  green, walked in the browser), the working rules and skills (`CLAUDE.md`, `.claude/skills/`), and the chosen home
+  design. **Open: the user's yes to close stage 1 and open stage 2** (secret scan and tooling) in a new session.
+  Progress: stage 1 100%, the project about 33% (9 of 27 points; an estimate).
+- **Waiting for the user's approval** (carried from stage 1): three build-only licence exceptions in
+  `scripts/check-licenses.mjs` (the sharp libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; C4). Fourteen
+  code-review findings were recorded and not fixed on purpose; they are picked up in stage 2 or with the page they touch.
 - **Done 2026-11-01:** Node 22.23.4 and the move to Astro 7 and `@astrojs/cloudflare` 14 (the `vite` pin is gone):
   `npm run verify` passes, `npm audit` reports nothing (S14 is Met). The unused `SESSION` KV binding of the adapter is
   still to be checked at deploy.
@@ -71,26 +81,26 @@ A snapshot, not a history. Last update: 2026-11-01.
 
 In this order; each one is its own branch, and nothing starts before the one above it is merged.
 
-1. Stage 1, `chore/foundations` (2): the first commit of everything so far, through the full lifecycle.
-2. Stage 1, `chore/astro-7` (1): **done in the working tree, 2026-11-01** (part of the first commit).
-3. Stage 1, `chore/secret-scan` (1): the secret scan of row S19 (sources, docs, `dist/`, git history), inside `npm run verify`.
-3b. Stage 1, `chore/tooling` (2): the rules the user added on 2026-10-31 (`CLAUDE.md`): Prettier and ESLint, Playwright
+1. Stage 1, `chore/foundations` (2): **done and merged, 2026-11-01.**
+2. Stage 1, `chore/astro-7` (1): **done** (part of the first commit).
+3. Stage 2, `chore/secret-scan` (1): the secret scan of row S19 (sources, docs, `dist/`, git history), inside `npm run verify`.
+3b. Stage 2, `chore/tooling` (2): the rules the user added on 2026-10-31 (`CLAUDE.md`): Prettier and ESLint, Playwright
    with axe, the performance budget check, the photo script, `docs/owner-guide.md`. Each new dependency through the
    licence check; axe-core (MPL-2.0) and the photo tool need the user's yes as build-only exceptions. Also from the UI/UX
    standard (`docs/standards.md` 8.3): add the missing tokens (semantic success/warning/error/info colours, shadows,
    breakpoints) in the change that first needs each; run axe with the WCAG 2.2 AA tags; check that a focused link is
    not covered by another element (2.4.11).
-4. Stage 2, `feature/design-home` (3): **done** (decided 2026-10-31; docs only, `docs/design/home.md`).
-4b. Stage 3, `feature/build-home` (3): build the chosen home page in the code, with the request bar and its tests; needs the
+4. Stage 1, `feature/design-home` (3): **done** (decided 2026-10-31; docs only, `docs/design/home.md`).
+4b. Stage 4, `feature/build-home` (3): build the chosen home page in the code, with the request bar and its tests; needs the
    fonts (the user's yes to download), real photos for the hero and the apartments, and the name decision.
 
-5. `feature/i18n-he-en` (3): **built 2026-10-31 in the working tree** (the plan was approved by the user; there was no commit yet, so
+5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both
    languages, 92 tests, the build and its language checks pass. The user approved the English texts of the UI, the
    brand lines and the sample apartments (2026-10-31). Open: the lawyer's approval of the four English legal pages; `hreflang` links are
    relative until the domain is known (they need absolute addresses and `site` in `astro.config.mjs`); the home layout
    must be checked left to right once it is chosen.
-6. Stage 3, `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD (rows E2-E5); needs the domain and a preview image of ours.
+6. Stage 6, `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD (rows E2-E5); needs the domain and a preview image of ours.
 7. Later, only if the user asks: an admin editor for apartments behind a sign-in (its own plan, with Opus).
 
 The design branch is docs only (an artifact and `docs/design/home.md`), so the user may move it before 2 and 3.
