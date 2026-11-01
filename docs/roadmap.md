@@ -17,14 +17,14 @@ is corrected in the same PR.
 | #   | Stage                    | What it holds                                                                                                                                  | Pts | Status                        |
 | --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | --- | ----------------------------- |
 | 1   | Foundations              | Architecture, the iron rules with the client's checklist, the first bilingual site on sample content, the working rules, git flow, the choice of the home design (`chore/foundations`, `chore/astro-7`, `feature/i18n-he-en`, `feature/design-home`: 2+1+3+3). | 9   | **Done** (merged 2026-11-01)  |
-| 2   | Safety nets and tooling  | `chore/secret-scan` (1, merged); `chore/tooling` (1, merged): Prettier and ESLint, the performance budget, the photo script, `docs/owner-guide.md`; `chore/browser-tests` (1, built, waiting for merge): Playwright with axe at WCAG 2.2, the focus-not-obscured check. | 3   | **Open**                      |
+| 2   | Safety nets and tooling  | `chore/secret-scan` (1, merged); `chore/tooling` (1, merged): Prettier and ESLint, the performance budget, the photo script, `docs/owner-guide.md`; `chore/browser-tests` (1, merged): Playwright with axe at WCAG 2.2, the focus-not-obscured check. | 3   | **Done** (closed 2026-11-01)  |
 | 3   | Design                   | The cabin page and the legal and system pages (404 and so on), each with all its states, approved on its own; the missing tokens.             | 3   | Not started                   |
 | 4   | The design, built        | `feature/build-home` (3), the cabin page (2), the legal and system pages (1), with tests and a browser walk. Needs the name, the fonts and photos. | 6   | Not started                   |
 | 5   | Content from the owner   | Business details, the real cabins, photos with their rights through the photo script, the English texts.                                       | 2   | Not started                   |
 | 6   | SEO                      | `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD, absolute `hreflang`; needs the domain.                    | 2   | Not started                   |
 | 7   | Launch                   | Domain, HTTPS, host rules, axe and screen-reader pass, the lawyer's texts, `launch:check` green, the release PR from `dev` to `main`.          | 2   | Not started                   |
 
-Total 27 points; 11 done (`chore/tooling` merged), 12 once `chore/browser-tests` is merged (about 44%; an estimate). An admin editor for the apartments is not a stage and is
+Total 27 points; 12 done (stages 1 and 2), about 44% of the project (an estimate). An admin editor for the apartments is not a stage and is
 not counted; it is built only if the user asks (below). Stage 4 starts when the name, the fonts (the user's yes to
 download) and the photos are ready; stage 5 may move before it.
 
@@ -32,21 +32,23 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-01.
+A snapshot, not a history. Last update: 2026-11-01 (stage 2 closed).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
   (`docs/structure.md`), the first bilingual site on sample content, the working rules and skills (`CLAUDE.md`,
   `.claude/skills/`), and the chosen home design.
-- **Stage 2 is open** (the user approved it, 2026-11-01). `chore/secret-scan` and `chore/tooling` are merged (S19 and
-  S13 Met; Prettier, ESLint, the performance budget and the photo script are in `npm run verify`).
-  `chore/browser-tests` is built on its branch and waits for `/ship` and the merge: Playwright with axe at WCAG 2.2 AA
-  over every page (1280 px and 375 px), the keyboard test of the photo viewer, the focus-not-obscured check and the
-  Astro accessibility lint, all inside `npm run verify` (182 unit and 196 browser tests). Axe found nothing on the sample
-  pages. When it is merged, stage 2 is complete (3 of 3 points, 100%) and the project is about 44% (12 of 27; an
-  estimate); the stage then closes only on the user's word, and stage 3 (design) opens in a new session.
-- **Decided by the user, 2026-11-01:** the three build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp
-  libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; C4), and the one reviewed finding in
+- **Stage 2 is done and closed** (PR #3, #4 and #5 merged into `dev`; the user closed it, 2026-11-01; `main` is still the
+  empty first commit). It holds the secret scan (S19, S13), Prettier and ESLint with the template accessibility rules,
+  the performance budget, the photo script and its check, `docs/owner-guide.md`, and the browser tests (Playwright and
+  axe at WCAG 2.2 AA over every page at 1280 px and 375 px, the photo viewer by keyboard, the focus-not-obscured check,
+  a test server that sends the real headers), all inside `npm run verify` (182 unit and 196 browser tests). Axe found
+  nothing on the sample pages; it finds only part of the problems, so the screen-reader pass stays in stage 7.
+- **Stage 3 (design) is next and not started.** It opens only on the user's word, in a new session. Open before stage 4:
+  the business name and apartments versus cabins, the user's yes to download the fonts, the original logo file, photos
+  with their rights, the domain.
+- **Decided by the user, 2026-11-01:** the build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp
+  libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; axe-core and its Playwright wrapper, MPL-2.0, test-only; C4), and the one reviewed finding in
   `scripts/secret-scan/reviewed-findings.mjs`. Fourteen code-review findings were recorded and not fixed on purpose; they
   are picked up in stage 2 or with the page they touch. The missing design tokens are added by the first feature that
   needs each (`docs/standards.md` 8.3), not in the tooling branch.
@@ -93,7 +95,7 @@ In this order; each one is its own branch, and nothing starts before the one abo
 3. Stage 2, `chore/secret-scan` (1): **done and merged, 2026-11-01** - the secret scan of row S19 (files, `dist/`, git history), inside `npm run verify`.
 3b. Stage 2, `chore/tooling` (1): **done and merged, 2026-11-01** - Prettier and ESLint, the performance budget
    (`scripts/budget/`), the photo script and its check (`scripts/photos/`), `docs/owner-guide.md`; all in `npm run verify`.
-3c. Stage 2, `chore/browser-tests` (1): **built 2026-11-01, waiting for merge** - Playwright with axe (rule 6 of
+3c. Stage 2, `chore/browser-tests` (1): **done and merged, 2026-11-01** - Playwright with axe (rule 6 of
    `CLAUDE.md`) over every page at 1280 px and 375 px (`tests/e2e`), the WCAG 2.2 AA tags, a check that a focused link is
    not covered by another element (2.4.11), the photo viewer by keyboard, a test server that sends the real `_headers`
    (so the CSP is tested), and ESLint's Astro accessibility rules (`eslint-plugin-jsx-a11y-x`); all inside `npm run verify`.
