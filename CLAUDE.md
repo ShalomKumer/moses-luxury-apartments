@@ -138,9 +138,12 @@ Check the session's skill list at the start of every session for their exact nam
   what, new files, tests, Git state, remaining risks, what is not implemented, what needs manual setup), then wait before
   any commit or push. Ask when unclear.
 - Reply to the user in Hebrew; code, docs and commits in English; site text in Hebrew.
-- **Stages** (`docs/roadmap.md`, "Stages"): one stage open at a time. After every feature, report the stage to the user:
-  what it is, what was done, what is left, and the percent. When a stage is finished, describe everything it holds and
-  ask whether to move on - **never start the next stage without the user's explicit approval.**
+- **Stages** (`docs/roadmap.md`, "Stages"; the user, 2026-11-01): seven stages, one stage open at a time, **one session
+  per stage** (inside a stage, `/compact` when the context fills). After every merge, before any further work, report two
+  figures: the open stage's percent and the whole project's percent (points done over points; a small feature counts 1, a
+  medium 2, a large 3; say it is an estimate), with what is left. When a stage is finished, describe everything it holds
+  and ask whether to move on - **never start the next stage without the user's explicit approval**; the next stage opens
+  in a new session (or after `/compact`).
 - Keep context lean: `tail`/`grep` tool output, don't re-read unchanged files. No subagents for ordinary exploration -
   but use the Agent tool where a skill's own instructions call for it, and for the QA agent.
 - **New rules:** a rule that would help the project is proposed to the user one at a time and added only with their
@@ -162,7 +165,7 @@ Check the session's skill list at the start of every session for their exact nam
 6. **Automated browser tests from the design stage on.** Playwright with axe walks every page (desktop and 375 px)
    inside `npm run verify`; a page that axe fails does not ship (A3-A5).
 7. **A real calendar before launch.** An end-to-end check against a test Google Calendar (an all-day event, a timed
-   event, a cancelled one, a moved one) and the page showing exactly what the calendar says (H7, stage 5).
+   event, a cancelled one, a moved one) and the page showing exactly what the calendar says (H7, stage 7).
 8. **Honest SEO.** The full list (titles, descriptions, Open Graph, Twitter Cards, canonical, sitemap, robots, a preview
    image of ours) is `docs/standards.md` section 5; structured data (LodgingBusiness) carries real details only, and no
    rating, review or price markup appears without a real source (H1, H2).
