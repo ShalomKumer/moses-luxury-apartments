@@ -209,5 +209,6 @@ One page at a time, each in full before the next (the user's method from the bot
 - `docs/structure.md`: the folder tree and the layer rules.
 - `docs/design/brand.md`: what the logo dictates (palette measured from it, type, shapes, the logo file and its rights).
 - `docs/design/home.md`: the home page's five layouts and the decision.
+- `docs/design/apartment.md`: the apartment page's five layouts, the comparison and the decision.
 - `docs/compliance.md`: the iron rules merged with the client's checklist; status, how met, how checked, where scheduled.
 - `docs/roadmap.md`: the stages, "Where we stopped", "Committed next", and the owner's and lawyer's list before launch.
