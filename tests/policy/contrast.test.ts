@@ -51,6 +51,16 @@ const EDGE_PAIRS: [string, string][] = [
   ['selected-bg', 'surface'],
 ];
 
+/** Mixes a foreground over a background at a strength (0 to 1), as the browser blends a translucent plate. */
+function blend(fg: string, bg: string, strength: number): string {
+  const mixed = [1, 3, 5].map((start) => {
+    const a = parseInt(fg.slice(start, start + 2), 16);
+    const b = parseInt(bg.slice(start, start + 2), 16);
+    return Math.round(a * strength + b * (1 - strength));
+  });
+  return `#${mixed.map((channel) => channel.toString(16).padStart(2, '0')).join('')}`;
+}
+
 describe('colour contrast (A1)', () => {
   const tokens = colorTokens();
 
@@ -63,6 +73,14 @@ describe('colour contrast (A1)', () => {
 
   it.each(TEXT_PAIRS)('text %s on %s is at least 4.5:1', (fg, bg) => {
     expect(ratio([fg, bg])).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('white text over the scrim plate holds 4.5:1 even where the photo behind it is pure white', () => {
+    const css = readText(join(ROOT, 'src/styles/tokens.css'));
+    const strength = Number(/--scrim-strength:\s*(\d+)%/.exec(css)?.[1]) / 100;
+    expect(strength).toBeGreaterThanOrEqual(0.5);
+    const plate = blend(tokens.get('scrim')!, '#ffffff', strength);
+    expect(contrast(tokens.get('on-scrim')!, plate)).toBeGreaterThanOrEqual(4.5);
   });
 
   it.each(EDGE_PAIRS)('edge %s on %s is at least 3:1', (fg, bg) => {

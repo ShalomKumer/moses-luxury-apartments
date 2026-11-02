@@ -91,6 +91,23 @@ The request card works: choosing an apartment or the number of guests changes th
 - The apartments' row replaces `CabinCard` on the home page; `CabinCard` stays only if another page needs it.
 - States to draw before it ships: the bar with an invalid date (the note), a phone width (a stacked bar), the English page.
 
+## Built (`feature/build-home`, 2026-11-02)
+
+The code follows the decision above. Where it differs from the drawing, or the drawing was silent:
+
+- **The plate.** Text over the photo sits on a dark plate (`--color-scrim` at `--scrim-strength`, 66%) that fades in from the
+  photo and is solid under the heading, the slogan and the bar; `contrast.test.ts` pins white on that plate at 4.5:1 even
+  over a pure white photo. The bar itself is a white card (A1).
+- **Guests start as "not chosen"**, not 1, so the message claims no number the guest did not pick. The options follow
+  the chosen apartment's capacity (more than it takes are disabled; a number already too high resets).
+- **The hero is taller on a desktop** (50 rem, not 580 px): the bar with its message preview and notice is about 300 px
+  high, and a lower hero would leave almost no photo. The hero photo is a sample drawing (`public/photos/home/hero.svg`).
+- **`ApartmentRow` replaced `CabinCard`** (deleted: nothing else used it). The contact area gained the full logo, the
+  slogan and the heart rule. The three points use a real `h2` each, so the page's outline stays flat.
+- **A date problem** shows a short note (`role="alert"`) and the date stays out of the message: a check-in in the past
+  drops both dates; a check-out on or before the check-in drops only the check-out (`stay-dates.ts`, tested).
+- Checked in Hebrew and English, at 1280 px and 375 px: axe, no sideways scroll, rows alternate by the text direction.
+
 ## Open for the user
 
 - The layout is drawn right to left. The site is now also in English (left to right): the chosen layout is checked in both

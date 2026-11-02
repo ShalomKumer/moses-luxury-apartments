@@ -33,6 +33,8 @@ const alternates = alternatesOf(path);
     <meta name="description" content={description ?? t.brand.description} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/heebo/heebo.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/frank-ruhl-libre/frank-ruhl-libre.woff2" as="font" type="font/woff2" crossorigin />
     {alternates.map((alternate) => (
       <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />
     ))}

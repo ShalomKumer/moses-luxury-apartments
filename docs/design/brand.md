@@ -2,7 +2,7 @@
 
 The owner's logo (sent by the user on 2026-10-31, kept as `docs/design/brand/logo-original.jpg`) sets the style of the
 whole site: the user's rule, "from now on the logo dictates the UI/UX style". Palette and type below are read from it.
-Status: **adopted for colours; type proposed and waiting for the user's yes to download the font files.**
+Status: **adopted for colours; the three fonts are downloaded, cut and self-hosted (the user's yes, 2026-11-02).**
 
 ## What the logo says
 
@@ -47,8 +47,10 @@ until they are renamed (mechanical, in the stage that builds the pages).
 | Slogan only | Gveret Levin | SIL OFL | handwriting, to echo the logo's script; used for one line, never for reading text |
 
 Self-hosted with each licence text beside the file (C1); no font CDN (L7). The design exploration loads them from
-Google Fonts because an exploration is not the site. **Downloading the three font files needs the user's yes** (the
-files, their source and size are stated when asked). Until then the site uses the system's fonts.
+Google Fonts because an exploration is not the site. **Built 2026-11-02** (`feature/build-home`): from github.com/google/fonts, cut to
+Hebrew and Latin by `npm run fonts:build` into `public/fonts/<font>/<font>.woff2` (about 27 KB each) with `OFL.txt` beside
+it; `src/styles/fonts.css` declares them with `font-display: swap` and `font-size-adjust: from-font` keeps the fallback
+font at the same size, so the swap does not move the text.
 
 ## Shapes and details
 

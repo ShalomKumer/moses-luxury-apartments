@@ -1,0 +1,24 @@
+---
+/**
+ * The check-in and check-out date fields of the booking-request bar. The only place a date field exists: the dates only
+ * write the booking message, they are never looked up in a calendar and nothing is shown as free or taken
+ * (tests/policy/no-public-availability.test.ts).
+ */
+interface Props {
+  /** Makes the two field ids unique on the page. */
+  idPrefix: string;
+  checkInLabel: string;
+  checkOutLabel: string;
+}
+
+const { idPrefix, checkInLabel, checkOutLabel } = Astro.props;
+---
+
+<div class="field">
+  <label for={`${idPrefix}-in`}>{checkInLabel}</label>
+  <input id={`${idPrefix}-in`} type="date" data-stay-in />
+</div>
+<div class="field">
+  <label for={`${idPrefix}-out`}>{checkOutLabel}</label>
+  <input id={`${idPrefix}-out`} type="date" data-stay-out />
+</div>

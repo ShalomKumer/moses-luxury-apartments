@@ -14,6 +14,7 @@ here is not used. `npm run launch:check` fails while any row says "sample".
 | `teena/1-outside.svg`        | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `teena/2-inside.svg`         | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `teena/3-view.svg`           | sample, drawn for this project (2026-10-31)   | our own artwork   |
+| `home/hero.svg`              | sample, drawn for this project (2026-11-02)   | our own artwork   |
 
 ## Brand files
 

@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-02 (stage 3 closed, stage 4 opened).
+A snapshot, not a history. Last update: 2026-11-02 (`feature/build-home` built).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -50,10 +50,13 @@ A snapshot, not a history. Last update: 2026-11-02 (stage 3 closed, stage 4 open
   and 404 design (one reading layout with all its states; `docs/design/legal.md`), each with its exploration, its
   artifact and the rules for the build; axe found nothing at 1280 px and 375 px. The name stays as in the logo for now
   ("דירת מוזס", units are "דירות"; the user, 2026-11-02).
-- **Stage 4 (the design, built) is open** (the user, 2026-11-02). It starts in a new session (or after `/compact`) with
-  `feature/build-home`. Open before its first build: the user's yes to download the fonts (files, source and size were
-  given on 2026-11-02); still to come: the original logo file, photos with their rights. The Hebrew legal texts still
-  say "צימרים" (`docs/design/legal.md`, a content fix in stage 4 or 5).
+- **Stage 4 (the design, built) is open** (the user, 2026-11-02). `feature/build-home` is built (2026-11-02, awaiting merge):
+  the home page of `docs/design/home.md` in Hebrew and English, with the booking-request bar, and the three fonts
+  downloaded with the user's yes, cut to Hebrew and Latin and self-hosted (C1); 214 unit and 230 browser tests. Next:
+  the apartment page (2), then the legal and system pages (1). Still to come from the user: the original logo file,
+  photos with their rights. The Hebrew legal texts and the cabin page's headings still say "צימרים" (a content fix in
+  the page that touches them). A new advisory (minimatch, moderate, in the lint chain) appeared in `npm audit` on
+  2026-11-02; `audit:prod` fails on high only, so `verify` is green; to be updated with the next dependency change.
 - **Decided by the user, 2026-11-01:** the build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp
   libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; axe-core and its Playwright wrapper, MPL-2.0, test-only; C4), and the one reviewed finding in
   `scripts/secret-scan/reviewed-findings.mjs`. Fourteen code-review findings were recorded and not fixed on purpose; they
@@ -112,8 +115,12 @@ In this order; each one is its own branch, and nothing starts before the one abo
    a comparison and a recommendation (`docs/design/apartment.md`); docs only.
 4a2. Stage 3, `feature/design-legal-pages` (1): **done and merged, 2026-11-02** (`docs/design/legal.md`) - the legal pages and the 404 page in the chosen language, one layout with
    all its states (recommended: not five layouts, they are text pages), approved on their own; docs only.
-4b. Stage 4, `feature/build-home` (3): build the chosen home page in the code, with the request bar and its tests; needs the
-   fonts (the user's yes to download), real photos for the hero and the apartments, and the name decision.
+4b. Stage 4, `feature/build-home` (3): **built 2026-11-02** (awaiting merge) - the chosen home page with the request bar and its
+   tests, and the self-hosted fonts. Real photos for the hero and the apartments, and the name decision, are still to come.
+4c. Stage 4, the apartment page (2): build layout 1 of `docs/design/apartment.md`, with the phone jump button and the
+   apartment rows; the headings still saying "צימר" move to "דירה".
+4d. Stage 4, the legal and system pages (1): build `docs/design/legal.md` (page head, table of contents, draft notice, the
+   dashed "to fill" box, the coordinator card, the 404 page).
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both
