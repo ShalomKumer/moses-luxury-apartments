@@ -9,7 +9,7 @@ Every exported function carries a one-line comment saying what it does.
 ```
 /
 ├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
-├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, budget:check, secrets:check, licenses:check, launch:check
+├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, fonts:build, budget:check, secrets:check, licenses:check, launch:check
 ├── scripts/secret-scan/            # the secret scan (S19): patterns, scan-text, forbidden-files, list-sources,
 │                                   #   parse-history + scan-history, report, reviewed-findings, check-secrets (entry)
 ├── .prettierrc.json, eslint.config.mjs   # formatting (code only) and lint (with the a11y template rules), both in verify
@@ -35,7 +35,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
 │   │   ├── dates/                  # date-key, date-range, format-date, month
-│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link
+│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, stay-dates, guests
 │   │   ├── text/                   # fill-template, paragraphs
 │   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
 │   │
@@ -43,12 +43,14 @@ Every exported function carries a one-line comment saying what it does.
 │   │
 │   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
 │   │   ├── layout/   BaseLayout, SkipLink, SampleBanner, SiteHeader (logo), SiteFooter
-│   │   ├── cabin/    CabinCard, CabinGallery + gallery-controller.ts, CabinFacts
+│   │   ├── home/     HomeHero, RequestBar + request-bar-controller.ts, ApartmentRow, HomePoints   # the home page's parts
+│   │   ├── cabin/    CabinGallery + gallery-controller.ts, CabinFacts
 │   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
-│   │   ├── booking/  BookingPanel + booking-controller.ts, BookingNotice
-│   │   └── ui/       Prose, UpdatedDate
+│   │   ├── booking/  BookingPanel + booking-controller.ts, BookingLinks + booking-links.ts, BookingDates (the only
+│   │   │             #   date field), BookingNotice
+│   │   └── ui/       Prose, UpdatedDate, HeartRule
 │   │
-│   ├── styles/       tokens.css (the logo's palette), global.css
+│   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css
 │   └── pages/        index, cabins/[id], [legal], 404, and the same three under en/     # ROUTES: thin files over components/pages
 │
 ├── scripts/
@@ -56,6 +58,8 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7)
 │   ├── check-launch-ready.mjs      # no placeholder or sample content left (L11, C3)
 │   ├── budget/                     # the performance budget: limits, page-weight (pure), check-budget (entry)
+│   ├── fonts/                      # the web fonts (C1): charset (Hebrew + Latin), fonts (the three), subset-fonts (entry:
+│   │                               #   npm run fonts:build -- <folder of the full .ttf files>, writes public/fonts/)
 │   └── photos/                     # the photo pipeline (C3, L8): limits, plan-variants, encode (sharp), output-path,
 │                                   #   add-photo (entry); webp-chunks + photo-rules + check-photos (the check)
 │

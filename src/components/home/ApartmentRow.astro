@@ -1,0 +1,90 @@
+---
+/**
+ * One apartment as a large row on the home page: its photo (3:2) beside its name, summary, capacity and a button to its
+ * page. The rows alternate sides by the start and end of the line, so they swap by themselves in right-to-left text.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+import { pick } from '@i18n/pick';
+
+interface Props {
+  cabin: CollectionEntry<'cabins'>;
+  locale: Locale;
+}
+
+const { cabin, locale } = Astro.props;
+const t = getMessages(locale);
+const { maxGuests, photos } = cabin.data;
+const name = pick(cabin.data.name, locale);
+const cover = photos[0];
+---
+
+<article class="row">
+  <img
+    class="row__photo"
+    src={cover.src}
+    alt={pick(cover.alt, locale)}
+    width={cover.width}
+    height={cover.height}
+    loading="lazy"
+    decoding="async"
+  />
+  <div class="row__body">
+    <h3>{name}</h3>
+    <p>{pick(cabin.data.summary, locale)}</p>
+    <p class="row__meta">{fillTemplate(t.cabin.guestsUpTo, { count: maxGuests })}</p>
+    <a class="button button--secondary" href={localizedPath(`/cabins/${cabin.id}`, locale)}>
+      {t.cabin.details}
+      <span class="visually-hidden"> - {name}</span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .row {
+    display: grid;
+    gap: var(--space-4);
+    align-items: center;
+  }
+
+  .row__photo {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: calc(var(--radius) * 2);
+  }
+
+  .row__body {
+    display: grid;
+    gap: var(--space-2);
+    justify-items: start;
+  }
+
+  .row__body h3,
+  .row__body p {
+    margin: 0;
+  }
+
+  .row__body h3 {
+    font-size: var(--text-xl);
+  }
+
+  .row__meta {
+    color: var(--color-text-muted);
+  }
+
+  @media (min-width: 48rem) {
+    .row {
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--space-8);
+    }
+
+    /* every second row puts the photo on the other side; `order` follows the text direction */
+    :global(li:nth-child(even)) > .row > .row__photo {
+      order: 2;
+    }
+  }
+</style>

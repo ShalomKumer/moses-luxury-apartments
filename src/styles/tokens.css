@@ -27,8 +27,14 @@
   --color-unknown-text: #45443e;
   --color-selected-bg: #201f20;
   --color-selected-text: #ffffff;
+  /* Text over a photo sits on a plate of this colour, at this strength or more (A1, tests/policy/contrast.test.ts). */
+  --color-scrim: #12100e;
+  --color-on-scrim: #ffffff;
+  --scrim-strength: 66%;
 
-  --font-body: system-ui, 'Segoe UI', Arial, 'Noto Sans Hebrew', sans-serif;
+  --font-body: Heebo, system-ui, 'Segoe UI', Arial, 'Noto Sans Hebrew', sans-serif;
+  --font-heading: 'Frank Ruhl Libre', Georgia, 'Times New Roman', 'Noto Serif Hebrew', serif;
+  --font-script: 'Gveret Levin', 'Segoe Script', cursive;
   --text-sm: 0.9375rem;
   --text-base: 1.0625rem;
   --text-lg: 1.25rem;

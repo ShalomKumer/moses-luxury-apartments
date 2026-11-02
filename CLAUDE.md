@@ -27,6 +27,8 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 - `npm run format` writes the Prettier formatting (code, not `.md`/`.html`); `npm run format:check` and `npm run lint` are inside `verify`.
 - `npm run photos:add -- <file> <apartment> <name>`: the only way a photo enters the repo (WebP, three widths, no EXIF or GPS,
   at most 250 KB a file); `npm run photos:check` (inside `verify`) fails on a picture that skipped it (C3, L8).
+- `npm run fonts:build -- <folder>`: rebuilds `public/fonts/` (the three web fonts, Hebrew and Latin only, with their OFL texts)
+  from the full `.ttf` files in the folder (C1, L7); the full files are not kept in the repo.
 - `npm run budget:check`: after a build, fails when a page is over its JS, code or total weight (`scripts/budget/limits.mjs`).
 - `npm run secrets:check`: the secret scan (iron rule S19) over the files, `dist/` and the whole git history; prints
   file, place and risk, never the value. Inside `verify`. `secret-scan:allow` on a line marks a reviewed false positive.

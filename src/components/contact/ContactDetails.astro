@@ -1,5 +1,6 @@
 ---
 /** How to reach the owner: WhatsApp, phones, email, and the way there as links, never an embedded map (L7). */
+import HeartRule from '@components/ui/HeartRule.astro';
 import { SITE, WHATSAPP_PHONE } from '@config/site';
 import { toInternationalDigits } from '@domain/booking/phone-number';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
@@ -17,50 +18,95 @@ const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
 ---
 
 <section id="contact" class="section contact" aria-labelledby="contact-title">
-  <div class="container">
-    <h2 id="contact-title">{t.contact.heading}</h2>
-    <ul role="list" class="contact__list">
-      {phoneDigits && (
+  <div class="container contact__inner">
+    <img
+      class="contact__logo"
+      src={SITE.logo.full}
+      alt={t.brand.logoAlt}
+      width={SITE.logo.width}
+      height={SITE.logo.fullHeight}
+      loading="lazy"
+      decoding="async"
+    />
+    <div>
+      <h2 id="contact-title">{t.contact.heading}</h2>
+      <HeartRule />
+      <p class="contact__slogan">{t.brand.slogan}</p>
+      <ul role="list" class="contact__list">
+        {phoneDigits && (
+          <li>
+            <a
+              href={whatsappLink(phoneDigits, fillTemplate(t.contact.whatsappMessage, { name: t.brand.name }))}
+              rel="noopener"
+            >
+              {t.contact.whatsapp}
+              <span class="visually-hidden"> {t.contact.whatsappHint}</span>
+            </a>
+          </li>
+        )}
+        {SITE.phones.map((phone) => (
+          <li>
+            {t.common.phone}:{' '}
+            <a href={`tel:${phone.display}`}>
+              <bdi>{phone.display}</bdi>
+            </a>
+          </li>
+        ))}
         <li>
-          <a
-            href={whatsappLink(phoneDigits, fillTemplate(t.contact.whatsappMessage, { name: t.brand.name }))}
-            rel="noopener"
-          >
-            {t.contact.whatsapp}
-            <span class="visually-hidden"> {t.contact.whatsappHint}</span>
+          {t.common.email}:{' '}
+          <a href={`mailto:${SITE.email}`}>
+            <bdi dir="ltr">{SITE.email}</bdi>
           </a>
         </li>
-      )}
-      {SITE.phones.map((phone) => (
-        <li>
-          {t.common.phone}:{' '}
-          <a href={`tel:${phone.display}`}>
-            <bdi>{phone.display}</bdi>
-          </a>
-        </li>
-      ))}
-      <li>
-        {t.common.email}:{' '}
-        <a href={`mailto:${SITE.email}`}>
-          <bdi dir="ltr">{SITE.email}</bdi>
-        </a>
-      </li>
-      {SITE.location && (
-        <li>
-          <a href={SITE.location.waze} rel="noopener">
-            Waze
-          </a>{' '}
-          ·
-          <a href={SITE.location.googleMaps} rel="noopener">
-            Google Maps
-          </a>
-        </li>
-      )}
-    </ul>
+        {SITE.location && (
+          <li>
+            <a href={SITE.location.waze} rel="noopener">
+              Waze
+            </a>{' '}
+            ·
+            <a href={SITE.location.googleMaps} rel="noopener">
+              Google Maps
+            </a>
+          </li>
+        )}
+      </ul>
+    </div>
   </div>
 </section>
 
 <style>
+  .contact {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .contact__inner {
+    display: grid;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  /* The logo is a JPEG on white; multiply drops the white so it sits on the page. */
+  .contact__logo {
+    width: 14rem;
+    max-width: 100%;
+    height: auto;
+    mix-blend-mode: multiply;
+  }
+
+  .contact__slogan {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-script);
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+
+  @media (min-width: 48rem) {
+    .contact__inner {
+      grid-template-columns: auto 1fr;
+      gap: var(--space-8);
+    }
+  }
+
   .contact__list {
     display: grid;
     gap: var(--space-2);

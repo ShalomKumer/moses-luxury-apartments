@@ -1,3 +1,4 @@
+@import './fonts.css';
 @import './tokens.css';
 
 *,
@@ -11,6 +12,8 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
+  /* a fallback font is scaled to the web font, so the swap does not move the text */
+  font-size-adjust: from-font;
   font-size: var(--text-base);
   line-height: 1.6;
 }
@@ -33,6 +36,7 @@ a:hover {
 h1,
 h2,
 h3 {
+  font-family: var(--font-heading);
   line-height: 1.25;
   margin-block: 0 var(--space-4);
 }
@@ -100,6 +104,31 @@ ul[role='list'] {
   background: var(--color-accent-hover);
   border-color: var(--color-accent-hover);
   color: var(--color-on-accent);
+}
+
+/* A labelled control: the label above, the select or input below. Shared by the booking panel and the request bar. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.field > label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.field > :is(select, input) {
+  width: 100%;
+  min-height: var(--target-size);
+  padding-inline: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
 }
 
 .button--secondary {

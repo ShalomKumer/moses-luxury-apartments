@@ -1,9 +1,16 @@
 ---
-/** Home: the place, the cabins, and how to reach us, in one language. */
+/**
+ * Home: a full-width photo with the booking-request bar, the apartments as large rows, three points, and how to reach
+ * the owner, in one language (docs/design/home.md).
+ */
 import { getCollection } from 'astro:content';
-import CabinCard from '@components/cabin/CabinCard.astro';
 import ContactDetails from '@components/contact/ContactDetails.astro';
+import ApartmentRow from '@components/home/ApartmentRow.astro';
+import HomeHero from '@components/home/HomeHero.astro';
+import HomePoints from '@components/home/HomePoints.astro';
+import RequestBar from '@components/home/RequestBar.astro';
 import BaseLayout from '@components/layout/BaseLayout.astro';
+import HeartRule from '@components/ui/HeartRule.astro';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
 
@@ -17,52 +24,31 @@ const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.d
 ---
 
 <BaseLayout locale={locale} path="/" title={t.brand.name}>
-  <section class="section hero">
-    <div class="container">
-      <h1>{t.brand.name}</h1>
-      <p class="hero__tagline">{t.brand.tagline}</p>
-      <p>{t.home.intro}</p>
-    </div>
-  </section>
+  <HomeHero locale={locale}>
+    <RequestBar locale={locale} cabins={cabins} />
+  </HomeHero>
 
   <section id="cabins" class="section" aria-labelledby="cabins-title">
     <div class="container">
       <h2 id="cabins-title">{t.home.cabinsHeading}</h2>
-      <ul role="list" class="cabins">
+      <HeartRule />
+      <ul role="list" class="rows">
         {cabins.map((cabin) => (
           <li>
-            <CabinCard cabin={cabin} locale={locale} />
+            <ApartmentRow cabin={cabin} locale={locale} />
           </li>
         ))}
       </ul>
     </div>
   </section>
 
+  <HomePoints locale={locale} />
   <ContactDetails locale={locale} />
 </BaseLayout>
 
 <style>
-  .hero {
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .hero__tagline {
-    font-size: var(--text-lg);
-    color: var(--color-text-muted);
-  }
-
-  .cabins {
+  .rows {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-    gap: var(--space-6);
-  }
-
-  .cabins > li {
-    display: flex;
-  }
-
-  .cabins > li > :global(*) {
-    flex: 1;
+    gap: var(--space-8);
   }
 </style>

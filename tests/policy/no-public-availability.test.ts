@@ -9,6 +9,12 @@ import { lineOf, listFiles, projectPath, readText, ROOT } from './helpers/source
  * nothing a visitor can reach may use it. This test fails the day a page, a component or a public route does (H7, L8).
  */
 describe('no availability for visitors', () => {
+  /** The visitor-facing files: pages, components and content. */
+  const visitorFiles = () =>
+    listFiles('src', ['.astro', '.ts', '.md']).filter((file) =>
+      /^src\/(pages|components|content)\//.test(projectPath(file)),
+    );
+
   it('has no API route and no page that runs on request', () => {
     expect(existsSync(join(ROOT, 'src/pages/api'))).toBe(false);
     const onDemand = listFiles('src/pages', ['.astro', '.ts']).filter((file) =>
@@ -30,14 +36,23 @@ describe('no availability for visitors', () => {
     expect(offenders).toEqual([]);
   });
 
-  it('shows no date field, calendar grid or free/taken wording to a visitor', () => {
-    const wording = /type\s*=\s*["']date["']|data-calendar|aria-label="[^"]*(פנוי|תפוס)|>(פנוי|תפוס|פנויה|תפוסה)</g;
-    const offenders = listFiles('src', ['.astro', '.ts', '.md'])
-      .filter((file) => /^src\/(pages|components|content)\//.test(projectPath(file)))
-      .flatMap((file) => {
-        const text = readText(file);
-        return [...text.matchAll(wording)].map((match) => `${projectPath(file)}:${lineOf(text, match.index)}`);
-      });
+  it('shows no calendar grid or free/taken wording to a visitor', () => {
+    const wording = /data-calendar|aria-label="[^"]*(פנוי|תפוס)|>(פנוי|תפוס|פנויה|תפוסה)</g;
+    const offenders = visitorFiles().flatMap((file) => {
+      const text = readText(file);
+      return [...text.matchAll(wording)].map((match) => `${projectPath(file)}:${lineOf(text, match.index)}`);
+    });
     expect(offenders).toEqual([]);
+  });
+
+  /** The user's decision of 2026-10-31: the request bar's two dates only write the message (docs/design/home.md). */
+  it('allows a date field only inside the booking-request bar, never next to a calendar or a result', () => {
+    const holders = visitorFiles()
+      .filter((file) => /type\s*=\s*["']date["']/.test(readText(file)))
+      .map(projectPath);
+    expect(holders).toEqual(['src/components/booking/BookingDates.astro']);
+    expect(
+      readText(join(ROOT, 'src/components/booking/BookingDates.astro')).replace(/\/\*\*[\s\S]*?\*\//, ''),
+    ).not.toMatch(/calendar|availab|free|taken|פנוי|תפוס/i);
   });
 });

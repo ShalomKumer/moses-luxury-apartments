@@ -1,0 +1,51 @@
+---
+/** The two booking buttons, WhatsApp and email, each opening the ready message. They work without JavaScript. */
+import { SITE, WHATSAPP_PHONE } from '@config/site';
+import { buildBookingSubject, type BookingTexts } from '@domain/booking/booking-message';
+import { mailtoLink } from '@domain/booking/mailto-link';
+import { toInternationalDigits } from '@domain/booking/phone-number';
+import { whatsappLink } from '@domain/booking/whatsapp-link';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  /** The name the buttons announce to a screen reader: the apartment, or the brand when none is chosen. */
+  name: string;
+  /** The apartment's name in the subject line; null when none is chosen. */
+  cabinName: string | null;
+  /** The message the links carry before any script runs. */
+  message: string;
+}
+
+const { locale, name, cabinName, message } = Astro.props;
+const t = getMessages(locale).booking;
+const texts: BookingTexts = t.message;
+const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
+---
+
+<div class="booking-links">
+  {phoneDigits && (
+    <a class="button" data-booking-whatsapp href={whatsappLink(phoneDigits, message)} rel="noopener">
+      {t.whatsapp}
+      <span class="visually-hidden"> - {fillTemplate(t.whatsappHint, { name })}</span>
+    </a>
+  )}
+  <a
+    class="button button--secondary"
+    data-booking-email
+    href={mailtoLink(SITE.email, buildBookingSubject(texts, cabinName), message)}
+  >
+    {t.email}
+    <span class="visually-hidden"> - {fillTemplate(t.emailHint, { name })}</span>
+  </a>
+</div>
+
+<style>
+  .booking-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+</style>

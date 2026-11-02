@@ -1,0 +1,146 @@
+---
+/**
+ * The booking-request bar on the home page: which apartment, the two dates, the number of guests, the WhatsApp and email
+ * buttons, the message that will open, and the notice. It is a group of controls, not a form: nothing is submitted to
+ * the site, and no availability is looked up (L5, L10, H4). Without JavaScript the buttons still open a plain message.
+ */
+import type { CollectionEntry } from 'astro:content';
+import BookingDates from '@components/booking/BookingDates.astro';
+import BookingLinks from '@components/booking/BookingLinks.astro';
+import BookingNotice from '@components/booking/BookingNotice.astro';
+import { SITE, WHATSAPP_PHONE } from '@config/site';
+import { buildBookingMessage } from '@domain/booking/booking-message';
+import { maxGuestsOf } from '@domain/booking/guests';
+import { toInternationalDigits } from '@domain/booking/phone-number';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { pick } from '@i18n/pick';
+
+interface Props {
+  locale: Locale;
+  cabins: CollectionEntry<'cabins'>[];
+}
+
+const { locale, cabins } = Astro.props;
+const t = getMessages(locale);
+const request = t.home.request;
+const units = cabins.map((cabin) => ({ id: cabin.id, name: pick(cabin.data.name, locale), max: cabin.data.maxGuests }));
+const maxGuests = maxGuestsOf(units.map((unit) => unit.max));
+const guestOptions = Array.from({ length: maxGuests }, (_, index) => index + 1);
+const message = buildBookingMessage(t.booking.message, null, null);
+---
+
+<div
+  class="request"
+  role="group"
+  aria-label={request.heading}
+  data-request-bar
+  data-phone-digits={toInternationalDigits(WHATSAPP_PHONE) ?? ''}
+  data-email={SITE.email}
+  data-texts={JSON.stringify(t.booking.message)}
+  data-problems={JSON.stringify(request.problems)}
+  data-max-guests={maxGuests}
+>
+  <div class="request__fields">
+    <div class="field request__unit">
+      <label for="request-unit">{request.unit}</label>
+      <select id="request-unit" data-request-unit>
+        <option value="">{request.unitAny}</option>
+        {units.map((unit) => (
+          <option value={unit.id} data-max={unit.max}>
+            {unit.name}
+          </option>
+        ))}
+      </select>
+    </div>
+    <BookingDates idPrefix="request" checkInLabel={request.checkIn} checkOutLabel={request.checkOut} />
+    <div class="field request__guests">
+      <label for="request-guests">{request.guests}</label>
+      <select id="request-guests" data-request-guests>
+        <option value="">{request.guestsNone}</option>
+        {guestOptions.map((count) => (
+          <option value={count}>{count}</option>
+        ))}
+      </select>
+    </div>
+  </div>
+  <p class="request__problem" data-request-problem role="alert"></p>
+  <BookingLinks locale={locale} name={t.brand.name} cabinName={null} message={message} />
+  <p class="request__preview" aria-live="polite">
+    <small>{request.previewLabel}</small>
+    <span data-request-message>{message}</span>
+  </p>
+  <BookingNotice locale={locale} />
+</div>
+
+<script>
+  import { initRequestBar } from './request-bar-controller';
+
+  document.querySelectorAll<HTMLElement>('[data-request-bar]').forEach(initRequestBar);
+</script>
+
+<style>
+  .request {
+    container-type: inline-size;
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-block-start: 4px solid var(--color-accent);
+    border-radius: var(--radius);
+  }
+
+  .request__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  /* the choices only write the message, so without the script they are not shown; the buttons still work */
+  .request:not([data-enhanced]) .request__fields {
+    display: none;
+  }
+
+  .request__unit {
+    grid-column: 1 / -1;
+  }
+
+  @container (min-width: 46rem) {
+    .request__fields {
+      grid-template-columns: 1.4fr 1fr 1fr 0.7fr;
+    }
+
+    .request__unit {
+      grid-column: auto;
+    }
+  }
+
+  .request__problem {
+    margin: 0;
+    color: var(--color-taken-text);
+    font-weight: 600;
+  }
+
+  .request__problem:empty {
+    display: none;
+  }
+
+  .request__preview {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg);
+    border-inline-start: 4px solid var(--color-accent);
+    border-radius: calc(var(--radius) / 2);
+    font-size: var(--text-sm);
+    white-space: pre-wrap;
+  }
+
+  .request__preview small {
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+</style>

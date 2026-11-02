@@ -1,0 +1,28 @@
+/*
+ * The site's three fonts, self-hosted (C1, L7): SIL Open Font License 1.1, each with its licence text beside the file.
+ * Cut to Hebrew and Latin by scripts/fonts/subset-fonts.mjs. `swap` shows text at once in the fallback font.
+ */
+@font-face {
+  font-family: 'Frank Ruhl Libre';
+  src: url('/fonts/frank-ruhl-libre/frank-ruhl-libre.woff2') format('woff2');
+  font-weight: 500 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Heebo;
+  src: url('/fonts/heebo/heebo.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* The slogan only: handwriting, never reading text. */
+@font-face {
+  font-family: 'Gveret Levin';
+  src: url('/fonts/gveret-levin/gveret-levin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

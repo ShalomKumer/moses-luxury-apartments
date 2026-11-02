@@ -37,8 +37,36 @@ export const en: Messages = {
     allCabins: 'All apartments',
   },
   home: {
-    intro: 'Choose an apartment and send us a request by WhatsApp or email with the dates that suit you.',
+    hero: { alt: 'A drawn sample of stone houses in an old town at sunset (sample content)' },
+    request: {
+      heading: 'Booking request',
+      unit: 'Which apartment',
+      unitAny: 'Any apartment, I would like an offer',
+      checkIn: 'Check-in date',
+      checkOut: 'Check-out date',
+      guests: 'Number of guests',
+      guestsNone: 'Not chosen',
+      previewLabel: 'The message that will open, where you add your dates:',
+      problems: {
+        'check-in-past': 'The check-in date has already passed.',
+        'check-out-not-after': 'The check-out date must be after the check-in date.',
+      },
+    },
     cabinsHeading: 'The apartments',
+    points: {
+      place: {
+        title: "In the heart of Safed's Old City",
+        body: "The apartments are in the Old City of Safed, as the owner's logo says.",
+      },
+      direct: {
+        title: 'Direct booking',
+        body: 'Send a request by WhatsApp or email. The booking is made once we confirm it.',
+      },
+      third: {
+        title: '[TO FILL: third point]',
+        body: 'The owner will give something true and special about the apartments. Until then it stays empty.',
+      },
+    },
   },
   cabin: {
     guestsUpTo: 'Up to {count} guests',

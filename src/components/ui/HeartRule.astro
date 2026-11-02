@@ -1,0 +1,34 @@
+---
+/** The logo's ornament: a small gold heart between two lines, under a heading. Decoration only, hidden from screen readers. */
+---
+
+<div class="heart-rule" aria-hidden="true">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.4A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path>
+  </svg>
+</div>
+
+<style>
+  .heart-rule {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    max-width: 13.75rem;
+    margin-block: 0 var(--space-4);
+    color: var(--color-accent);
+  }
+
+  .heart-rule::before,
+  .heart-rule::after {
+    content: '';
+    flex: 1;
+    height: 1.5px;
+    background: currentColor;
+  }
+
+  .heart-rule svg {
+    flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+</style>
