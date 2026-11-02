@@ -71,6 +71,9 @@ export const en: Messages = {
   cabin: {
     guestsUpTo: 'Up to {count} guests',
     details: 'Details and booking',
+    about: 'About the apartment',
+    more: 'More apartments',
+    jumpToRequest: 'Go to the booking request',
   },
   facts: {
     heading: 'Apartment details',
@@ -90,13 +93,10 @@ export const en: Messages = {
     previous: 'Previous photo',
     next: 'Next photo',
     close: 'Close',
+    all: 'All photos ({count})',
     position: '{n} of {total}',
   },
   booking: {
-    heading: 'Booking',
-    intro: 'Send us the dates that suit you by WhatsApp or email, and we will get back to you.',
-    guests: 'Number of guests',
-    guestsNone: 'Not chosen',
     whatsapp: 'Send a request on WhatsApp',
     whatsappHint: '{name} (opens WhatsApp)',
     email: 'Send a request by email',

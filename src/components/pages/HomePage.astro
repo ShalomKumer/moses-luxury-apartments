@@ -5,10 +5,10 @@
  */
 import { getCollection } from 'astro:content';
 import ContactDetails from '@components/contact/ContactDetails.astro';
-import ApartmentRow from '@components/home/ApartmentRow.astro';
+import BookingRequest from '@components/booking/BookingRequest.astro';
+import ApartmentRows from '@components/cabin/ApartmentRows.astro';
 import HomeHero from '@components/home/HomeHero.astro';
 import HomePoints from '@components/home/HomePoints.astro';
-import RequestBar from '@components/home/RequestBar.astro';
 import BaseLayout from '@components/layout/BaseLayout.astro';
 import HeartRule from '@components/ui/HeartRule.astro';
 import { getMessages } from '@i18n/get-messages';
@@ -25,30 +25,17 @@ const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.d
 
 <BaseLayout locale={locale} path="/" title={t.brand.name}>
   <HomeHero locale={locale}>
-    <RequestBar locale={locale} cabins={cabins} />
+    <BookingRequest locale={locale} cabins={cabins} />
   </HomeHero>
 
   <section id="cabins" class="section" aria-labelledby="cabins-title">
     <div class="container">
       <h2 id="cabins-title">{t.home.cabinsHeading}</h2>
       <HeartRule />
-      <ul role="list" class="rows">
-        {cabins.map((cabin) => (
-          <li>
-            <ApartmentRow cabin={cabin} locale={locale} />
-          </li>
-        ))}
-      </ul>
+      <ApartmentRows cabins={cabins} locale={locale} />
     </div>
   </section>
 
   <HomePoints locale={locale} />
   <ContactDetails locale={locale} />
 </BaseLayout>
-
-<style>
-  .rows {
-    display: grid;
-    gap: var(--space-8);
-  }
-</style>

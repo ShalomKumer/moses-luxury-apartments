@@ -36,6 +36,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
 │   │   ├── dates/                  # date-key, date-range, format-date, month
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, stay-dates, guests
+│   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
 │   │   ├── text/                   # fill-template, paragraphs
 │   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
 │   │
@@ -43,11 +44,13 @@ Every exported function carries a one-line comment saying what it does.
 │   │
 │   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
 │   │   ├── layout/   BaseLayout, SkipLink, SampleBanner, SiteHeader (logo), SiteFooter
-│   │   ├── home/     HomeHero, RequestBar + request-bar-controller.ts, ApartmentRow, HomePoints   # the home page's parts
-│   │   ├── cabin/    CabinGallery + gallery-controller.ts, CabinFacts
+│   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
+│   │   ├── cabin/    CabinGallery + gallery-controller.ts, CabinFacts, JumpToRequest, ApartmentRow, ApartmentRows
+│   │   │             #   (the rows are shared by the home page and the apartment pages)
 │   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
-│   │   ├── booking/  BookingPanel + booking-controller.ts, BookingLinks + booking-links.ts, BookingDates (the only
-│   │   │             #   date field), BookingNotice
+│   │   ├── booking/  BookingRequest + request-controller.ts (the home page's request with an apartment choice, and
+│   │   │             #   the apartment page's with the apartment fixed), BookingLinks + booking-links.ts,
+│   │   │             #   BookingDates (the only date field), BookingNotice
 │   │   └── ui/       Prose, UpdatedDate, HeartRule
 │   │
 │   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css

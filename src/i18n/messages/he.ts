@@ -68,9 +68,12 @@ export const he = {
   cabin: {
     guestsUpTo: 'עד {count} אורחים',
     details: 'לפרטים והזמנה',
+    about: 'על הדירה',
+    more: 'דירות נוספות',
+    jumpToRequest: 'לבקשת הזמנה',
   },
   facts: {
-    heading: 'פרטי הצימר',
+    heading: 'פרטי הדירה',
     guests: 'אורחים',
     upTo: 'עד {count}',
     bedrooms: 'חדרי שינה',
@@ -78,7 +81,7 @@ export const he = {
     from: 'מהשעה {time}',
     checkOut: 'יציאה',
     until: 'עד השעה {time}',
-    featuresHeading: 'מה יש בצימר',
+    featuresHeading: 'מה יש בדירה',
   },
   gallery: {
     heading: 'תמונות של {name}',
@@ -87,13 +90,10 @@ export const he = {
     previous: 'התמונה הקודמת',
     next: 'התמונה הבאה',
     close: 'סגירה',
+    all: 'כל התמונות ({count})',
     position: '{n} מתוך {total}',
   },
   booking: {
-    heading: 'הזמנה',
-    intro: 'שלחו לנו בוואטסאפ או במייל את התאריכים שמתאימים לכם, ונחזור עם תשובה.',
-    guests: 'מספר אורחים',
-    guestsNone: 'לא נבחר',
     whatsapp: 'שליחת בקשה בוואטסאפ',
     whatsappHint: '{name} (נפתח בוואטסאפ)',
     email: 'שליחת בקשה במייל',

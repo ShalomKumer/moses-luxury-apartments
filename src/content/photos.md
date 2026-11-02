@@ -8,9 +8,9 @@ here is not used. `npm run launch:check` fails while any row says "sample".
 | `gefen/1-outside.svg`        | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `gefen/2-inside.svg`         | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `gefen/3-view.svg`           | sample, drawn for this project (2026-10-31)   | our own artwork   |
+| `gefen/4-kitchen.svg`        | sample, drawn for this project (2026-11-02)   | our own artwork   |
+| `gefen/5-jacuzzi.svg`        | sample, drawn for this project (2026-11-02)   | our own artwork   |
 | `zayit/1-outside.svg`        | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `zayit/2-inside.svg`         | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `zayit/3-view.svg`           | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `teena/1-outside.svg`        | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `teena/2-inside.svg`         | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `teena/3-view.svg`           | sample, drawn for this project (2026-10-31)   | our own artwork   |

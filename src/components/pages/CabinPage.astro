@@ -1,10 +1,17 @@
 ---
-/** One cabin in one language: photos, details and the booking request. It shows no availability. */
-import type { CollectionEntry } from 'astro:content';
-import BookingPanel from '@components/booking/BookingPanel.astro';
+/**
+ * One apartment in one language, the approved layout (docs/design/apartment.md): its photos, the details beside a
+ * booking request that stays in view, and the other apartments. It shows no availability.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BookingRequest from '@components/booking/BookingRequest.astro';
+import ApartmentRows from '@components/cabin/ApartmentRows.astro';
 import CabinFacts from '@components/cabin/CabinFacts.astro';
 import CabinGallery from '@components/cabin/CabinGallery.astro';
+import JumpToRequest from '@components/cabin/JumpToRequest.astro';
+import ContactDetails from '@components/contact/ContactDetails.astro';
 import BaseLayout from '@components/layout/BaseLayout.astro';
+import HeartRule from '@components/ui/HeartRule.astro';
 import Prose from '@components/ui/Prose.astro';
 import { splitParagraphs } from '@domain/text/paragraphs';
 import { getMessages } from '@i18n/get-messages';
@@ -17,6 +24,8 @@ interface Props {
   locale: Locale;
 }
 
+const REQUEST_ID = 'request';
+
 const { cabin, locale } = Astro.props;
 const t = getMessages(locale);
 const { maxGuests, bedrooms } = cabin.data;
@@ -25,6 +34,8 @@ const summary = pick(cabin.data.summary, locale);
 const paragraphs = splitParagraphs(pick(cabin.data.description, locale));
 const features = cabin.data.features.map((feature) => pick(feature, locale));
 const photos = cabin.data.photos.map((photo) => ({ ...photo, alt: pick(photo.alt, locale) }));
+const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.data.order);
+const hasOthers = cabins.some((other) => other.id !== cabin.id);
 ---
 
 <BaseLayout locale={locale} path={`/cabins/${cabin.id}`} title={name} description={summary}>
@@ -36,19 +47,34 @@ const photos = cabin.data.photos.map((photo) => ({ ...photo, alt: pick(photo.alt
     <p class="cabin__summary">{summary}</p>
     <CabinGallery locale={locale} name={name} photos={photos} />
     <div class="cabin__columns">
-      <div>
-        <Prose>
-          {paragraphs.map((paragraph) => (
-            <p>{paragraph}</p>
-          ))}
-        </Prose>
+      <div class="cabin__details">
+        <section aria-labelledby="about-title">
+          <h2 id="about-title">{t.cabin.about}</h2>
+          <Prose>
+            {paragraphs.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </Prose>
+        </section>
         <CabinFacts locale={locale} maxGuests={maxGuests} bedrooms={bedrooms} features={features} />
+        <JumpToRequest locale={locale} targetId={REQUEST_ID} />
       </div>
-      <div class="cabin__booking">
-        <BookingPanel locale={locale} cabinId={cabin.id} cabinName={name} maxGuests={maxGuests} />
+      <div class="cabin__aside">
+        <BookingRequest locale={locale} cabins={[cabin]} fixed id={REQUEST_ID} />
       </div>
     </div>
   </div>
+
+  {hasOthers && (
+    <section class="section cabin__more" aria-labelledby="more-title">
+      <div class="container">
+        <h2 id="more-title">{t.cabin.more}</h2>
+        <HeartRule />
+        <ApartmentRows cabins={cabins} locale={locale} except={cabin.id} />
+      </div>
+    </section>
+  )}
+  <ContactDetails locale={locale} />
 </BaseLayout>
 
 <style>
@@ -56,7 +82,14 @@ const photos = cabin.data.photos.map((photo) => ({ ...photo, alt: pick(photo.alt
     margin-bottom: var(--space-4);
   }
 
+  /* a very long name or word wraps inside the page instead of pushing it sideways */
+  .cabin h1,
   .cabin__summary {
+    overflow-wrap: anywhere;
+  }
+
+  .cabin__summary {
+    margin-block-end: var(--space-6);
     font-size: var(--text-lg);
     color: var(--color-text-muted);
   }
@@ -67,15 +100,27 @@ const photos = cabin.data.photos.map((photo) => ({ ...photo, alt: pick(photo.alt
     margin-top: var(--space-8);
   }
 
-  .cabin__booking {
+  .cabin__details {
     display: grid;
     gap: var(--space-6);
     align-content: start;
   }
 
+  .cabin__aside {
+    align-self: start;
+  }
+
   @media (min-width: 62rem) {
     .cabin__columns {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+  }
+
+  /* the card stays in view while the details scroll, but only on a screen tall enough to hold all of it */
+  @media (min-width: 62rem) and (min-height: 48rem) {
+    .cabin__aside {
+      position: sticky;
+      inset-block-start: var(--space-4);
     }
   }
 </style>
