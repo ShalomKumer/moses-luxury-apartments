@@ -18,21 +18,21 @@ is corrected in the same PR.
 | --- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | --- | ----------------------------- |
 | 1   | Foundations              | Architecture, the iron rules with the client's checklist, the first bilingual site on sample content, the working rules, git flow, the choice of the home design (`chore/foundations`, `chore/astro-7`, `feature/i18n-he-en`, `feature/design-home`: 2+1+3+3). | 9   | **Done** (merged 2026-11-01)  |
 | 2   | Safety nets and tooling  | `chore/secret-scan` (1, merged); `chore/tooling` (1, merged): Prettier and ESLint, the performance budget, the photo script, `docs/owner-guide.md`; `chore/browser-tests` (1, merged): Playwright with axe at WCAG 2.2, the focus-not-obscured check. | 3   | **Done** (closed 2026-11-01)  |
-| 3   | Design                   | `feature/design-apartment-page` (2, decided 2026-11-02: layout 1, gallery first); `feature/design-legal-pages` (1, approved 2026-11-02: one reading layout, `docs/design/legal.md`): the legal and system pages (404 and so on) in the chosen language, each with all its states. | 3   | **Open** (2026-11-02)         |
-| 4   | The design, built        | `feature/build-home` (3), the cabin page (2), the legal and system pages (1), with tests and a browser walk. Needs the name, the fonts and photos. | 6   | Not started                   |
+| 3   | Design                   | `feature/design-apartment-page` (2, decided 2026-11-02: layout 1, gallery first); `feature/design-legal-pages` (1, approved 2026-11-02: one reading layout, `docs/design/legal.md`): the legal and system pages (404 and so on) in the chosen language, each with all its states. | 3   | **Done** (closed 2026-11-02)  |
+| 4   | The design, built        | `feature/build-home` (3), the apartment page (2), the legal and system pages (1), with tests and a browser walk. Needs the fonts and photos. | 6   | **Open** (2026-11-02)         |
 | 5   | Content from the owner   | Business details, the real cabins, photos with their rights through the photo script, the English texts.                                       | 2   | Not started                   |
 | 6   | SEO                      | `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD, absolute `hreflang`; needs the domain.                    | 2   | Not started                   |
 | 7   | Launch                   | Domain, HTTPS, host rules, axe and screen-reader pass, the lawyer's texts, `launch:check` green, the release PR from `dev` to `main`.          | 2   | Not started                   |
 
-Total 27 points; 14 done (stages 1 and 2, the apartment page design), about 52% of the project (an estimate); 15, about 56%, once the legal pages design is merged. An admin editor for the apartments is not a stage and is
-not counted; it is built only if the user asks (below). Stage 4 starts when the name, the fonts (the user's yes to
-download) and the photos are ready; stage 5 may move before it.
+Total 27 points; 15 done (stages 1 to 3), about 56% of the project (an estimate). An admin editor for the apartments is not a stage and is
+not counted; it is built only if the user asks (below). Stage 4 is open (the user, 2026-11-02); its first build needs the
+fonts (the user's yes to download), and the real photos and the logo file are still to come; stage 5 may move before it.
 
 The owner's and the lawyer's own track ("Before launch", at the end of this file) runs beside all of them.
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-02 (stage 3, the legal pages drawn).
+A snapshot, not a history. Last update: 2026-11-02 (stage 3 closed, stage 4 opened).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -44,15 +44,16 @@ A snapshot, not a history. Last update: 2026-11-02 (stage 3, the legal pages dra
   axe at WCAG 2.2 AA over every page at 1280 px and 375 px, the photo viewer by keyboard, the focus-not-obscured check,
   a test server that sends the real headers), all inside `npm run verify` (182 unit and 196 browser tests). Axe found
   nothing on the sample pages; it finds only part of the problems, so the screen-reader pass stays in stage 7.
-- **Stage 3 (design) is open** (the user, 2026-11-02). `feature/design-apartment-page`: five layouts of the apartment
-  page are drawn in the home page's language (`docs/design/apartment.md`, the exploration and its artifact), with a
-  scored comparison; **decided by the user (2026-11-02): layout 1, gallery first**, with the phone jump button of 5
-  and the apartment rows of 2 (`docs/design/apartment.md`, "Decision"); merged (PR #7). `feature/design-legal-pages`:
-  one reading layout for the four legal pages and the 404 page, with all their states (`docs/design/legal.md`, the
-  exploration and its artifact); **approved by the user (2026-11-02)**; it is the stage's last feature.
-  The name stays as in the logo for now ("דירת מוזס", units are "דירות"; the user,
-  2026-11-02). Open before stage 4: the user's yes to download the fonts (files, source and size were given on
-  2026-11-02), the original logo file, photos with their rights, the domain.
+- **Stage 3 is done and closed** (PR #7 and #8 merged into `dev`; the user closed it, 2026-11-02; `main` is still the
+  empty first commit). It holds the apartment page design (five layouts, a scored comparison; **layout 1, gallery
+  first**, with the phone jump button of 5 and the apartment rows of 2; `docs/design/apartment.md`) and the legal pages
+  and 404 design (one reading layout with all its states; `docs/design/legal.md`), each with its exploration, its
+  artifact and the rules for the build; axe found nothing at 1280 px and 375 px. The name stays as in the logo for now
+  ("דירת מוזס", units are "דירות"; the user, 2026-11-02).
+- **Stage 4 (the design, built) is open** (the user, 2026-11-02). It starts in a new session (or after `/compact`) with
+  `feature/build-home`. Open before its first build: the user's yes to download the fonts (files, source and size were
+  given on 2026-11-02); still to come: the original logo file, photos with their rights. The Hebrew legal texts still
+  say "צימרים" (`docs/design/legal.md`, a content fix in stage 4 or 5).
 - **Decided by the user, 2026-11-01:** the build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp
   libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; axe-core and its Playwright wrapper, MPL-2.0, test-only; C4), and the one reviewed finding in
   `scripts/secret-scan/reviewed-findings.mjs`. Fourteen code-review findings were recorded and not fixed on purpose; they
@@ -107,9 +108,9 @@ In this order; each one is its own branch, and nothing starts before the one abo
    (so the CSP is tested), and ESLint's Astro accessibility rules (`eslint-plugin-jsx-a11y-x`); all inside `npm run verify`.
    The user approved the Chromium download and the axe-core MPL-2.0 exception (2026-11-01).
 4. Stage 1, `feature/design-home` (3): **done** (decided 2026-10-31; docs only, `docs/design/home.md`).
-4a. Stage 3, `feature/design-apartment-page` (2): **decided 2026-11-02: layout 1, gallery first** - five layouts,
+4a. Stage 3, `feature/design-apartment-page` (2): **done and merged, 2026-11-02: layout 1, gallery first** - five layouts,
    a comparison and a recommendation (`docs/design/apartment.md`); docs only.
-4a2. Stage 3, `feature/design-legal-pages` (1): **approved 2026-11-02** (`docs/design/legal.md`) - the legal pages and the 404 page in the chosen language, one layout with
+4a2. Stage 3, `feature/design-legal-pages` (1): **done and merged, 2026-11-02** (`docs/design/legal.md`) - the legal pages and the 404 page in the chosen language, one layout with
    all its states (recommended: not five layouts, they are text pages), approved on their own; docs only.
 4b. Stage 4, `feature/build-home` (3): build the chosen home page in the code, with the request bar and its tests; needs the
    fonts (the user's yes to download), real photos for the hero and the apartments, and the name decision.
