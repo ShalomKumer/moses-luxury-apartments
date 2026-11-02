@@ -12,10 +12,11 @@ Status: **adopted for colours; type proposed and waiting for the user's yes to d
 - A gold roof with a four-pane window above the name, and a thin gold rule with a small heart.
 - Black ink on white paper. The names are a brush script; the gold lines are a bold rounded sans.
 
-**A question for the user.** The project and the first brief say "אחוזות מוזס" and "צימרים" (cabins); the logo says
+**Decided for now (the user, 2026-11-02): the name stays as in the logo,** "דירת מוזס", and each unit is a "דירה"; the
+explorations use it. Before that: the project and the first brief said "אחוזות מוזס" and "צימרים" (cabins); the logo says
 "דירת מוזס" and "דירות יוקרה" (apartments) in the old city of Safed. `src/config/site.ts` now uses the logo's name and
 lines, and the design exploration uses "דירות". The cabin files, the legal drafts and the page texts still say "צימר"
-until the user confirms which words the owner wants (renaming them is mechanical).
+until they are renamed (mechanical, in the stage that builds the pages).
 
 ## Palette (measured from the file's pixels)
 
