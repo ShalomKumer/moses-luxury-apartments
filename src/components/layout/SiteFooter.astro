@@ -8,9 +8,11 @@ import { localizedPath } from '@i18n/paths';
 
 interface Props {
   locale: Locale;
+  /** The page's own address without a language; the policy that matches it is marked as the current one. */
+  path: string;
 }
 
-const { locale } = Astro.props;
+const { locale, path } = Astro.props;
 const t = getMessages(locale);
 const legalPages = (await getCollection('legal'))
   .filter((page) => page.id.startsWith(`${locale}/`))
@@ -51,7 +53,12 @@ const legalPages = (await getCollection('legal'))
       <ul role="list">
         {legalPages.map((page) => (
           <li>
-            <a href={localizedPath(`/${page.id.split('/')[1]}`, locale)}>{page.data.title}</a>
+            <a
+              href={localizedPath(`/${page.id.split('/')[1]}`, locale)}
+              aria-current={path === `/${page.id.split('/')[1]}` ? 'page' : undefined}
+            >
+              {page.data.title}
+            </a>
           </li>
         ))}
       </ul>
@@ -81,5 +88,11 @@ const legalPages = (await getCollection('legal'))
   .site-footer li a {
     display: inline-block;
     padding-block: var(--space-2);
+  }
+
+  /* the current policy: bold with a gold bar, so it is not told apart by colour alone */
+  .site-footer li a[aria-current='page'] {
+    font-weight: 700;
+    border-block-end: 3px solid var(--color-accent);
   }
 </style>

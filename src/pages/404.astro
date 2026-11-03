@@ -1,7 +1,7 @@
 ---
 /**
  * Page not found. The host serves this one file for every missing address, in both languages, so it says it in both:
- * each block declares its own language and direction (S4).
+ * each block declares its own language and direction (S4), and offers two ways on.
  */
 import BaseLayout from '@components/layout/BaseLayout.astro';
 import { getMessages } from '@i18n/get-messages';
@@ -14,12 +14,22 @@ const he = getMessages('he');
 <BaseLayout locale="he" path="/" title={he.notFound.title}>
   <div class="container section">
     {LOCALES.map((locale) => {
-      const t = getMessages(locale).notFound;
+      const t = getMessages(locale);
+      const home = localizedPath('/', locale);
       return (
         <section lang={locale} dir={directionOf(locale)} class="not-found">
-          <h1>{t.title}</h1>
-          <p>
-            {t.body} <a href={localizedPath('/', locale)}>{t.back}</a>
+          <p class="not-found__number" aria-hidden="true">
+            404
+          </p>
+          <h1>{t.notFound.title}</h1>
+          <p>{t.notFound.body}</p>
+          <p class="not-found__ways">
+            <a class="button" href={home}>
+              {t.notFound.back}
+            </a>
+            <a class="button button--secondary" href={`${home}#cabins`}>
+              {t.nav.allCabins}
+            </a>
           </p>
         </section>
       );
@@ -30,5 +40,22 @@ const he = getMessages('he');
 <style>
   .not-found + .not-found {
     margin-top: var(--space-8);
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* large text in the dark gold, which passes 3:1 as large text; hidden from screen readers (the h1 says it) */
+  .not-found__number {
+    margin-block: 0;
+    color: var(--color-link);
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    line-height: 1;
+  }
+
+  .not-found__ways {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
   }
 </style>

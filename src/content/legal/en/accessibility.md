@@ -3,9 +3,9 @@ title: Accessibility statement
 description: The accessibility level of the site, known limits, and the details of the accessibility coordinator.
 updated: '2026-10-31'
 order: 4
+draft: "To be completed after a full accessibility check and once the accessibility coordinator's details are known."
+coordinator: true
 ---
-
-> **DRAFT.** To be completed after a full accessibility check and once the accessibility coordinator's details are known.
 
 ## Accessibility of the site
 
@@ -29,6 +29,4 @@ What was done on the site:
 
 ## The accessibility coordinator
 
-[TO FILL: name of the accessibility coordinator], phone [TO FILL: coordinator's phone], email [TO FILL: coordinator's email]. We welcome any report of difficulty in using the site.
-
-Date of the last check: [TO FILL: date of the check].
+We welcome any report of difficulty in using the site, sent to the accessibility coordinator:

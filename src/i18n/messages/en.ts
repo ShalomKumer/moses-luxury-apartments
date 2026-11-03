@@ -130,6 +130,18 @@ export const en: Messages = {
   footer: {
     legalHeading: 'Information and policies',
   },
+  legal: {
+    toc: 'On this page',
+    draft: 'Draft.',
+    coordinator: {
+      heading: 'Accessibility coordinator',
+      name: 'Name',
+      phone: 'Phone',
+      email: 'Email',
+      lastCheck: 'Date of the last check',
+      toFill: 'To fill:',
+    },
+  },
   notFound: {
     title: 'Page not found',
     body: 'The link may be wrong or the page may have been removed.',

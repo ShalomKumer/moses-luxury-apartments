@@ -10,6 +10,7 @@ type Layer =
   | 'api-client'
   | 'components'
   | 'config'
+  | 'markdown'
   | 'pages'
   | 'styles'
   | 'content'
@@ -25,6 +26,7 @@ const ALLOWED: Partial<Record<Layer, Layer[]>> = {
   api: ['server', 'config', 'astro-virtual', 'package'],
   'api-client': ['domain'],
   components: ['domain', 'api-client', 'config', 'i18n', 'styles', 'astro-virtual', 'package'],
+  markdown: ['domain', 'package'],
   pages: ['components', 'config', 'i18n', 'astro-virtual', 'package'],
   i18n: [],
 };
@@ -54,6 +56,7 @@ function layerOfPath(path: string): Layer {
     'api-client',
     'components',
     'config',
+    'markdown',
     'pages',
     'styles',
     'content',

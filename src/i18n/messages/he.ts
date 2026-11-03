@@ -127,6 +127,18 @@ export const he = {
   footer: {
     legalHeading: 'מידע ומדיניות',
   },
+  legal: {
+    toc: 'בעמוד הזה',
+    draft: 'טיוטה.',
+    coordinator: {
+      heading: 'רכז הנגישות',
+      name: 'שם',
+      phone: 'טלפון',
+      email: 'מייל',
+      lastCheck: 'תאריך הבדיקה האחרון',
+      toFill: 'למילוי:',
+    },
+  },
   notFound: {
     title: 'העמוד לא נמצא',
     body: 'ייתכן שהקישור שגוי או שהעמוד הוסר.',

@@ -3,9 +3,8 @@ title: Terms of use
 description: What the information on the site means, how a booking is made, and the minimum age.
 updated: '2026-10-31'
 order: 2
+draft: "An English version of the Hebrew text. The final wording, and which language prevails, are set with a lawyer before launch."
 ---
-
-> **DRAFT.** An English version of the Hebrew text. The final wording, and which language prevails, are set with a lawyer before launch.
 
 ## The information on the site
 

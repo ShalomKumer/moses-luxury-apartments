@@ -3,9 +3,8 @@ title: Cancellation and refund policy
 description: How to cancel a booking, which cancellation fees apply, and when a refund is given.
 updated: '2026-10-31'
 order: 3
+draft: "An English version of the Hebrew text. The final wording is set with a lawyer before launch, under the Consumer Protection Law and its regulations."
 ---
-
-> **DRAFT.** An English version of the Hebrew text. The final wording is set with a lawyer before launch, under the Consumer Protection Law and its regulations.
 
 ## How to cancel
 
@@ -18,6 +17,12 @@ A booking made by phone, on WhatsApp or by email is a distance transaction under
 ## Cancellation fees and deposit
 
 [TO FILL: the amount of the deposit, the cancellation fees by date of cancellation, and within how many days a refund is paid.]
+
+| When you cancel | The fee | The refund |
+| --- | --- | --- |
+| [TO FILL: date of cancellation] | [TO FILL: the fee] | [TO FILL: the refund] |
+| [TO FILL: date of cancellation] | [TO FILL: the fee] | [TO FILL: the refund] |
+| [TO FILL: date of cancellation] | [TO FILL: the fee] | [TO FILL: the refund] |
 
 ## Cancellation by us
 
