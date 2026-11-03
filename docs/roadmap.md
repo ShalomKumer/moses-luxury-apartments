@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate, Atzulat HaKikar B and Atzulat HaKikar A built).
+A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate, Atzulat HaKikar B and Atzulat HaKikar A built; a 960 px width added to every photo to make room under the page budget).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -152,8 +152,14 @@ In this order; each one is its own branch, and nothing starts before the one abo
    apartment lists Wi-Fi in its features, and a jacuzzi when it has one (Atzulat HaKikar B got its Wi-Fi line; a test enforces it for the real
    apartments; the sample apartments are not covered). Held back until the owner shows the photographer's licence: 14 photos (`IMG_xxxxBW`) with
    the watermark "ALON art & photography", the only ones that show the pool. The pool itself and the guest cap (11, from the beds) wait for the owner. The page-weight check failed for the Artist's Estate and this page
-   (the main photo is a row on the other pages), so `npm run photos:add` got `--page-kb=<n>`, a lower ceiling for the 640 and 1280 files (the user chose this
-   over a higher budget or another main photo); a fourth real apartment will probably need the row photos shrunk for good.
+   (the main photo is a row on the other pages), so `npm run photos:add` got `--page-kb=<n>`, a lower ceiling for the 640, 960 and 1280 files (the user chose this
+   over a higher budget or another main photo); a fourth real apartment will probably need the row photos shrunk for good (done in 4h).
+4h. Stage 5, `feature/shrink-row-photos` (counted in the same point, the total stays 27): every photo now also has a **960 px** file (`WIDTHS` in 
+   `scripts/photos/limits.mjs`), the smallest at least 750 px wide, which is what a phone 375 px wide at twice the density loads, so the weight check 
+   counts it instead of the 1280 file; the 30 real photos were put through `photos:add` again on the same sources and settings (the other widths came out 
+   byte-identical). Measured on a phone (build output, 2026-11-03): Atzulat HaKikar A 970 -> 844 KB, the Artist's Estate 942 -> 787 KB, Atzulat HaKikar B 
+   759 -> 643 KB (the 1 MB ceiling is unchanged). Room for about two more real apartments (each adds its row, about 60 to 100 KB, to every other apartment's page); a phone at three times the 
+   density still loads the 1280 file, as before.
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both

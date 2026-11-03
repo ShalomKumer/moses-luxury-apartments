@@ -13,7 +13,7 @@ const WIDTH_SUFFIX = /-(\d+)\.webp$/;
 
 /**
  * Works out the files of a photo from the path of one of them and the widths that exist (the photo script writes
- * `name-640.webp`, `name-1280.webp`, `name-1920.webp`). Without widths the photo is one file. A path that does not end
+ * `name-640.webp`, `name-960.webp`, `name-1280.webp`, `name-1920.webp`). Without widths the photo is one file. A path that does not end
  * in a width, or widths that do not include the path's own, are a mistake in the content and stop the build.
  */
 export function photoSources(src: string, widths?: number[]): PhotoSources {

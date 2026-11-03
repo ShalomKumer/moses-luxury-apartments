@@ -38,70 +38,70 @@ features:
     en: Wi-Fi
 photos:
   - src: /photos/atzulat-hakikar-b/living-room-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: הסלון ופינת האוכל, עם ספה שחורה גדולה, שולחן עגול וקיר אבן
       en: The living and dining area, with a large black sofa, a round table and a stone wall
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/jacuzzi-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: ג׳קוזי ספא מבעבע בחדר רחצה, עם ארון עץ ומראה עגולה
       en: A bubbling spa jacuzzi in a bathroom, with a wooden cabinet and a round mirror
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/courtyard-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: חצר מקורה חלקית, עם נדנדה, פינת ישיבה ומנגל גז
       en: A partly covered courtyard, with a swing seat, a seating area and a gas grill
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/bedroom-stone-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: חדר שינה עם מיטה זוגית, קיר אבן וחלונות מקושתים עם וילונות
       en: A bedroom with a double bed, a stone wall and arched windows with curtains
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/kitchen-dining-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: הסלון, פינת האוכל והמטבח בחלל אחד, עם חלונות גדולים וקיר אבן
       en: The living room, dining area and kitchen in one space, with large windows and a stone wall
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/kitchen-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: המטבח, עם ארונות לבנים, משטח עבודה כהה וברז זהוב
       en: The kitchen, with white cabinets, a dark worktop and a gold tap
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/bedroom-double-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: חדר שינה עם מיטה זוגית מוצעת בלבן, שמיכה תכלכלה ומראה
       en: A bedroom with a double bed made up in white, a pale blue blanket and a mirror
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/bedroom-twin-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: חדר עם שתי מיטות יחיד, חלון ווילון ותליון זכוכית
       en: A room with two single beds, a window with a curtain and a glass pendant lamp
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/bathroom-bath-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: חדר רחצה עם אמבטיה, כיור לבן וחיפוי בדוגמת פרקט
       en: A bathroom with a bathtub, a white basin and herringbone wood-effect tiles
     width: 1280
     height: 854
   - src: /photos/atzulat-hakikar-b/bathroom-sink-1280.webp
-    widths: [640, 1280, 1920]
+    widths: [640, 960, 1280, 1920]
     alt:
       he: חדר רחצה כהה עם כיור לבן, מראה עגולה ומגבות
       en: A dark bathroom with a white basin, a round mirror and towels
