@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate built).
+A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate and Atzulat HaKikar B built).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -63,7 +63,7 @@ A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's
   browser tests (10 skipped). Still to come from the user: the original logo file, photos with their rights, the business and coordinator
   details, the lawyer's texts. A new advisory (minimatch, moderate, in the lint chain) appeared in `npm audit` on
   2026-11-02; `audit:prod` fails on high only, so `verify` is green; to be updated with the next dependency change.
-- **Stage 5 is open** (the user, 2026-11-03; the Artist's Estate content arrived the same day). `feature/add-artist-estate` is merged
+- **Stage 5 is open** (the user, 2026-11-03; the Artist's Estate content arrived the same day, and Atzulat HaKikar B's later that day). `feature/add-artist-estate` is merged
   (PR #14; see "Committed next", 4e), and `fix/artist-estate-name` corrects the name: the first real apartment with ten photos, srcset, the
   weight check that reads it, and a fix of a latent gallery rule (a sixth photo was shown on a wide screen). The user's answers: the
   name is "אחוזת האמן-בית לבקובסקי"; the client took all the photos and made the logo (the user's word; written
@@ -142,6 +142,10 @@ In this order; each one is its own branch, and nothing starts before the one abo
    grid is a link, not an `<img>`; the source folder `צימרים/` is git-ignored; the check-in and check-out times show nothing until the
    owner gives them (`launch:check` fails on them). The three sample apartments stay for now (the user). Still to come in stage 5 (1 point):
    the business details, the accessibility coordinator, the check-in and check-out times, the cancellation terms.
+4f. Stage 5, `feature/add-atzulat-hakikar-b` (content of the same kind as 4e, counted in its point, the total stays 27): the second real
+   apartment, "אצולת הכיכר ב׳" / "Atzulat HaKikar B" (4 bedrooms, 11 beds, 3 bathrooms, a spa jacuzzi, a courtyard; ten photos, the main one
+   `3E6A9113`), second in the list, the samples after it; the real-apartment browser tests are now one table (`tests/e2e/real-apartments.spec.ts`)
+   and a prompt for adding an apartment is `docs/new-apartment-prompt.md`. The guest cap (11, from the beds) waits for the owner.
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both

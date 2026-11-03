@@ -214,4 +214,5 @@ One page at a time, each in full before the next (the user's method from the bot
 - `docs/design/apartment.md`: the apartment page's five layouts, the comparison and the decision.
 - `docs/design/legal.md`: the one reading layout of the legal pages and the 404 page, its states and the decision.
 - `docs/compliance.md`: the iron rules merged with the client's checklist; status, how met, how checked, where scheduled.
+- `docs/new-apartment-prompt.md`: the prompt to fill in and send to add an apartment (name, photo folder, texts, main and secondary photos).
 - `docs/roadmap.md`: the stages, "Where we stopped", "Committed next", and the owner's and lawyer's list before launch.
