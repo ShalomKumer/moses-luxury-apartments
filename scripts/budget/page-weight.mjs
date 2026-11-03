@@ -1,6 +1,7 @@
 // Works out what one built page weighs on first load, from its HTML and the sizes of the files it names. Pure:
 // the sizes come from an injected function, so no disk is touched here.
 import { dirname, normalize } from 'node:path/posix';
+import { pickCandidate } from './pick-candidate.mjs';
 
 /** Every value of an attribute in the tags matching a pattern. */
 function attributeValues(html, tagPattern, attribute) {
@@ -12,9 +13,16 @@ function attributeValues(html, tagPattern, attribute) {
   return values;
 }
 
+/** The file a phone loads for one <img>: the candidate of its `srcset` for a 375 px screen at twice the density, else its `src`. */
+function imageFile(tag) {
+  const srcset = tag.match(/\ssrcset\s*=\s*["']([^"']+)["']/i)?.[1];
+  const candidate = srcset ? pickCandidate(srcset) : null;
+  return candidate ?? tag.match(/\ssrc\s*=\s*["']([^"']+)["']/i)?.[1] ?? null;
+}
+
 /**
- * The files a page names, split into scripts, stylesheets and images. Pictures are counted by `src` only: a page that
- * moves to `srcset` or `<picture>` (stage 4) must teach this check which candidate a phone loads, or it under-counts.
+ * The files a page names, split into scripts, stylesheets and images. A picture with a `srcset` is counted at the file a
+ * phone loads (`pickCandidate`); a `<picture>` with several `<source>` elements is not read, and the site uses none.
  */
 function references(html) {
   const links = attributeValues(html, /<link\b[^>]*>/gi, 'href');
@@ -25,7 +33,7 @@ function references(html) {
       ...links.filter(({ tag }) => relOf(tag).includes('modulepreload')).map((ref) => ref.value),
     ],
     css: links.filter(({ tag }) => relOf(tag).includes('stylesheet')).map((ref) => ref.value),
-    images: attributeValues(html, /<img\b[^>]*>/gi, 'src').map((ref) => ref.value),
+    images: [...html.matchAll(/<img\b[^>]*>/gi)].map(([tag]) => imageFile(tag)).filter((file) => file !== null),
   };
 }
 

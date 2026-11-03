@@ -15,12 +15,12 @@ export const SITE = {
     fullHeight: 600,
   },
   /**
-   * The phone numbers (given by the user, 2026-10-31). The one marked `whatsapp` receives the booking messages;
-   * the second number is listed for calls until the user says whether it also has WhatsApp.
+   * The phone numbers (given by the user, 2026-10-31; both are on WhatsApp, the user, 2026-11-03). The first marked
+   * `whatsapp` receives the booking messages.
    */
   phones: [
     { display: '054-549-9445', whatsapp: true },
-    { display: '053-436-9490', whatsapp: false },
+    { display: '053-436-9490', whatsapp: true },
   ],
   /** The booking email (given by the user, 2026-10-31). */
   email: 'Mnm783@gmail.com',
@@ -36,8 +36,12 @@ export const SITE = {
   },
   /** Minimum age to book, the owner's rule (L10). To confirm with the owner. */
   minimumAge: 18,
-  checkInTime: '15:00',
-  checkOutTime: '11:00',
+  /**
+   * Check-in and check-out times as "HH:MM", shown on the apartment pages. Null until the owner gives them (H1): the page
+   * shows no time rather than a guess, and `npm run launch:check` fails while one is null.
+   */
+  checkInTime: null as string | null,
+  checkOutTime: null as string | null,
   /** Links to the place on navigation apps; null until the address is known. */
   location: null as { waze: string; googleMaps: string } | null,
 } as const;

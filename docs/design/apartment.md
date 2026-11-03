@@ -144,8 +144,11 @@ The page follows the decision above. Where the build differs or decides somethin
   is gone, so the page has dates now, drawn as the home page's bar (`tests/e2e/apartment.spec.ts`).
 - **The grid** takes its shape from the photo count (`domain/gallery/gallery-shape.ts`): 1 alone (at most 45 rem wide), 2
   halves, 3 one large and two, 4 one large and three (the last takes the whole second row), 5 one large and four. More
-  than five stay in the viewer. On a phone the first photo and "all photos (n)". Without JavaScript every photo shows in a
-  plain grid; the grid hides photos only once the controller has marked the gallery `data-enhanced`.
+  than five stay in the viewer. On a phone the first photo and "all photos (n)". Without JavaScript the grid's photos show
+  in a plain grid; the grid hides photos only once the controller has marked the gallery `data-enhanced`. **Changed
+  2026-11-03 (the Artist's Estate has ten photos):** a photo beyond the grid is no longer an `<img>` in the page but a
+  link named by its alt text, so without JavaScript the rest are links to the full file, and the page weighs five
+  photos, not ten (the budget). Every grid photo has a `srcset` of the widths the photo script made.
 - **The jump button** is a plain link to the request's id, so it needs no script; the next Tab lands in the request's
   first field. It sits at the end of the details' own column and sticks to the bottom of the screen while they scroll.
 - **The stuck card** (a wide and tall screen only, 62 rem by 48 rem) keeps its top 1 rem from the screen's top; on a short

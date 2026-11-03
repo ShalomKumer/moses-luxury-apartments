@@ -4,6 +4,7 @@
  * page. The rows alternate sides by the start and end of the line, so they swap by themselves in right-to-left text.
  */
 import type { CollectionEntry } from 'astro:content';
+import { toPagePhoto } from '@components/cabin/cabin-photo';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
@@ -19,14 +20,16 @@ const { cabin, locale } = Astro.props;
 const t = getMessages(locale);
 const { maxGuests, photos } = cabin.data;
 const name = pick(cabin.data.name, locale);
-const cover = photos[0];
+const cover = toPagePhoto(photos[0], locale);
 ---
 
 <article class="row">
   <img
     class="row__photo"
     src={cover.src}
-    alt={pick(cover.alt, locale)}
+    srcset={cover.srcset}
+    sizes="(min-width: 48rem) 40vw, 100vw"
+    alt={cover.alt}
     width={cover.width}
     height={cover.height}
     loading="lazy"

@@ -3,24 +3,29 @@
  * The top of the home page: a photo across the full width, the logo's two lines over it on a dark plate, and the
  * booking-request bar (the slot) at its bottom. Text over the photo always sits on the plate (A1).
  */
+import type { PagePhoto } from '@components/cabin/cabin-photo';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
 
 interface Props {
   locale: Locale;
+  /** The photo across the top: the cover of the first apartment. */
+  photo: PagePhoto;
 }
 
-const { locale } = Astro.props;
+const { locale, photo } = Astro.props;
 const t = getMessages(locale);
 ---
 
 <section class="hero" aria-labelledby="hero-title">
   <img
     class="hero__photo"
-    src="/photos/home/hero.svg"
-    alt={t.home.hero.alt}
-    width="1600"
-    height="900"
+    src={photo.src}
+    srcset={photo.srcset}
+    sizes="100vw"
+    alt={photo.alt}
+    width={photo.width}
+    height={photo.height}
     fetchpriority="high"
     decoding="async"
   />

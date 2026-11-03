@@ -23,7 +23,7 @@ export const en: Messages = {
   },
   common: {
     skipToMain: 'Skip to the main content',
-    sampleBanner: 'Site under construction: the apartments and photos here are samples only.',
+    sampleBanner: 'Site under construction: some of the apartments and photos here are samples only.',
     lastUpdated: 'Last updated',
     phone: 'Phone',
     email: 'Email',
@@ -37,7 +37,6 @@ export const en: Messages = {
     allCabins: 'All apartments',
   },
   home: {
-    hero: { alt: 'A drawn sample of stone houses in an old town at sunset (sample content)' },
     request: {
       heading: 'Booking request',
       unit: 'Which apartment',

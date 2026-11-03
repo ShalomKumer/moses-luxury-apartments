@@ -67,7 +67,8 @@ font at the same size, so the swap does not move the text.
 - The header shows the JPEG with `mix-blend-mode: multiply`, so its white drops out on any light surface.
 - **Ask the owner for the original** (SVG, PDF or a transparent PNG at a high resolution). A small JPEG blurs on a
   high-density phone and cannot be put on a photo. Row C3 records the file and the rights question.
-- Rights: the logo is the owner's own mark, sent by the owner's representative. The owner confirms in writing that
-  they hold the design files and the rights (a designer's licence, if one made it).
+- Rights: the logo is the owner's own mark, sent by the owner's representative. The user said on 2026-11-03 that the
+  file in the repo is the original and that the owner's client made it, so the owner holds the rights; the written
+  confirmation is still to come with the handover. The original vector file is still welcome (see above).
 
 Iron rules touched: C1, C3, C6, A1, A3, L7, H1.

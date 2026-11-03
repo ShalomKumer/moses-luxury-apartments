@@ -1,8 +1,8 @@
 // The apartment page (docs/design/apartment.md), in a real browser: the request names the apartment, the gallery takes
 // its shape from the photo count, "all photos" opens the viewer, the phone's jump button reaches the request, the card
 // stays in view on a wide screen, and nothing sticky hides a focused element. The photo-count and guest-cap tests use
-// the sample apartments (gefen: five photos and two guests, teena: three, zayit: one); when the owner's real content
-// replaces them (stage 5), update those numbers with the content.
+// the sample apartments (gefen: five photos and two guests, teena: three, zayit: one) beside the Artist's Estate (ten
+// photos, fourteen guests); when the owner's real content replaces the samples (stage 5), update those numbers.
 import { expect, test, type Page } from '@playwright/test';
 import { obscuredFocus } from './helpers/focus-obscured';
 import { axeViolations } from './helpers/run-axe';
@@ -150,7 +150,7 @@ for (const { base, label, position } of PAGES) {
 
     test('lists the other apartments and not this one', async ({ page }) => {
       await page.goto(`${base}/gefen/`);
-      await expect(page.locator('.cabin__more .row')).toHaveCount(2);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/gefen"]')).toHaveCount(0);
     });
 

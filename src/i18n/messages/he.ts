@@ -20,7 +20,7 @@ export const he = {
   },
   common: {
     skipToMain: 'דילוג לתוכן הראשי',
-    sampleBanner: 'אתר בבנייה: הדירות והתמונות כאן הם לדוגמה בלבד.',
+    sampleBanner: 'אתר בבנייה: חלק מהדירות והתמונות כאן הם לדוגמה בלבד.',
     lastUpdated: 'עודכן לאחרונה',
     phone: 'טלפון',
     email: 'מייל',
@@ -34,7 +34,6 @@ export const he = {
     allCabins: 'כל הדירות',
   },
   home: {
-    hero: { alt: 'איור לדוגמה של בתי אבן בעיר עתיקה בשקיעה (תוכן לדוגמה)' },
     request: {
       heading: 'בקשת הזמנה',
       unit: 'איזו דירה',
