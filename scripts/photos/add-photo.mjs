@@ -1,5 +1,5 @@
 // The only way a photo enters the repo (C3, L8):  npm run photos:add -- <photo-file> <apartment> <photo-name> [--page-kb=<n>]
-// --page-kb lowers the size ceiling of the files a page loads (640 and 1280 wide), for a photo shown in a row on other pages.
+// --page-kb lowers the size ceiling of the files a page loads (640, 960 and 1280 wide), for a photo shown in a row on other pages.
 // Writes the WebP widths into public/photos/<apartment>/, with the camera's metadata (EXIF, GPS) removed.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';

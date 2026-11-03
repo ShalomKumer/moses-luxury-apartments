@@ -11,6 +11,12 @@ describe('pickCandidate', () => {
     expect(pickCandidate(SRCSET, 1280)).toBe('/p/a-1280.webp');
   });
 
+  it('takes the 960 file of a photo that has one: the smallest at least 750 wide', () => {
+    const withMiddle = '/p/a-640.webp 640w, /p/a-960.webp 960w, /p/a-1280.webp 1280w, /p/a-1920.webp 1920w';
+    expect(pickCandidate(withMiddle)).toBe('/p/a-960.webp');
+    expect(pickCandidate(withMiddle, 961)).toBe('/p/a-1280.webp'); // a phone at three times the density needs more
+  });
+
   it('takes the largest file when none is wide enough', () => {
     expect(pickCandidate('/p/a-640.webp 640w', 750)).toBe('/p/a-640.webp');
   });

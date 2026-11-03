@@ -25,8 +25,8 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
   --only-shell`. Inside `verify`.
 - `npm run dev`: the site on :4321.
 - `npm run format` writes the Prettier formatting (code, not `.md`/`.html`); `npm run format:check` and `npm run lint` are inside `verify`.
-- `npm run photos:add -- <file> <apartment> <name>`: the only way a photo enters the repo (WebP, three widths, no EXIF or GPS,
-  at most 250 KB a file; `--page-kb=<n>` lowers the ceiling of the 640 and 1280 files for a photo that is the first of an apartment); `npm run photos:check` (inside `verify`) fails on a picture that skipped it (C3, L8).
+- `npm run photos:add -- <file> <apartment> <name>`: the only way a photo enters the repo (WebP, widths 640, 960, 1280 and 1920, no EXIF or GPS,
+  at most 250 KB a file; `--page-kb=<n>` lowers the ceiling of the 640, 960 and 1280 files for a photo that is the first of an apartment); `npm run photos:check` (inside `verify`) fails on a picture that skipped it (C3, L8).
 - `npm run fonts:build -- <folder>`: rebuilds `public/fonts/` (the three web fonts, Hebrew and Latin only, with their OFL texts)
   from the full `.ttf` files in the folder (C1, L7); the full files are not kept in the repo.
 - `npm run budget:check`: after a build, fails when a page is over its JS, code or total weight (`scripts/budget/limits.mjs`).

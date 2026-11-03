@@ -40,8 +40,13 @@ describe('planWidths', () => {
   });
 
   it('never enlarges: a source on a boundary gets that width, and no wider one', () => {
-    expect(planWidths(1280)).toEqual([640, 1280]);
-    expect(planWidths(1279)).toEqual([640]);
+    expect(planWidths(1280)).toEqual([640, 960, 1280]);
+    expect(planWidths(1279)).toEqual([640, 960]);
+  });
+
+  it('makes the 960 width, the one a phone loads, from a source exactly that wide, and not from a narrower one', () => {
+    expect(planWidths(960)).toEqual([640, 960]);
+    expect(planWidths(959)).toEqual([640]);
   });
 
   it('keeps a source narrower than the smallest width at its own width', () => {
@@ -116,7 +121,7 @@ describe('webpChunks', () => {
 
 describe('encodePhoto', () => {
   it('turns a sideways phone photo upright, in every width it can fill, with no metadata', async () => {
-    const source = await phonePhoto(2000, 1000); // stored 2000x1000, shown 1000x2000
+    const source = await phonePhoto(1800, 900); // stored 1800x900, shown 900x1800: too narrow for the 960 width
     const variants = await encodePhoto(source);
     expect(variants.map((variant) => variant.width)).toEqual([640]);
     for (const variant of variants) {
@@ -131,7 +136,7 @@ describe('encodePhoto', () => {
     }
   });
 
-  it('makes all three widths from a wide upright photo', async () => {
+  it('makes every standard width from a wide upright photo', async () => {
     const source = await sharp({ create: { width: 2400, height: 1200, channels: 3, background: '#888' } })
       .jpeg()
       .toBuffer();
@@ -154,7 +159,8 @@ describe('encodePhoto', () => {
       .jpeg()
       .toBuffer(); // smooth, so 1920 fits
     const standard = await encodePhoto(source);
-    const pageCeiling = Math.floor(standard[1].data.length * 0.8); // below the 1280 file, above the 640 one
+    const file1280 = standard.find((item) => item.width === 1280);
+    const pageCeiling = Math.floor((file1280?.data.length ?? 0) * 0.8); // below the 1280 file, above the 640 one
     const variants = await encodePhoto(source, MAX_BYTES, pageCeiling);
     for (const variant of variants.filter((item) => item.width < VIEWER_WIDTH)) {
       expect(variant.data.length).toBeLessThanOrEqual(pageCeiling);
@@ -238,7 +244,7 @@ describe('the photo scripts, run in a throw-away folder', () => {
     const added = run(folder, addPhoto, 'IMG_1.jpg', 'gefen', 'living-room');
     expect(added.status).toBe(0);
     const written = readdirSync(join(folder, 'public/photos/gefen')).sort();
-    expect(written).toEqual(['living-room-1280.webp', 'living-room-640.webp']);
+    expect(written).toEqual(['living-room-1280.webp', 'living-room-640.webp', 'living-room-960.webp']);
     for (const file of written) {
       const bytes = readFileSync(join(folder, 'public/photos/gefen', file));
       expect(webpChunks(bytes)).not.toContain('EXIF');

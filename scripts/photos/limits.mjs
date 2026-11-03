@@ -1,7 +1,10 @@
 // The numbers of the photo pipeline (C3, L8), in one place: the script writes to them, the check reads the same ones.
 
-/** Widths a photo is made in, in pixels; a source narrower than a width is never enlarged to it. */
-export const WIDTHS = [640, 1280, 1920];
+/**
+ * Widths a photo is made in, in pixels; a source narrower than a width is never enlarged to it. 960 is the file a phone
+ * 375 px wide at twice the density loads (the smallest at least 750 wide), so a page weighs the 960 files, not the 1280 ones.
+ */
+export const WIDTHS = [640, 960, 1280, 1920];
 
 /** The widest file: only the photo viewer loads it, so a page's weight does not include it. */
 export const VIEWER_WIDTH = WIDTHS[WIDTHS.length - 1];
