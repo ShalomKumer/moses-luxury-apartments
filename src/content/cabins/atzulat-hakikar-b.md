@@ -34,6 +34,8 @@ features:
     en: A beautiful courtyard for relaxing, outdoor seating and hosting
   - he: בית משופץ ומעוצב ברמה גבוהה, עם הקפדה על איכות ונוחות
     en: Beautifully renovated to a high standard, thoughtfully designed with comfort and quality throughout
+  - he: אינטרנט אלחוטי
+    en: Wi-Fi
 photos:
   - src: /photos/atzulat-hakikar-b/living-room-1280.webp
     widths: [640, 1280, 1920]

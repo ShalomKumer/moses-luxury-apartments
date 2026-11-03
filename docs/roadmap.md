@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate and Atzulat HaKikar B built).
+A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate, Atzulat HaKikar B and Atzulat HaKikar A built).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -63,7 +63,7 @@ A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's
   browser tests (10 skipped). Still to come from the user: the original logo file, photos with their rights, the business and coordinator
   details, the lawyer's texts. A new advisory (minimatch, moderate, in the lint chain) appeared in `npm audit` on
   2026-11-02; `audit:prod` fails on high only, so `verify` is green; to be updated with the next dependency change.
-- **Stage 5 is open** (the user, 2026-11-03; the Artist's Estate content arrived the same day, and Atzulat HaKikar B's later that day). `feature/add-artist-estate` is merged
+- **Stage 5 is open** (the user, 2026-11-03; the Artist's Estate content arrived the same day, and those of Atzulat HaKikar B and A later that day). `feature/add-artist-estate` is merged
   (PR #14; see "Committed next", 4e), and `fix/artist-estate-name` corrects the name: the first real apartment with ten photos, srcset, the
   weight check that reads it, and a fix of a latent gallery rule (a sixth photo was shown on a wide screen). The user's answers: the
   name is "אחוזת האמן-בית לבקובסקי"; the client took all the photos and made the logo (the user's word; written
@@ -146,6 +146,14 @@ In this order; each one is its own branch, and nothing starts before the one abo
    apartment, "אצולת הכיכר ב׳" / "Atzulat HaKikar B" (4 bedrooms, 11 beds, 3 bathrooms, a spa jacuzzi, a courtyard; ten photos, the main one
    `3E6A9113`), second in the list, the samples after it; the real-apartment browser tests are now one table (`tests/e2e/real-apartments.spec.ts`)
    and a prompt for adding an apartment is `docs/new-apartment-prompt.md`. The guest cap (11, from the beds) waits for the owner.
+4g. Stage 5, `feature/add-atzulat-hakikar-a` (content of the same kind, counted in its point, the total stays 27): the third real apartment, "אצולת הכיכר א׳" /
+   "Atzulat HaKikar A" (4 bedrooms with 3 master suites, 11 beds, 4 bathrooms, 2 jacuzzis, a private heated pool in an enclosed structure, a balcony and a
+   courtyard; ten photos, the main one `DSC04226`), third in the list, the samples after it. **The user's standing rule (2026-11-03):** every real
+   apartment lists Wi-Fi in its features, and a jacuzzi when it has one (Atzulat HaKikar B got its Wi-Fi line; a test enforces it for the real
+   apartments; the sample apartments are not covered). Held back until the owner shows the photographer's licence: 14 photos (`IMG_xxxxBW`) with
+   the watermark "ALON art & photography", the only ones that show the pool. The pool itself and the guest cap (11, from the beds) wait for the owner. The page-weight check failed for the Artist's Estate and this page
+   (the main photo is a row on the other pages), so `npm run photos:add` got `--page-kb=<n>`, a lower ceiling for the 640 and 1280 files (the user chose this
+   over a higher budget or another main photo); a fourth real apartment will probably need the row photos shrunk for good.
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both

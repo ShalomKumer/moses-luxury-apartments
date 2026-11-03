@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 import { encodePhoto } from '../../../scripts/photos/encode.mjs';
-import { MAX_BYTES, WIDTHS } from '../../../scripts/photos/limits.mjs';
+import { MAX_BYTES, VIEWER_WIDTH, WIDTHS } from '../../../scripts/photos/limits.mjs';
 import { outputPath } from '../../../scripts/photos/output-path.mjs';
 import { photoProblems } from '../../../scripts/photos/photo-rules.mjs';
 import { planWidths } from '../../../scripts/photos/plan-variants.mjs';
@@ -146,6 +146,28 @@ describe('encodePhoto', () => {
     expect(fitted.quality).toBeLessThan(best.quality);
     expect(fitted.data.length).toBeLessThan(best.data.length);
     await expect(encodePhoto(source, 100)).rejects.toThrow(/stays over 100 bytes/);
+  });
+
+  it('holds the files a page loads to a lower ceiling, and leaves the viewer file at the standard one', async () => {
+    const source = await sharp(await noise(240, 120))
+      .resize(2400, 1200)
+      .jpeg()
+      .toBuffer(); // smooth, so 1920 fits
+    const standard = await encodePhoto(source);
+    const pageCeiling = Math.floor(standard[1].data.length * 0.8); // below the 1280 file, above the 640 one
+    const variants = await encodePhoto(source, MAX_BYTES, pageCeiling);
+    for (const variant of variants.filter((item) => item.width < VIEWER_WIDTH)) {
+      expect(variant.data.length).toBeLessThanOrEqual(pageCeiling);
+    }
+    const viewer = variants.find((item) => item.width === VIEWER_WIDTH);
+    expect(viewer?.quality).toBe(standard.find((item) => item.width === VIEWER_WIDTH)?.quality);
+  });
+
+  it('never lets the page ceiling raise the standard one', async () => {
+    const source = await noise(700, 500);
+    const [best] = await encodePhoto(source, Number.MAX_SAFE_INTEGER);
+    const [fitted] = await encodePhoto(source, best.data.length - 1, Number.MAX_SAFE_INTEGER);
+    expect(fitted.data.length).toBeLessThan(best.data.length);
   });
 
   it('refuses a file that is not a picture', async () => {
