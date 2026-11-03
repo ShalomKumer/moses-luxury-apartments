@@ -9,6 +9,7 @@ import ApartmentRows from '@components/cabin/ApartmentRows.astro';
 import CabinFacts from '@components/cabin/CabinFacts.astro';
 import CabinGallery from '@components/cabin/CabinGallery.astro';
 import JumpToRequest from '@components/cabin/JumpToRequest.astro';
+import { toPagePhoto } from '@components/cabin/cabin-photo';
 import ContactDetails from '@components/contact/ContactDetails.astro';
 import BaseLayout from '@components/layout/BaseLayout.astro';
 import HeartRule from '@components/ui/HeartRule.astro';
@@ -33,7 +34,7 @@ const name = pick(cabin.data.name, locale);
 const summary = pick(cabin.data.summary, locale);
 const paragraphs = splitParagraphs(pick(cabin.data.description, locale));
 const features = cabin.data.features.map((feature) => pick(feature, locale));
-const photos = cabin.data.photos.map((photo) => ({ ...photo, alt: pick(photo.alt, locale) }));
+const photos = cabin.data.photos.map((photo) => toPagePhoto(photo, locale));
 const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.data.order);
 const hasOthers = cabins.some((other) => other.id !== cabin.id);
 ---

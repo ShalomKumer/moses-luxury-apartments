@@ -1,10 +1,12 @@
 ---
 /**
  * An apartment's photos: one large photo and up to four small ones, with "all photos" opening the viewer. Each photo is a
- * link to the full file, so the page works without JavaScript (every photo then shows, in a plain grid); the controller
- * turns the links into a viewer dialog with keyboard control (A3). On a phone the grid shows the first photo only. Every
- * label is in the page's language.
+ * link to the full file, so the page works without JavaScript (the grid's photos then show in a plain grid, and the rest
+ * as links named by their alt text: a photo beyond the grid is not an <img> in the page, so it weighs nothing until it is
+ * opened); the controller turns the links into a viewer dialog with keyboard control (A3). On a phone the grid shows
+ * the first photo only. Every label is in the page's language.
  */
+import type { PagePhoto } from '@components/cabin/cabin-photo';
 import { galleryShape } from '@domain/gallery/gallery-shape';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
@@ -14,7 +16,7 @@ interface Props {
   locale: Locale;
   name: string;
   /** The photos, with their alt text already in the page's language. */
-  photos: { src: string; alt: string; width: number; height: number }[];
+  photos: PagePhoto[];
 }
 
 const { locale, name, photos } = Astro.props;
@@ -32,26 +34,36 @@ const shape = galleryShape(photos.length);
     {fillTemplate(t.heading, { name })}
   </h2>
   <ul role="list" class="gallery__grid">
-    {photos.map((photo, index) => (
-      <li class:list={['gallery__item', { 'gallery__item--extra': index >= shape.shown }]}>
-        <a
-          href={photo.src}
-          data-gallery-item={index}
-          data-alt={photo.alt}
-          aria-label={fillTemplate(t.open, { n: index + 1, total: photos.length, alt: photo.alt })}
-        >
-          <img
-            src={photo.src}
-            alt=""
-            width={photo.width}
-            height={photo.height}
-            loading={index === 0 ? 'eager' : 'lazy'}
-            fetchpriority={index === 0 ? 'high' : undefined}
-            decoding="async"
-          />
-        </a>
-      </li>
-    ))}
+    {photos.map((photo, index) =>
+      index < shape.shown ? (
+        <li class="gallery__item">
+          <a
+            href={photo.full}
+            data-gallery-item={index}
+            data-alt={photo.alt}
+            aria-label={fillTemplate(t.open, { n: index + 1, total: photos.length, alt: photo.alt })}
+          >
+            <img
+              src={photo.src}
+              srcset={photo.srcset}
+              sizes={index === 0 ? '(min-width: 48rem) 66vw, 100vw' : '(min-width: 48rem) 33vw, 100vw'}
+              alt=""
+              width={photo.width}
+              height={photo.height}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              fetchpriority={index === 0 ? 'high' : undefined}
+              decoding="async"
+            />
+          </a>
+        </li>
+      ) : (
+        <li class="gallery__item gallery__item--extra">
+          <a href={photo.full} data-gallery-item={index} data-alt={photo.alt}>
+            {photo.alt}
+          </a>
+        </li>
+      ),
+    )}
   </ul>
   {shape.hasViewerControls && (
     <button type="button" class="button button--secondary gallery__all" data-gallery-all>
@@ -114,6 +126,12 @@ const shape = galleryShape(photos.length);
     object-fit: cover;
   }
 
+  /* a photo beyond the grid, without the script: a link with the photo's words */
+  .gallery__item--extra a {
+    height: auto;
+    padding-block: var(--space-2);
+  }
+
   .gallery__all {
     position: absolute;
     inset-block-end: var(--space-3);
@@ -147,7 +165,7 @@ const shape = galleryShape(photos.length);
       display: block;
     }
 
-    .gallery[data-enhanced] .gallery__item--extra {
+    .gallery[data-enhanced] .gallery__item.gallery__item--extra {
       display: none;
     }
 

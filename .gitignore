@@ -17,3 +17,6 @@ graphify-out/
 
 # Local Claude Code settings (per machine)
 .claude/settings.local.json
+
+# The owner's original photos: large, may carry GPS data; they enter only through npm run photos:add (C3, L8)
+/צימרים/

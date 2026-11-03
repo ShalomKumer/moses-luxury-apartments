@@ -14,6 +14,8 @@ const photo = z.strictObject({
   alt: text,
   width: z.number().int().positive(),
   height: z.number().int().positive(),
+  /** The widths the photo script made (name-640.webp ...); `src` is one of them. Absent for a single-file photo (an SVG). */
+  widths: z.array(z.number().int().positive()).min(1).optional(),
 });
 
 /** One cabin per file, all in the frontmatter: the file name is its id; the description's paragraphs are split by blank lines. */

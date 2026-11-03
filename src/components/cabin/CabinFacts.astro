@@ -28,20 +28,24 @@ const t = getMessages(locale).facts;
       <dt>{t.bedrooms}</dt>
       <dd>{bedrooms}</dd>
     </div>
-    <div>
-      <dt>{t.checkIn}</dt>
-      <dd>
-        {fillTemplate(t.from, { time: '' })}
-        <bdi>{SITE.checkInTime}</bdi>
-      </dd>
-    </div>
-    <div>
-      <dt>{t.checkOut}</dt>
-      <dd>
-        {fillTemplate(t.until, { time: '' })}
-        <bdi>{SITE.checkOutTime}</bdi>
-      </dd>
-    </div>
+    {SITE.checkInTime && (
+      <div>
+        <dt>{t.checkIn}</dt>
+        <dd>
+          {fillTemplate(t.from, { time: '' })}
+          <bdi>{SITE.checkInTime}</bdi>
+        </dd>
+      </div>
+    )}
+    {SITE.checkOutTime && (
+      <div>
+        <dt>{t.checkOut}</dt>
+        <dd>
+          {fillTemplate(t.until, { time: '' })}
+          <bdi>{SITE.checkOutTime}</bdi>
+        </dd>
+      </div>
+    )}
   </dl>
   <h3>{t.featuresHeading}</h3>
   <ul class="cabin-facts__features" role="list">

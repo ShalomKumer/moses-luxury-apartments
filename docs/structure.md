@@ -37,6 +37,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── dates/                  # date-key, date-range, format-date, month
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, stay-dates, guests
 │   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
+│   │   ├── photos/                 # photo-sources (the src, srcset and largest file of a photo from its widths)
 │   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
 │   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
 │   │
@@ -49,7 +50,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
 │   │   ├── layout/   BaseLayout, SkipLink, SampleBanner, SiteHeader (logo), SiteFooter
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
-│   │   ├── cabin/    CabinGallery + gallery-controller.ts, CabinFacts, JumpToRequest, ApartmentRow, ApartmentRows
+│   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, JumpToRequest, ApartmentRow, ApartmentRows
 │   │   │             #   (the rows are shared by the home page and the apartment pages)
 │   │   ├── legal/    LegalHead, LegalToc (sticky beside the text, folded <details> on a phone), DraftNotice,
 │   │   │             #   CoordinatorCard (the accessibility coordinator, from config/site.ts)
@@ -66,7 +67,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
 │   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7)
 │   ├── check-launch-ready.mjs      # no placeholder or sample content left (L11, C3)
-│   ├── budget/                     # the performance budget: limits, page-weight (pure), check-budget (entry)
+│   ├── budget/                     # the performance budget: limits, page-weight + pick-candidate (pure; a srcset counts at what a phone loads), check-budget (entry)
 │   ├── fonts/                      # the web fonts (C1): charset (Hebrew + Latin), fonts (the three), subset-fonts (entry:
 │   │                               #   npm run fonts:build -- <folder of the full .ttf files>, writes public/fonts/)
 │   └── photos/                     # the photo pipeline (C3, L8): limits, plan-variants, encode (sharp), output-path,

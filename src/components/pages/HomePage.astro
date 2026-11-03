@@ -7,6 +7,7 @@ import { getCollection } from 'astro:content';
 import ContactDetails from '@components/contact/ContactDetails.astro';
 import BookingRequest from '@components/booking/BookingRequest.astro';
 import ApartmentRows from '@components/cabin/ApartmentRows.astro';
+import { toPagePhoto } from '@components/cabin/cabin-photo';
 import HomeHero from '@components/home/HomeHero.astro';
 import HomePoints from '@components/home/HomePoints.astro';
 import BaseLayout from '@components/layout/BaseLayout.astro';
@@ -24,7 +25,7 @@ const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.d
 ---
 
 <BaseLayout locale={locale} path="/" title={t.brand.name}>
-  <HomeHero locale={locale}>
+  <HomeHero locale={locale} photo={toPagePhoto(cabins[0].data.photos[0], locale)}>
     <BookingRequest locale={locale} cabins={cabins} />
   </HomeHero>
 

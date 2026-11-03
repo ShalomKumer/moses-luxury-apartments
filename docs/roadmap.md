@@ -20,19 +20,19 @@ is corrected in the same PR.
 | 2   | Safety nets and tooling  | `chore/secret-scan` (1, merged); `chore/tooling` (1, merged): Prettier and ESLint, the performance budget, the photo script, `docs/owner-guide.md`; `chore/browser-tests` (1, merged): Playwright with axe at WCAG 2.2, the focus-not-obscured check. | 3   | **Done** (closed 2026-11-01)  |
 | 3   | Design                   | `feature/design-apartment-page` (2, decided 2026-11-02: layout 1, gallery first); `feature/design-legal-pages` (1, approved 2026-11-02: one reading layout, `docs/design/legal.md`): the legal and system pages (404 and so on) in the chosen language, each with all its states. | 3   | **Done** (closed 2026-11-02)  |
 | 4   | The design, built        | `feature/build-home` (3), the apartment page (2), the legal and system pages (1), with tests and a browser walk. Needs the fonts and photos. | 6   | **Done** (closed 2026-11-03)  |
-| 5   | Content from the owner   | Business details, the real cabins, photos with their rights through the photo script, the English texts.                                       | 2   | Not started                   |
+| 5   | Content from the owner   | Business details, the real cabins, photos with their rights through the photo script, the English texts.                                       | 2   | **Open** (2026-11-03)         |
 | 6   | SEO                      | `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD, absolute `hreflang`; needs the domain.                    | 2   | Not started                   |
 | 7   | Launch                   | Domain, HTTPS, host rules, axe and screen-reader pass, the lawyer's texts, `launch:check` green, the release PR from `dev` to `main`.          | 2   | Not started                   |
 
-Total 27 points; 21 done (stages 1 to 4), about 78% of the project (an estimate). An admin editor for the apartments is not a stage and is
-not counted; it is built only if the user asks (below). Stage 4 is closed (the user, 2026-11-03); no stage is open, and
-stage 5 starts only with the user's explicit word, in a new session. The real photos and the logo file are still to come.
+Total 27 points; 21 done (stages 1 to 4), about 78% of the project (an estimate); stage 5 is open (2026-11-03) and its first feature, `feature/add-artist-estate` (1 of 2 points), is built and waits for review and merge. An admin editor for the apartments is not a stage and is
+not counted; it is built only if the user asks (below). Stage 4 was closed (the user, 2026-11-03) and the user opened stage 5 the same day, in a new session. Still to come from the owner: the
+business details, the accessibility coordinator, the check-in and check-out times, the cancellation terms, the lawyer's texts.
 
 The owner's and the lawyer's own track ("Before launch", at the end of this file) runs beside all of them.
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-03 (stage 4 closed).
+A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate built).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -60,10 +60,16 @@ A snapshot, not a history. Last update: 2026-11-03 (stage 4 closed).
   shared with the home page. `feature/build-home` was merged (PR #10, 2026-11-02):
   the home page of `docs/design/home.md` in Hebrew and English, with the booking-request bar, and the three fonts
   downloaded with the user's yes, cut to Hebrew and Latin and self-hosted (C1); with the legal pages, 240 unit and 334
-  browser tests (10 skipped). Next: stage 5 (content from the owner) waits for the user's explicit word and a new
-  session. Still to come from the user: the original logo file, photos with their rights, the business and coordinator
+  browser tests (10 skipped). Still to come from the user: the original logo file, photos with their rights, the business and coordinator
   details, the lawyer's texts. A new advisory (minimatch, moderate, in the lint chain) appeared in `npm audit` on
   2026-11-02; `audit:prod` fails on high only, so `verify` is green; to be updated with the next dependency change.
+- **Stage 5 is open** (the user, 2026-11-03; the Artist's Estate content arrived the same day). `feature/add-artist-estate` is built on its
+  branch and waits for `/ship`, review and merge (see "Committed next", 4e): the first real apartment with ten photos, srcset, the
+  weight check that reads it, and a fix of a latent gallery rule (a sixth photo was shown on a wide screen). The user's answers: the
+  name is "אחוזת האמן – בית דוד לבקובסקי"; the client took all the photos and made the logo (the user's word; written
+  confirmation to come); both phones are WhatsApp; the sample apartments stay for now; the site is in Hebrew and English only. The
+  questions to bring from the client (business details, coordinator, times, cancellation terms, an owner decision about the
+  sample apartments, the domain) were listed in the chat on 2026-11-03.
 - **Decided by the user, 2026-11-01:** the build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp
   libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; axe-core and its Playwright wrapper, MPL-2.0, test-only; C4), and the one reviewed finding in
   `scripts/secret-scan/reviewed-findings.mjs`. Fourteen code-review findings were recorded and not fixed on purpose; they
@@ -130,6 +136,12 @@ In this order; each one is its own branch, and nothing starts before the one abo
 4d. Stage 4, `feature/build-legal-pages` (1): **done and merged, 2026-11-03 (PR #12)** - `docs/design/legal.md`: page head,
    table of contents, draft notice, the dashed "to fill" box, the coordinator card, the fees table (structure only),
    the 404 page; "צימרים" moved to "דירות" in the Hebrew legal texts.
+4e. Stage 5, `feature/add-artist-estate` (1): **built 2026-11-03, waiting for review and merge** - "אחוזת האמן – בית דוד לבקובסקי" is the first real apartment
+   (the owner's text in both languages, ten real photos through `npm run photos:add`, 14 guests, 6 bedrooms), first in the list; the home
+   hero is its terrace; both phone numbers are WhatsApp; photos have a `srcset` and the weight check reads it; a photo beyond the
+   grid is a link, not an `<img>`; the source folder `צימרים/` is git-ignored; the check-in and check-out times show nothing until the
+   owner gives them (`launch:check` fails on them). The three sample apartments stay for now (the user). Still to come in stage 5 (1 point):
+   the business details, the accessibility coordinator, the check-in and check-out times, the cancellation terms.
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both

@@ -53,8 +53,8 @@ for (const { path, label, rtl } of PAGES) {
       const guests = page.locator('[data-request-guests]');
       await guests.selectOption('5');
       expect(await guests.inputValue()).toBe('5');
-      // the first apartment takes two guests
-      await unit.selectOption({ index: 1 });
+      // the Gefen sample apartment takes two guests (the Artist's Estate, the first, takes fourteen)
+      await unit.selectOption('gefen');
       expect(await guests.inputValue()).toBe('');
       await expect(guests.locator('option[value="3"]')).toBeDisabled();
       await expect(guests.locator('option[value="2"]')).toBeEnabled();
