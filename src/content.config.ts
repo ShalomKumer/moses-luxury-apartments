@@ -39,6 +39,10 @@ const legal = defineCollection({
     description: z.string().min(1),
     updated: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     order: z.number().int(),
+    /** While present the page is a draft: the words of the notice shown at its top (removed when the text is final). */
+    draft: z.string().min(1).optional(),
+    /** True on the accessibility statement: the coordinator's card is shown at its end (A6). */
+    coordinator: z.boolean().optional(),
   }),
 });
 

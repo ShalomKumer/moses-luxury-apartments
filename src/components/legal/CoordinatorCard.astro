@@ -1,0 +1,96 @@
+---
+/**
+ * The accessibility coordinator's card at the end of the accessibility statement (A6): name, phone, email and the date of
+ * the last check, from `src/config/site.ts` so the same details are written once. A detail not yet known shows as a part
+ * still to fill.
+ */
+import { SITE } from '@config/site';
+import { formatDateKey } from '@domain/dates/format-date';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getMessages(locale).legal.coordinator;
+const { name, phone, email, lastCheck } = SITE.accessibilityCoordinator;
+---
+
+<dl class="coordinator">
+  <div>
+    <dt>{t.name}</dt>
+    <dd>
+      {name ?? (
+        <span class="to-fill">
+          <strong>{t.toFill}</strong> {t.name}
+        </span>
+      )}
+    </dd>
+  </div>
+  <div>
+    <dt>{t.phone}</dt>
+    <dd>
+      {phone ? (
+        <a href={`tel:${phone}`}>
+          <bdi>{phone}</bdi>
+        </a>
+      ) : (
+        <span class="to-fill">
+          <strong>{t.toFill}</strong> {t.phone}
+        </span>
+      )}
+    </dd>
+  </div>
+  <div>
+    <dt>{t.email}</dt>
+    <dd>
+      {email ? (
+        <a href={`mailto:${email}`}>
+          <bdi dir="ltr">{email}</bdi>
+        </a>
+      ) : (
+        <span class="to-fill">
+          <strong>{t.toFill}</strong> {t.email}
+        </span>
+      )}
+    </dd>
+  </div>
+  <div>
+    <dt>{t.lastCheck}</dt>
+    <dd>
+      {lastCheck ? (
+        <time datetime={lastCheck}>{formatDateKey(lastCheck)}</time>
+      ) : (
+        <span class="to-fill">
+          <strong>{t.toFill}</strong> {t.lastCheck}
+        </span>
+      )}
+    </dd>
+  </div>
+</dl>
+
+<style>
+  .coordinator {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-4);
+    margin-block: var(--space-6) 0;
+    padding: var(--space-4) var(--space-6);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-inline-start: 4px solid var(--color-accent);
+    border-radius: var(--radius);
+  }
+
+  .coordinator dt {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+
+  .coordinator dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+</style>

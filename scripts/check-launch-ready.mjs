@@ -23,6 +23,11 @@ const FORBIDDEN = [
   { pattern: /תוכן לדוגמה|תיאור לדוגמה|איור לדוגמה/, why: 'sample cabin text' },
   { pattern: /\|\s*sample,/, why: 'a sample photo (src/content/photos.md)' },
   { pattern: /\*\*טיוטה\.\*\*/, why: 'a legal text still marked as a draft' },
+  { pattern: /^draft:/, why: 'a legal page still marked as a draft (the `draft` field of its front matter)' },
+  {
+    pattern: /(name|phone|email|lastCheck): null as string \| null/,
+    why: 'an accessibility coordinator detail still to fill',
+  },
 ];
 
 const problems = [];

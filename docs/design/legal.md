@@ -104,3 +104,25 @@ Not drawn, because the pages have none: loading, empty and error states of data 
 build above. Open: the "צימרים" wording in the Hebrew texts (a content fix, above).
 
 Iron rules touched: L1, L2, L3, L10, L11, H1, H4, A1, A4, A6, A7, S4, C5, C6.
+
+## Built (feature/build-legal-pages, 2026-11-03)
+
+All seven parts of the layout and the 404 page are built as drawn, in Hebrew and English, with the rules above.
+
+- **Where:** `src/components/legal/` (`LegalHead`, `LegalToc`, `DraftNotice`, `CoordinatorCard`), `LegalPage.astro`, the
+  footer's `aria-current`, `src/pages/404.astro`.
+- **The table of contents** comes from the headings the content system reports (`tableOfContents`, three sections or
+  more); both versions (the sticky list and the folded `<details>`) are in the page and CSS shows one, so no script runs.
+- **The draft notice** is the `draft` field of a page's front matter (its own words), no longer a blockquote; removing
+  the field is what makes a page final, and `launch:check` fails while it is there.
+- **A part to fill** is made by `src/markdown/fill-markers-plugin.ts` (Sätteri, Astro 7's Markdown processor; the
+  unified `rehypePlugins` need an extra package and are not used). The same plugin file set makes each section heading
+  focusable and wraps a table in a named, keyboard-reachable scroll region with a caption (`page-structure-plugin.ts`).
+- **The coordinator card** reads `SITE.accessibilityCoordinator` (`src/config/site.ts`); a null is a part to fill.
+- **The cancellation-fees table** is a structure only (three columns, three rows, every cell to fill) until the lawyer
+  writes it.
+- **The wording** "צימרים" is "דירות" in the Hebrew terms and accessibility texts.
+- **Tested:** `tests/e2e/legal.spec.ts` (both languages, both widths), `tests/unit` for the markers, the table of
+  contents and the two plugins; axe, overflow and focus for every page are in `pages.spec.ts`.
+- **Not done here:** the footer's business details are still the dictionary's placeholders (L11, stage 5); the table's
+  figures and every legal sentence are the lawyer's (L1, L2, L3, H4, A6, L12).

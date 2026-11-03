@@ -37,8 +37,12 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── dates/                  # date-key, date-range, format-date, month
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, stay-dates, guests
 │   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
-│   │   ├── text/                   # fill-template, paragraphs
+│   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
 │   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
+│   │
+│   ├── markdown/                   # BUILD TIME: Markdown page plugins for Sätteri (Astro's processor): fill-markers-plugin
+│   │                               #   (a part to fill becomes a labelled box), page-structure-plugin (focusable headings, tables in
+│   │                               #   a named scroll region); imports domain/ only (and Sätteri's types)
 │   │
 │   ├── server/                     # KEPT, UNWIRED: calendar source, fetch, cache, service (for a future admin view)
 │   │
@@ -47,6 +51,8 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
 │   │   ├── cabin/    CabinGallery + gallery-controller.ts, CabinFacts, JumpToRequest, ApartmentRow, ApartmentRows
 │   │   │             #   (the rows are shared by the home page and the apartment pages)
+│   │   ├── legal/    LegalHead, LegalToc (sticky beside the text, folded <details> on a phone), DraftNotice,
+│   │   │             #   CoordinatorCard (the accessibility coordinator, from config/site.ts)
 │   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
 │   │   ├── booking/  BookingRequest + request-controller.ts (the home page's request with an apartment choice, and
 │   │   │             #   the apartment page's with the apartment fixed), BookingLinks + booking-links.ts,
@@ -85,6 +91,7 @@ Who may import whom. `tests/policy/layers.test.ts` reads every import and fails 
 | -------------- | --------------------------------------------------------- | ------------------------------------------------ |
 | `domain/`      | `domain/`, `config/`                                      | `server/`, `components/`, any I/O                |
 | `server/`      | `domain/`, `config/`                                      | `components/`, `pages/`                          |
+| `markdown/`    | `domain/`, packages (Sätteri's types)                     | `components/`, `pages/`, `server/`, `i18n/`      |
 | `components/`  | `domain/`, `config/`, `i18n/`, `components/`              | `server/`, the availability code                 |
 | `pages/`       | `components/`, `config/`, `i18n/`, content                | `server/`, the availability code, API routes     |
 | `i18n/`        | itself only                                               | every other layer                                |

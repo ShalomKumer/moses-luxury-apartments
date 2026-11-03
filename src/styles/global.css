@@ -153,3 +153,14 @@ ul[role='list'] {
     transition: none !important;
   }
 }
+
+/* A part of a legal text still to fill: a dashed box that starts with the word "To fill:" (the word carries the meaning,
+   the dashes only point to it). It blocks launch on purpose (L11). */
+.to-fill {
+  padding: 0.1em 0.5em;
+  background: var(--color-surface);
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

@@ -24,6 +24,16 @@ export const SITE = {
   ],
   /** The booking email (given by the user, 2026-10-31). */
   email: 'Mnm783@gmail.com',
+  /**
+   * The accessibility coordinator (A6), shown on the accessibility statement. A null is a part still to fill; every
+   * one is filled with the owner's real details before launch (`npm run launch:check` fails while a null is left).
+   */
+  accessibilityCoordinator: {
+    name: null as string | null,
+    phone: null as string | null,
+    email: null as string | null,
+    lastCheck: null as string | null,
+  },
   /** Minimum age to book, the owner's rule (L10). To confirm with the owner. */
   minimumAge: 18,
   checkInTime: '15:00',

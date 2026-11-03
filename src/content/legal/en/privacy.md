@@ -3,9 +3,8 @@ title: Privacy policy
 description: What information the site collects, what happens when you contact us on WhatsApp or by email, and how to ask for information to be deleted.
 updated: '2026-10-31'
 order: 1
+draft: "An English version of the Hebrew text. The final wording, and which language prevails, are set with a lawyer before launch."
 ---
-
-> **DRAFT.** An English version of the Hebrew text. The final wording, and which language prevails, are set with a lawyer before launch.
 
 ## Who we are
 
