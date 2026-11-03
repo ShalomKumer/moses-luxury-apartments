@@ -19,20 +19,20 @@ is corrected in the same PR.
 | 1   | Foundations              | Architecture, the iron rules with the client's checklist, the first bilingual site on sample content, the working rules, git flow, the choice of the home design (`chore/foundations`, `chore/astro-7`, `feature/i18n-he-en`, `feature/design-home`: 2+1+3+3). | 9   | **Done** (merged 2026-11-01)  |
 | 2   | Safety nets and tooling  | `chore/secret-scan` (1, merged); `chore/tooling` (1, merged): Prettier and ESLint, the performance budget, the photo script, `docs/owner-guide.md`; `chore/browser-tests` (1, merged): Playwright with axe at WCAG 2.2, the focus-not-obscured check. | 3   | **Done** (closed 2026-11-01)  |
 | 3   | Design                   | `feature/design-apartment-page` (2, decided 2026-11-02: layout 1, gallery first); `feature/design-legal-pages` (1, approved 2026-11-02: one reading layout, `docs/design/legal.md`): the legal and system pages (404 and so on) in the chosen language, each with all its states. | 3   | **Done** (closed 2026-11-02)  |
-| 4   | The design, built        | `feature/build-home` (3), the apartment page (2), the legal and system pages (1), with tests and a browser walk. Needs the fonts and photos. | 6   | **Open** (2026-11-02)         |
+| 4   | The design, built        | `feature/build-home` (3), the apartment page (2), the legal and system pages (1), with tests and a browser walk. Needs the fonts and photos. | 6   | **Done** (closed 2026-11-03)  |
 | 5   | Content from the owner   | Business details, the real cabins, photos with their rights through the photo script, the English texts.                                       | 2   | Not started                   |
 | 6   | SEO                      | `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD, absolute `hreflang`; needs the domain.                    | 2   | Not started                   |
 | 7   | Launch                   | Domain, HTTPS, host rules, axe and screen-reader pass, the lawyer's texts, `launch:check` green, the release PR from `dev` to `main`.          | 2   | Not started                   |
 
-Total 27 points; 15 done (stages 1 to 3), about 56% of the project (an estimate). An admin editor for the apartments is not a stage and is
-not counted; it is built only if the user asks (below). Stage 4 is open (the user, 2026-11-02); its first build needs the
-fonts (the user's yes to download), and the real photos and the logo file are still to come; stage 5 may move before it.
+Total 27 points; 21 done (stages 1 to 4), about 78% of the project (an estimate). An admin editor for the apartments is not a stage and is
+not counted; it is built only if the user asks (below). Stage 4 is closed (the user, 2026-11-03); no stage is open, and
+stage 5 starts only with the user's explicit word, in a new session. The real photos and the logo file are still to come.
 
 The owner's and the lawyer's own track ("Before launch", at the end of this file) runs beside all of them.
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-03 (`feature/build-legal-pages` built).
+A snapshot, not a history. Last update: 2026-11-03 (stage 4 closed).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -50,17 +50,19 @@ A snapshot, not a history. Last update: 2026-11-03 (`feature/build-legal-pages` 
   and 404 design (one reading layout with all its states; `docs/design/legal.md`), each with its exploration, its
   artifact and the rules for the build; axe found nothing at 1280 px and 375 px. The name stays as in the logo for now
   ("דירת מוזס", units are "דירות"; the user, 2026-11-02).
-- **Stage 4 (the design, built) is open** (the user, 2026-11-02). `feature/build-legal-pages` is built (2026-11-03,
-  awaiting merge): the four legal pages and the 404 page of `docs/design/legal.md` (page head, table of contents, draft
+- **Stage 4 is done and closed** (PR #10, #11 and #12 merged into `dev`; the user closed it, 2026-11-03; `main` is still
+  the empty first commit). It is the design, built: all its pages. `feature/build-legal-pages` was merged (PR #12,
+  2026-11-03): the four legal pages and the 404 page of `docs/design/legal.md` (page head, table of contents, draft
   notice from the `draft` field, parts to fill as labelled boxes, the coordinator card, the cancellation-fees table as a
   structure, the current policy marked in the footer), and "צימרים" moved to "דירות" in the Hebrew legal texts; with it
   stage 4 holds all its pages. `feature/build-apartment-page` was merged (PR #11, 2026-11-02): the apartment page of
   `docs/design/apartment.md` (layout 1, the phone jump button, the other apartments as rows) and the booking request
   shared with the home page. `feature/build-home` was merged (PR #10, 2026-11-02):
   the home page of `docs/design/home.md` in Hebrew and English, with the booking-request bar, and the three fonts
-  downloaded with the user's yes, cut to Hebrew and Latin and self-hosted (C1); 214 unit and 230 browser tests. Next:
-  when 4d is merged the user decides whether to close stage 4 (nothing is started without the user's word). Still to
-  come from the user: the original logo file, photos with their rights. A new advisory (minimatch, moderate, in the lint chain) appeared in `npm audit` on
+  downloaded with the user's yes, cut to Hebrew and Latin and self-hosted (C1); with the legal pages, 240 unit and 334
+  browser tests (10 skipped). Next: stage 5 (content from the owner) waits for the user's explicit word and a new
+  session. Still to come from the user: the original logo file, photos with their rights, the business and coordinator
+  details, the lawyer's texts. A new advisory (minimatch, moderate, in the lint chain) appeared in `npm audit` on
   2026-11-02; `audit:prod` fails on high only, so `verify` is green; to be updated with the next dependency change.
 - **Decided by the user, 2026-11-01:** the build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp
   libvips binary, LGPL-3.0; lightningcss and its binary, MPL-2.0; axe-core and its Playwright wrapper, MPL-2.0, test-only; C4), and the one reviewed finding in
@@ -125,7 +127,7 @@ In this order; each one is its own branch, and nothing starts before the one abo
 4c. Stage 4, `feature/build-apartment-page` (2): **done and merged, 2026-11-02 (PR #11)** - layout 1 of
    `docs/design/apartment.md` with the phone jump button and the apartment rows; "צימר" moved to "דירה" in the page and
    the sample content.
-4d. Stage 4, `feature/build-legal-pages` (1): **built 2026-11-03** (awaiting merge) - `docs/design/legal.md`: page head,
+4d. Stage 4, `feature/build-legal-pages` (1): **done and merged, 2026-11-03 (PR #12)** - `docs/design/legal.md`: page head,
    table of contents, draft notice, the dashed "to fill" box, the coordinator card, the fees table (structure only),
    the 404 page; "צימרים" moved to "דירות" in the Hebrew legal texts.
 
