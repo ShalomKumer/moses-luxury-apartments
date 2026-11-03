@@ -1,14 +1,14 @@
 ---
 name:
-  he: צימר התאנה
+  he: דירת התאנה
   en: Teena Apartment
 order: 3
 summary:
-  he: צימר זוגי שקט בקצה המתחם, עם מקלחת גשם ופינת קריאה. (תוכן לדוגמה)
+  he: דירה זוגית שקטה בקצה המתחם, עם מקלחת גשם ופינת קריאה. (תוכן לדוגמה)
   en: A quiet couple's apartment at the edge of the compound, with a rain shower and a reading corner. (sample content)
 description:
   he: |
-    זהו תיאור לדוגמה. כאן יופיע התיאור המלא של הצימר כפי שהבעלים ימסור אותו.
+    זהו תיאור לדוגמה. כאן יופיע התיאור המלא של הדירה כפי שהבעלים ימסור אותו.
   en: |
     This is a sample description. The owner's full description will appear here.
 maxGuests: 2
@@ -23,7 +23,7 @@ features:
 photos:
   - src: /photos/teena/1-outside.svg
     alt:
-      he: הצימר מבחוץ בקצה המתחם (איור לדוגמה)
+      he: הדירה מבחוץ בקצה המתחם (איור לדוגמה)
       en: The apartment from outside at the edge of the compound (sample illustration)
     width: 1200
     height: 800

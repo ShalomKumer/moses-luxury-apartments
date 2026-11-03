@@ -135,6 +135,24 @@ Not drawn here, because the page has none: loading, empty and error states of da
 
 **Not taken:** the full-bleed hero of 2, the chapters of 3, the stuck column of 4 and the action bar of 5.
 
+## Built (feature/build-apartment-page, 2026-11-02)
+
+The page follows the decision above. Where the build differs or decides something the drawing did not:
+
+- **One request for both pages.** `BookingRequest` is the home page's request; with `fixed` the apartment select is
+  replaced by the page's own apartment (`data-unit-name`), and the guests run up to its `maxGuests`. The old `BookingPanel`
+  is gone, so the page has dates now, drawn as the home page's bar (`tests/e2e/apartment.spec.ts`).
+- **The grid** takes its shape from the photo count (`domain/gallery/gallery-shape.ts`): 1 alone (at most 45 rem wide), 2
+  halves, 3 one large and two, 4 one large and three (the last takes the whole second row), 5 one large and four. More
+  than five stay in the viewer. On a phone the first photo and "all photos (n)". Without JavaScript every photo shows in a
+  plain grid; the grid hides photos only once the controller has marked the gallery `data-enhanced`.
+- **The jump button** is a plain link to the request's id, so it needs no script; the next Tab lands in the request's
+  first field. It sits at the end of the details' own column and sticks to the bottom of the screen while they scroll.
+- **The stuck card** (a wide and tall screen only, 62 rem by 48 rem) keeps its top 1 rem from the screen's top; on a short
+  screen it scrolls with the page, because it would not fit (the critique's moderate finding).
+- **Sample content:** the first apartment has five drawn photos, the second one (to show the single-photo state), the
+  third three. The cabin wording in the content moved from "צימר" to "דירה".
+
 ## Open for the user
 
 - Children and infants as a separate guests field: not assumed (as on the home page).

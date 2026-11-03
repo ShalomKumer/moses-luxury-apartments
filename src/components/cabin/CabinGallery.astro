@@ -1,8 +1,11 @@
 ---
 /**
- * A cabin's photos. Each thumbnail is a link to the full photo, so it works without JavaScript; the controller turns it
- * into a viewer dialog with keyboard control (A3). Every label is in the page's language.
+ * An apartment's photos: one large photo and up to four small ones, with "all photos" opening the viewer. Each photo is a
+ * link to the full file, so the page works without JavaScript (every photo then shows, in a plain grid); the controller
+ * turns the links into a viewer dialog with keyboard control (A3). On a phone the grid shows the first photo only. Every
+ * label is in the page's language.
  */
+import { galleryShape } from '@domain/gallery/gallery-shape';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
@@ -16,15 +19,21 @@ interface Props {
 
 const { locale, name, photos } = Astro.props;
 const t = getMessages(locale).gallery;
+const shape = galleryShape(photos.length);
 ---
 
-<section class="gallery" data-gallery data-position-template={t.position} aria-labelledby="gallery-title">
+<section
+  class:list={['gallery', `gallery--n${shape.shown}`]}
+  data-gallery
+  data-position-template={t.position}
+  aria-labelledby="gallery-title"
+>
   <h2 id="gallery-title" class="visually-hidden">
     {fillTemplate(t.heading, { name })}
   </h2>
   <ul role="list" class="gallery__grid">
     {photos.map((photo, index) => (
-      <li>
+      <li class:list={['gallery__item', { 'gallery__item--extra': index >= shape.shown }]}>
         <a
           href={photo.src}
           data-gallery-item={index}
@@ -37,12 +46,18 @@ const t = getMessages(locale).gallery;
             width={photo.width}
             height={photo.height}
             loading={index === 0 ? 'eager' : 'lazy'}
+            fetchpriority={index === 0 ? 'high' : undefined}
             decoding="async"
           />
         </a>
       </li>
     ))}
   </ul>
+  {shape.hasViewerControls && (
+    <button type="button" class="button button--secondary gallery__all" data-gallery-all>
+      {fillTemplate(t.all, { count: photos.length })}
+    </button>
+  )}
 
   <dialog class="gallery__dialog" data-gallery-dialog aria-label={fillTemplate(t.dialog, { name })}>
     <figure class="gallery__figure">
@@ -50,12 +65,16 @@ const t = getMessages(locale).gallery;
       <figcaption data-gallery-caption aria-live="polite"></figcaption>
     </figure>
     <div class="gallery__controls">
-      <button type="button" class="button button--secondary" data-gallery-prev>
-        {t.previous}
-      </button>
-      <button type="button" class="button button--secondary" data-gallery-next>
-        {t.next}
-      </button>
+      {shape.hasViewerControls && (
+        <>
+          <button type="button" class="button button--secondary" data-gallery-prev>
+            {t.previous}
+          </button>
+          <button type="button" class="button button--secondary" data-gallery-next>
+            {t.next}
+          </button>
+        </>
+      )}
       <button type="button" class="button" data-gallery-close>
         {t.close}
       </button>
@@ -70,22 +89,103 @@ const t = getMessages(locale).gallery;
 </script>
 
 <style>
+  .gallery {
+    position: relative;
+  }
+
+  /* without the script: every photo, in a plain grid, each a link to the full file */
   .gallery__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     gap: var(--space-3);
   }
 
-  .gallery__grid a {
+  .gallery__item a {
     display: block;
+    height: 100%;
     border-radius: var(--radius);
     overflow: hidden;
   }
 
-  .gallery__grid img {
+  .gallery__item img {
+    width: 100%;
+    height: 100%;
     aspect-ratio: 3 / 2;
     object-fit: cover;
-    width: 100%;
+  }
+
+  .gallery__all {
+    position: absolute;
+    inset-block-end: var(--space-3);
+    inset-inline-end: var(--space-3);
+  }
+
+  .gallery:not([data-enhanced]) .gallery__all {
+    display: none;
+  }
+
+  /* with the script, a phone shows the first photo and the "all photos" button; the viewer reaches the rest */
+  .gallery[data-enhanced] .gallery__grid {
+    display: block;
+  }
+
+  .gallery[data-enhanced] .gallery__item:not(:first-child) {
+    display: none;
+  }
+
+  @media (min-width: 48rem) {
+    .gallery[data-enhanced] .gallery__grid {
+      --gallery-height: clamp(20rem, 38vw, 30rem);
+
+      display: grid;
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: var(--space-2);
+      height: var(--gallery-height);
+    }
+
+    .gallery[data-enhanced] .gallery__item:not(:first-child) {
+      display: block;
+    }
+
+    .gallery[data-enhanced] .gallery__item--extra {
+      display: none;
+    }
+
+    .gallery[data-enhanced] .gallery__item img {
+      aspect-ratio: auto;
+    }
+
+    /* the photo count picks the arrangement; the first photo is the large one */
+    .gallery--n1[data-enhanced] .gallery__grid {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
+      max-inline-size: 45rem;
+    }
+
+    .gallery--n2[data-enhanced] .gallery__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .gallery--n3[data-enhanced] .gallery__grid {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    }
+
+    .gallery--n4[data-enhanced] .gallery__grid,
+    .gallery--n5[data-enhanced] .gallery__grid {
+      grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    }
+
+    .gallery--n3[data-enhanced] .gallery__item:first-child,
+    .gallery--n4[data-enhanced] .gallery__item:first-child,
+    .gallery--n5[data-enhanced] .gallery__item:first-child {
+      grid-row: span 2;
+    }
+
+    /* with four photos the last small one takes the whole second row beside the large photo */
+    .gallery--n4[data-enhanced] .gallery__item:nth-child(4) {
+      grid-column: span 2;
+    }
   }
 
   .gallery__dialog {

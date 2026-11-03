@@ -1,0 +1,55 @@
+---
+/**
+ * On a phone, a button stuck to the bottom of the screen while the details scroll, that jumps to the booking request,
+ * which there falls below them. It is a plain link to the request's id, so it works without JavaScript and the next Tab
+ * lands in the request's first field. It sits in the details' own column, so it stops at the column's end and never
+ * covers anything above or below it. Hidden on a wide screen, where the request stays beside the details.
+ */
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  /** The id of the request to jump to. */
+  targetId: string;
+}
+
+const { locale, targetId } = Astro.props;
+const t = getMessages(locale);
+---
+
+<div class="jump">
+  <a class="button" href={`#${targetId}`}>
+    {t.cabin.jumpToRequest}
+  </a>
+</div>
+
+<style>
+  .jump {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: 1;
+    margin-block-start: var(--space-6);
+    padding-block: var(--space-3) max(var(--space-3), env(safe-area-inset-bottom, 0px));
+    background: var(--color-bg);
+  }
+
+  .jump .button {
+    width: 100%;
+  }
+
+  @media (min-width: 62rem) {
+    .jump {
+      display: none;
+    }
+  }
+</style>
+
+<!-- a focused or jumped-to element is never left under the stuck button (2.4.11) -->
+<style is:global>
+  @media (max-width: 61.99rem) {
+    html {
+      scroll-padding-block-end: 6rem;
+    }
+  }
+</style>

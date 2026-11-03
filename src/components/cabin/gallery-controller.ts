@@ -32,7 +32,8 @@ function showPhoto(parts: GalleryParts, index: number): void {
 
 /**
  * Turns the photo links into a viewer: native dialog (focus kept inside, Escape closes), arrows move, focus returns.
- * The arrow keys follow the page's direction: in a right-to-left page the right arrow goes back.
+ * The arrow keys follow the page's direction: in a right-to-left page the right arrow goes back. The "all photos" button
+ * opens the viewer at the first photo. Marks the gallery as enhanced, so the grid may hide what the viewer reaches.
  */
 export function initGallery(root: HTMLElement): void {
   const parts = findParts(root);
@@ -44,15 +45,22 @@ export function initGallery(root: HTMLElement): void {
     current = (current + delta + parts.items.length) % parts.items.length;
     showPhoto(parts, current);
   };
+  const open = (index: number, from: HTMLElement) => {
+    opener = from;
+    current = index;
+    showPhoto(parts, current);
+    parts.dialog.showModal();
+  };
+  root.dataset.enhanced = '';
 
   parts.items.forEach((item, index) => {
     item.addEventListener('click', (event) => {
       event.preventDefault();
-      opener = item;
-      current = index;
-      showPhoto(parts, current);
-      parts.dialog.showModal();
+      open(index, item);
     });
+  });
+  root.querySelector<HTMLElement>('[data-gallery-all]')?.addEventListener('click', (event) => {
+    open(0, event.currentTarget as HTMLElement);
   });
   root.querySelector('[data-gallery-prev]')?.addEventListener('click', () => move(-1));
   root.querySelector('[data-gallery-next]')?.addEventListener('click', () => move(1));

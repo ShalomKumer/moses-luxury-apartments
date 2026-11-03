@@ -1,0 +1,34 @@
+---
+/**
+ * The apartments as a list of large rows, shared by the home page and the apartment pages. On an apartment's page the
+ * apartment itself is left out (`except`), so a guest who does not like it is shown the others, not itself.
+ */
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '@i18n/locales';
+import ApartmentRow from './ApartmentRow.astro';
+
+interface Props {
+  cabins: CollectionEntry<'cabins'>[];
+  locale: Locale;
+  /** The id of an apartment to leave out. */
+  except?: string;
+}
+
+const { cabins, locale, except } = Astro.props;
+const shown = cabins.filter((cabin) => cabin.id !== except);
+---
+
+<ul role="list" class="rows">
+  {shown.map((cabin) => (
+    <li>
+      <ApartmentRow cabin={cabin} locale={locale} />
+    </li>
+  ))}
+</ul>
+
+<style>
+  .rows {
+    display: grid;
+    gap: var(--space-8);
+  }
+</style>

@@ -1,8 +1,9 @@
 ---
 /**
- * The booking-request bar on the home page: which apartment, the two dates, the number of guests, the WhatsApp and email
- * buttons, the message that will open, and the notice. It is a group of controls, not a form: nothing is submitted to
- * the site, and no availability is looked up (L5, L10, H4). Without JavaScript the buttons still open a plain message.
+ * The booking request: which apartment (on the home page; an apartment's own page has it fixed), the two dates, the
+ * number of guests, the WhatsApp and email buttons, the message that will open, and the notice. It is a group of
+ * controls, not a form: nothing is submitted to the site, and no availability is looked up (L5, L10, H4). Without
+ * JavaScript the buttons still open a plain message.
  */
 import type { CollectionEntry } from 'astro:content';
 import BookingDates from '@components/booking/BookingDates.astro';
@@ -19,19 +20,26 @@ import { pick } from '@i18n/pick';
 interface Props {
   locale: Locale;
   cabins: CollectionEntry<'cabins'>[];
+  /** True on an apartment's own page: the one cabin given is the page's, so there is no apartment to choose. */
+  fixed?: boolean;
+  /** An id that lets a link jump straight to the request (the phone's jump button). */
+  id?: string;
 }
 
-const { locale, cabins } = Astro.props;
+const { locale, cabins, fixed = false, id } = Astro.props;
 const t = getMessages(locale);
 const request = t.home.request;
 const units = cabins.map((cabin) => ({ id: cabin.id, name: pick(cabin.data.name, locale), max: cabin.data.maxGuests }));
 const maxGuests = maxGuestsOf(units.map((unit) => unit.max));
 const guestOptions = Array.from({ length: maxGuests }, (_, index) => index + 1);
-const message = buildBookingMessage(t.booking.message, null, null);
+const fixedName = fixed ? (units[0]?.name ?? null) : null;
+const message = buildBookingMessage(t.booking.message, fixedName, null);
 ---
 
 <div
-  class="request"
+  class:list={['request', { 'request--fixed': fixed }]}
+  id={id}
+  tabindex={id ? -1 : undefined}
   role="group"
   aria-label={request.heading}
   data-request-bar
@@ -40,19 +48,22 @@ const message = buildBookingMessage(t.booking.message, null, null);
   data-texts={JSON.stringify(t.booking.message)}
   data-problems={JSON.stringify(request.problems)}
   data-max-guests={maxGuests}
+  data-unit-name={fixedName ?? undefined}
 >
   <div class="request__fields">
-    <div class="field request__unit">
-      <label for="request-unit">{request.unit}</label>
-      <select id="request-unit" data-request-unit>
-        <option value="">{request.unitAny}</option>
-        {units.map((unit) => (
-          <option value={unit.id} data-max={unit.max}>
-            {unit.name}
-          </option>
-        ))}
-      </select>
-    </div>
+    {!fixed && (
+      <div class="field request__unit">
+        <label for="request-unit">{request.unit}</label>
+        <select id="request-unit" data-request-unit>
+          <option value="">{request.unitAny}</option>
+          {units.map((unit) => (
+            <option value={unit.id} data-max={unit.max}>
+              {unit.name}
+            </option>
+          ))}
+        </select>
+      </div>
+    )}
     <BookingDates idPrefix="request" checkInLabel={request.checkIn} checkOutLabel={request.checkOut} />
     <div class="field request__guests">
       <label for="request-guests">{request.guests}</label>
@@ -65,7 +76,7 @@ const message = buildBookingMessage(t.booking.message, null, null);
     </div>
   </div>
   <p class="request__problem" data-request-problem role="alert"></p>
-  <BookingLinks locale={locale} name={t.brand.name} cabinName={null} message={message} />
+  <BookingLinks locale={locale} name={fixedName ?? t.brand.name} cabinName={fixedName} message={message} />
   <p class="request__preview" aria-live="polite">
     <small>{request.previewLabel}</small>
     <span data-request-message>{message}</span>
@@ -74,9 +85,9 @@ const message = buildBookingMessage(t.booking.message, null, null);
 </div>
 
 <script>
-  import { initRequestBar } from './request-bar-controller';
+  import { initBookingRequest } from './request-controller';
 
-  document.querySelectorAll<HTMLElement>('[data-request-bar]').forEach(initRequestBar);
+  document.querySelectorAll<HTMLElement>('[data-request-bar]').forEach(initBookingRequest);
 </script>
 
 <style>
@@ -110,6 +121,10 @@ const message = buildBookingMessage(t.booking.message, null, null);
   @container (min-width: 46rem) {
     .request__fields {
       grid-template-columns: 1.4fr 1fr 1fr 0.7fr;
+    }
+
+    .request--fixed .request__fields {
+      grid-template-columns: 1fr 1fr 0.7fr;
     }
 
     .request__unit {

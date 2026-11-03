@@ -48,7 +48,8 @@ for (const { path, label, forward, back, first } of PAGES) {
 
     test('closes with Escape and gives focus back to the photo that opened it', async ({ page }) => {
       await page.goto(path);
-      const photo = page.locator('[data-gallery-item="1"]');
+      // the first photo: a phone's grid shows no other (the viewer reaches them)
+      const photo = page.locator('[data-gallery-item="0"]');
       await photo.focus();
       await page.keyboard.press('Enter');
       await expect(page.locator('[data-gallery-dialog]')).toBeVisible();
