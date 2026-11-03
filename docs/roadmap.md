@@ -24,7 +24,7 @@ is corrected in the same PR.
 | 6   | SEO                      | `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD, absolute `hreflang`; needs the domain.                    | 2   | Not started                   |
 | 7   | Launch                   | Domain, HTTPS, host rules, axe and screen-reader pass, the lawyer's texts, `launch:check` green, the release PR from `dev` to `main`.          | 2   | Not started                   |
 
-Total 27 points; 21 done (stages 1 to 4), about 78% of the project (an estimate); stage 5 is open (2026-11-03) and its first feature, `feature/add-artist-estate` (1 of 2 points), is built and waits for review and merge. An admin editor for the apartments is not a stage and is
+Total 27 points; 22 done (stages 1 to 4 and the first feature of stage 5), about 81% of the project (an estimate); stage 5 is open (2026-11-03), at about 50%: its first feature, `feature/add-artist-estate` (1 of 2 points), is merged (PR #14). An admin editor for the apartments is not a stage and is
 not counted; it is built only if the user asks (below). Stage 4 was closed (the user, 2026-11-03) and the user opened stage 5 the same day, in a new session. Still to come from the owner: the
 business details, the accessibility coordinator, the check-in and check-out times, the cancellation terms, the lawyer's texts.
 
@@ -63,10 +63,10 @@ A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's
   browser tests (10 skipped). Still to come from the user: the original logo file, photos with their rights, the business and coordinator
   details, the lawyer's texts. A new advisory (minimatch, moderate, in the lint chain) appeared in `npm audit` on
   2026-11-02; `audit:prod` fails on high only, so `verify` is green; to be updated with the next dependency change.
-- **Stage 5 is open** (the user, 2026-11-03; the Artist's Estate content arrived the same day). `feature/add-artist-estate` is built on its
-  branch and waits for `/ship`, review and merge (see "Committed next", 4e): the first real apartment with ten photos, srcset, the
+- **Stage 5 is open** (the user, 2026-11-03; the Artist's Estate content arrived the same day). `feature/add-artist-estate` is merged
+  (PR #14; see "Committed next", 4e), and `fix/artist-estate-name` corrects the name: the first real apartment with ten photos, srcset, the
   weight check that reads it, and a fix of a latent gallery rule (a sixth photo was shown on a wide screen). The user's answers: the
-  name is "אחוזת האמן – בית דוד לבקובסקי"; the client took all the photos and made the logo (the user's word; written
+  name is "אחוזת האמן-בית לבקובסקי"; the client took all the photos and made the logo (the user's word; written
   confirmation to come); both phones are WhatsApp; the sample apartments stay for now; the site is in Hebrew and English only. The
   questions to bring from the client (business details, coordinator, times, cancellation terms, an owner decision about the
   sample apartments, the domain) were listed in the chat on 2026-11-03.
@@ -136,7 +136,7 @@ In this order; each one is its own branch, and nothing starts before the one abo
 4d. Stage 4, `feature/build-legal-pages` (1): **done and merged, 2026-11-03 (PR #12)** - `docs/design/legal.md`: page head,
    table of contents, draft notice, the dashed "to fill" box, the coordinator card, the fees table (structure only),
    the 404 page; "צימרים" moved to "דירות" in the Hebrew legal texts.
-4e. Stage 5, `feature/add-artist-estate` (1): **built 2026-11-03, waiting for review and merge** - "אחוזת האמן – בית דוד לבקובסקי" is the first real apartment
+4e. Stage 5, `feature/add-artist-estate` (1): **done and merged, 2026-11-03 (PR #14)** - "אחוזת האמן-בית לבקובסקי" is the first real apartment
    (the owner's text in both languages, ten real photos through `npm run photos:add`, 14 guests, 6 bedrooms), first in the list; the home
    hero is its terrace; both phone numbers are WhatsApp; photos have a `srcset` and the weight check reads it; a photo beyond the
    grid is a link, not an `<img>`; the source folder `צימרים/` is git-ignored; the check-in and check-out times show nothing until the
