@@ -3,6 +3,9 @@
 /** Widths a photo is made in, in pixels; a source narrower than a width is never enlarged to it. */
 export const WIDTHS = [640, 1280, 1920];
 
+/** The widest file: only the photo viewer loads it, so a page's weight does not include it. */
+export const VIEWER_WIDTH = WIDTHS[WIDTHS.length - 1];
+
 /** The most one photo file may weigh: the hero photo's ceiling is about 250 KB (CLAUDE.md, rule 2 for this project). */
 export const MAX_BYTES = 250_000;
 

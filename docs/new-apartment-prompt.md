@@ -28,6 +28,12 @@ the feature lifecycle in `CLAUDE.md` (plan on Opus, "מאשר", build on Sonnet,
 הערות (למשל: להשמיט שורת טלפונים, בלי אימוג'ים, "בס״ד"):
 ```
 
+## Standing rule (the user, 2026-11-03)
+
+Every real apartment lists **Wi-Fi** in its features (he: "אינטרנט אלחוטי", en: "Wi-Fi"), whether or not the owner's text says so, and a
+**jacuzzi** when the text or a photo shows one. `tests/e2e/real-apartments.spec.ts` fails when a real apartment's page lacks the Wi-Fi line.
+The sample apartments are not covered.
+
 ## What each field does
 
 - **Name and photo folder.** The id of the page is the English name in lower-case with hyphens (`atzulat-hakikar-b`), and the photos
@@ -40,7 +46,11 @@ the feature lifecycle in `CLAUDE.md` (plan on Opus, "מאשר", build on Sonnet,
 - **Secondary photos.** The grid always shows the first five photos: the main one large and four small, so give four (the first
   five of the order you send). A grid of one large and three small happens only for an apartment with exactly four photos; a
   different arrangement for a longer set is a code change (`src/domain/gallery/gallery-shape.ts`), so ask for it in the plan.
-  Prefer landscape photos here; a portrait photo is cropped badly in the grid.
+  Prefer landscape photos here; a portrait photo is cropped badly in the grid. A very detailed photo (grass, bamboo, foliage) can stay
+  over the 250 KB ceiling at 1920 px; then it is cut to 1600 px first and gets only the 640 and 1280 files.
+- **The main photo is also the apartment's row on every other apartment's page**, so each real apartment adds its weight to the others (the 1 MB
+  ceiling, `scripts/budget/limits.mjs`). If the budget check fails, add `--page-kb=120` to the main photo's `photos:add` (it lowers the ceiling of
+  the 640 and 1280 files only; the viewer's 1920 file keeps the standard one).
 - **The rest.** They are reached by "all photos" (the viewer) and, without JavaScript, by links named by their alt text. About ten photos
   in all keeps the page under its 1 MB ceiling on a phone; more is possible when the weight check still passes.
 
@@ -59,5 +69,6 @@ the feature lifecycle in `CLAUDE.md` (plan on Opus, "מאשר", build on Sonnet,
 
 ## What stays with the owner
 
-The written confirmation that the photos are his or licensed to him (C3), the guest cap when it is not in the text, and the check-in
+The written confirmation that the photos are his or licensed to him (C3; a photo with a photographer's watermark is held back until the
+photographer's licence for web use is shown, and the watermark is never cropped out), the guest cap when it is not in the text, and the check-in
 and check-out times (shown only when the owner gives them: `SITE` in `src/config/site.ts`).

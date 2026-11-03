@@ -1,20 +1,28 @@
 // The real apartments (stage 5), one table entry each: ten photos, so the grid shows five and the viewer reaches all
 // ten; the photos are WebP with a srcset; the request takes up to the apartment's own guest cap; the page works without
-// JavaScript. The home page opens with the first apartment's photo. Add an entry when a real apartment arrives.
+// JavaScript; the features list says Wi-Fi (the owner's standing rule). The home page opens with the first apartment's photo.
+// Add an entry when a real apartment arrives.
 import { expect, test } from '@playwright/test';
 
 const APARTMENTS = [
   { id: 'artist-estate', second: 'living-room', maxGuests: 14, nameHe: 'אחוזת האמן', nameEn: "The Artist's Estate" },
   { id: 'atzulat-hakikar-b', second: 'jacuzzi', maxGuests: 11, nameHe: 'אצולת הכיכר ב׳', nameEn: 'Atzulat HaKikar B' },
+  {
+    id: 'atzulat-hakikar-a',
+    second: 'bedroom-stone',
+    maxGuests: 11,
+    nameHe: 'אצולת הכיכר א׳',
+    nameEn: 'Atzulat HaKikar A',
+  },
 ];
 
 const LOCALES = [
-  { label: 'Hebrew', base: '/cabins', forward: 'ArrowLeft', position: /^.* \(10 מתוך 10\)$/ },
-  { label: 'English', base: '/en/cabins', forward: 'ArrowRight', position: /^.* \(10 of 10\)$/ },
+  { label: 'Hebrew', base: '/cabins', forward: 'ArrowLeft', position: /^.* \(10 מתוך 10\)$/, wifi: 'אינטרנט אלחוטי' },
+  { label: 'English', base: '/en/cabins', forward: 'ArrowRight', position: /^.* \(10 of 10\)$/, wifi: 'Wi-Fi' },
 ];
 
 for (const { id, second, maxGuests } of APARTMENTS) {
-  for (const { label, base, forward, position } of LOCALES) {
+  for (const { label, base, forward, position, wifi } of LOCALES) {
     test.describe(`${id}, ${label}`, () => {
       const path = `${base}/${id}/`;
 
@@ -51,6 +59,11 @@ for (const { id, second, maxGuests } of APARTMENTS) {
         );
         for (let step = 0; step < 8; step++) await page.keyboard.press(forward);
         await expect(page.locator('[data-gallery-caption]')).toHaveText(position);
+      });
+
+      test('the features list says the apartment has Wi-Fi (a standing rule of the owner)', async ({ page }) => {
+        await page.goto(path);
+        await expect(page.locator('.cabin-facts__features')).toContainText(wifi);
       });
 
       test(`the request takes up to ${maxGuests} guests`, async ({ page }) => {

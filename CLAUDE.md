@@ -26,7 +26,7 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 - `npm run dev`: the site on :4321.
 - `npm run format` writes the Prettier formatting (code, not `.md`/`.html`); `npm run format:check` and `npm run lint` are inside `verify`.
 - `npm run photos:add -- <file> <apartment> <name>`: the only way a photo enters the repo (WebP, three widths, no EXIF or GPS,
-  at most 250 KB a file); `npm run photos:check` (inside `verify`) fails on a picture that skipped it (C3, L8).
+  at most 250 KB a file; `--page-kb=<n>` lowers the ceiling of the 640 and 1280 files for a photo that is the first of an apartment); `npm run photos:check` (inside `verify`) fails on a picture that skipped it (C3, L8).
 - `npm run fonts:build -- <folder>`: rebuilds `public/fonts/` (the three web fonts, Hebrew and Latin only, with their OFL texts)
   from the full `.ttf` files in the folder (C1, L7); the full files are not kept in the repo.
 - `npm run budget:check`: after a build, fails when a page is over its JS, code or total weight (`scripts/budget/limits.mjs`).
@@ -214,5 +214,5 @@ One page at a time, each in full before the next (the user's method from the bot
 - `docs/design/apartment.md`: the apartment page's five layouts, the comparison and the decision.
 - `docs/design/legal.md`: the one reading layout of the legal pages and the 404 page, its states and the decision.
 - `docs/compliance.md`: the iron rules merged with the client's checklist; status, how met, how checked, where scheduled.
-- `docs/new-apartment-prompt.md`: the prompt to fill in and send to add an apartment (name, photo folder, texts, main and secondary photos).
+- `docs/new-apartment-prompt.md`: the prompt to fill in and send to add an apartment (name, photo folder, texts, main and secondary photos); its standing rule: every real apartment lists Wi-Fi, and a jacuzzi when it has one (the user, 2026-11-03).
 - `docs/roadmap.md`: the stages, "Where we stopped", "Committed next", and the owner's and lawyer's list before launch.

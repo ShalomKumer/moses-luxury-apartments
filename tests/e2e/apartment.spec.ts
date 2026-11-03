@@ -150,7 +150,7 @@ for (const { base, label, position } of PAGES) {
 
     test('lists the other apartments and not this one', async ({ page }) => {
       await page.goto(`${base}/gefen/`);
-      await expect(page.locator('.cabin__more .row')).toHaveCount(4);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(5);
       await expect(page.locator('.cabin__more a[href*="/cabins/gefen"]')).toHaveCount(0);
     });
 
