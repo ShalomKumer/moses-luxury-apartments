@@ -1,14 +1,14 @@
 ---
 name:
-  he: אחוזת האמן – בית דוד לבקובסקי
-  en: The Artist's Estate – Beit David Levkovsky
+  he: אחוזת האמן-בית לבקובסקי
+  en: The Artist's Estate – Beit Levkovsky
 order: 0
 summary:
   he: 'וילה יוקרתית בלב העיר העתיקה בצפת: 6 חדרי שינה, חצר פרטית ונוף פנורמי, לעד 14 אורחים.'
   en: "A luxury villa in the heart of Old City Tzfat: 6 bedrooms, a private courtyard and panoramic views, for up to 14 guests."
 description:
   he: |
-    בלב סמטאותיה הקסומות של העיר העתיקה בצפת, בסמוך לרובע האמנים ולבתי הכנסת המפורסמים, שוכנת אחוזת האמן – בית דוד לבקובסקי.
+    בלב סמטאותיה הקסומות של העיר העתיקה בצפת, בסמוך לרובע האמנים ולבתי הכנסת המפורסמים, שוכנת אחוזת האמן-בית לבקובסקי.
 
     וילה יוקרתית ומרווחת, המשלבת את הקסם וההיסטוריה של צפת העתיקה עם נוחות מודרנית, פרטיות ונוף פנורמי עוצר נשימה של הרי הגליל.
 
@@ -20,7 +20,7 @@ description:
 
     אחוזת האמן – לא רק מקום להתארח בו. מקום ליצור בו זיכרונות.
   en: |
-    In the heart of the enchanting alleys of the Old City of Tzfat, close to the Artists' Quarter and the famous shuls, stands The Artist's Estate – Beit David Levkovsky.
+    In the heart of the enchanting alleys of the Old City of Tzfat, close to the Artists' Quarter and the famous shuls, stands The Artist's Estate – Beit Levkovsky.
 
     A spacious luxury villa that combines the charm and history of ancient Tzfat with modern comfort, privacy and breathtaking panoramic views of the Galilee mountains.
 
