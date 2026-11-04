@@ -17,7 +17,6 @@ const FORBIDDEN = [
   { pattern: /\[TO FILL/, why: 'an English placeholder to fill' },
   { pattern: /\*\*DRAFT\.\*\*/, why: 'an English legal text still marked as a draft' },
   { pattern: /sample content|sample description|sample illustration/i, why: 'sample English text' },
-  { pattern: /isSample:\s*true/, why: 'the site is still marked as sample' },
   { pattern: /example\.com/, why: 'a sample email address' },
   { pattern: /050-000-0000/, why: 'a sample phone number' },
   { pattern: /תוכן לדוגמה|תיאור לדוגמה|איור לדוגמה/, why: 'sample cabin text' },

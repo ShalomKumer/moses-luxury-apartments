@@ -21,7 +21,7 @@ function stop(message) {
 
 if (!file || !apartment || !name || positional.length > 3 || flags.some((flag) => flag !== pageKbFlag)) {
   stop(
-    'Usage: npm run photos:add -- <photo-file> <apartment> <photo-name> [--page-kb=<n>]\nExample: npm run photos:add -- C:\\photos\\IMG_1.jpg gefen living-room',
+    'Usage: npm run photos:add -- <photo-file> <apartment> <photo-name> [--page-kb=<n>]\nExample: npm run photos:add -- C:\\photos\\IMG_1.jpg tarpat-18 living-room',
   );
 }
 if (!existsSync(file)) stop(`The file was not found: ${file}`);

@@ -51,13 +51,13 @@ for (const { path, label, rtl } of PAGES) {
       await page.goto(path);
       const unit = page.locator('[data-request-unit]');
       const guests = page.locator('[data-request-guests]');
-      await guests.selectOption('5');
-      expect(await guests.inputValue()).toBe('5');
-      // the Gefen sample apartment takes two guests (the Artist's Estate, the first, takes fourteen)
-      await unit.selectOption('gefen');
+      await guests.selectOption('12');
+      expect(await guests.inputValue()).toBe('12');
+      // Tarpat 18 takes nine guests (the Artist's Estate, the first, takes fourteen)
+      await unit.selectOption('tarpat-18');
       expect(await guests.inputValue()).toBe('');
-      await expect(guests.locator('option[value="3"]')).toBeDisabled();
-      await expect(guests.locator('option[value="2"]')).toBeEnabled();
+      await expect(guests.locator('option[value="10"]')).toBeDisabled();
+      await expect(guests.locator('option[value="9"]')).toBeEnabled();
     });
 
     test('two valid dates write the dates and the nights into the message', async ({ page }) => {

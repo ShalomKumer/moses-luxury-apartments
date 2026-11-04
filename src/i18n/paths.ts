@@ -1,7 +1,7 @@
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './locales';
 
 /**
- * Returns the address of a page in a language. `path` is the page's own address without a language ("/", "/cabins/gefen",
+ * Returns the address of a page in a language. `path` is the page's own address without a language ("/", "/cabins/tarpat-18",
  * "/privacy"); Hebrew keeps it as it is and English puts it under /en/. The address is the language choice: nothing is
  * stored and nobody is redirected by the browser's language.
  */

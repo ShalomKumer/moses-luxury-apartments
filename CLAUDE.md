@@ -33,7 +33,7 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 - `npm run secrets:check`: the secret scan (iron rule S19) over the files, `dist/` and the whole git history; prints
   file, place and risk, never the value. Inside `verify`. `secret-scan:allow` on a line marks a reviewed false positive.
 - `npm run licenses:check`: fails on a package whose licence is not on the allow-list (iron rule C4).
-- `npm run launch:check`: fails while any placeholder or sample content is left (expected until launch).
+- `npm run launch:check`: fails while any placeholder or leftover sample text is left (expected until launch).
 
 ## Git flow (non-negotiable; the full standard is `docs/standards.md`, section 3)
 
@@ -193,7 +193,7 @@ One page at a time, each in full before the next (the user's method from the bot
   second page the five vary the layout inside the approved DNA, not five new worlds. Five layouts only for the first page
   of each kind; the other pages of that kind are drawn in the chosen layout, with all their states, and approved on
   their own.
-- The site's own real texts; never invented numbers, reviews or claims (H1, H2). Sample content is labelled as sample.
+- The site's own real texts; never invented numbers, reviews or claims (H1, H2). No sample content is shown (the sample apartments were removed on 2026-11-04).
 - Then my pick with three short reasons and what to take from the runner-up; the user decides (my pick, another, or a
   mix); the approved page is recorded under `docs/design/` (the decision, the layout, the states).
 - **The owner's logo dictates the style** (the user, 2026-10-31): palette, type, shapes and tone follow

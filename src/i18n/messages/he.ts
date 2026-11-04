@@ -20,7 +20,6 @@ export const he = {
   },
   common: {
     skipToMain: 'דילוג לתוכן הראשי',
-    sampleBanner: 'אתר בבנייה: חלק מהדירות והתמונות כאן הם לדוגמה בלבד.',
     lastUpdated: 'עודכן לאחרונה',
     phone: 'טלפון',
     email: 'מייל',

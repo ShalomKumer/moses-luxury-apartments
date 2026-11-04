@@ -1,15 +1,15 @@
 // The apartment page (docs/design/apartment.md), in a real browser: the request names the apartment, the gallery takes
 // its shape from the photo count, "all photos" opens the viewer, the phone's jump button reaches the request, the card
-// stays in view on a wide screen, and nothing sticky hides a focused element. The photo-count and guest-cap tests use
-// the sample apartments (gefen: five photos and two guests, teena: three, zayit: one) beside the two real ones (ten
-// photos each); when the owner's real content replaces the samples (stage 5), update those numbers.
+// stays in view on a wide screen, and nothing sticky hides a focused element. The tests read the Artist's Estate (ten
+// photos, up to fourteen guests); the other photo counts (one, two, three, four) are covered by the unit tests of
+// galleryShape, since every real apartment has ten photos. Update the numbers if its content changes.
 import { expect, test, type Page } from '@playwright/test';
 import { obscuredFocus } from './helpers/focus-obscured';
 import { axeViolations } from './helpers/run-axe';
 
 const PAGES = [
-  { base: '/cabins', label: 'Hebrew', position: /1 מתוך 5/ },
-  { base: '/en/cabins', label: 'English', position: /1 of 5/ },
+  { base: '/cabins', label: 'Hebrew', position: /1 מתוך 10/ },
+  { base: '/en/cabins', label: 'English', position: /1 of 10/ },
 ];
 
 /** A day offset from today as "YYYY-MM-DD" (UTC; the offsets used are far enough from midnight not to matter). */
@@ -31,7 +31,7 @@ for (const { base, label, position } of PAGES) {
     test('the request names the apartment, has no apartment choice and carries the same message in the preview', async ({
       page,
     }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       await expect(page.locator('[data-request-unit]')).toHaveCount(0);
       const name = (await page.locator('h1').textContent())?.trim() ?? '';
       const text = await whatsappText(page);
@@ -40,16 +40,16 @@ for (const { base, label, position } of PAGES) {
     });
 
     test('offers no more guests than the apartment takes', async ({ page }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       const guests = page.locator('[data-request-guests]');
-      await expect(guests.locator('option[value="2"]')).toBeEnabled();
-      await expect(guests.locator('option[value="3"]')).toHaveCount(0);
+      await expect(guests.locator('option[value="14"]')).toBeEnabled();
+      await expect(guests.locator('option[value="15"]')).toHaveCount(0);
       await guests.selectOption('2');
       expect(await whatsappText(page)).toContain('2');
     });
 
     test('two valid dates write the dates and the nights, with no note', async ({ page }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       await page.locator('[data-stay-in]').fill(dayFromNow(10));
       await page.locator('[data-stay-out]').fill(dayFromNow(13));
       expect(await whatsappText(page)).toMatch(/\d{2}\.\d{2}\.\d{4}.*\d{2}\.\d{2}\.\d{4}/);
@@ -59,7 +59,7 @@ for (const { base, label, position } of PAGES) {
     test('a check-in in the past shows a note, stays out of the message, and the page has no axe violations', async ({
       page,
     }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       const before = await whatsappText(page);
       await page.locator('[data-stay-in]').fill('2020-01-01');
       await page.locator('[data-stay-out]').fill(dayFromNow(13));
@@ -68,14 +68,14 @@ for (const { base, label, position } of PAGES) {
       expect(await axeViolations(page)).toEqual([]);
     });
 
-    test('five photos: one large and four small on a wide screen, the first alone on a phone', async ({
+    test('ten photos: the grid shows five (one large, four small) on a wide screen, the first alone on a phone', async ({
       page,
       viewport,
     }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       const wide = (viewport?.width ?? 0) >= 768;
       expect(await shownPhotos(page)).toBe(wide ? 5 : 1);
-      await expect(page.locator('[data-gallery-all]')).toContainText('5');
+      await expect(page.locator('[data-gallery-all]')).toContainText('10');
       if (wide) {
         const widths = await page
           .locator('.gallery__item:visible')
@@ -84,25 +84,10 @@ for (const { base, label, position } of PAGES) {
       }
     });
 
-    test('three photos: one large and two', async ({ page, viewport }) => {
-      test.skip((viewport?.width ?? 0) < 768, 'a phone shows the first photo only');
-      await page.goto(`${base}/teena/`);
-      expect(await shownPhotos(page)).toBe(3);
-    });
-
-    test('one photo: no "all photos" button and no arrows in the viewer', async ({ page }) => {
-      await page.goto(`${base}/zayit/`);
-      expect(await shownPhotos(page)).toBe(1);
-      await expect(page.locator('[data-gallery-all]')).toHaveCount(0);
-      await page.locator('[data-gallery-item="0"]').click();
-      await expect(page.locator('[data-gallery-dialog]')).toBeVisible();
-      await expect(page.locator('[data-gallery-prev], [data-gallery-next]')).toHaveCount(0);
-    });
-
     test('"all photos" opens the viewer at the first photo and gives focus back to the button on Escape', async ({
       page,
     }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       const all = page.locator('[data-gallery-all]');
       await all.focus();
       await page.keyboard.press('Enter');
@@ -114,7 +99,7 @@ for (const { base, label, position } of PAGES) {
     });
 
     test('the jump button shows on a phone only, and leads to the request', async ({ page, viewport }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       const jump = page.locator('.jump a');
       if ((viewport?.width ?? 0) >= 992) {
         await expect(jump).toBeHidden();
@@ -132,8 +117,8 @@ for (const { base, label, position } of PAGES) {
     test('the card stays in view while the details scroll, on a wide and tall screen', async ({ page, viewport }) => {
       test.skip((viewport?.width ?? 0) < 992, 'the card sits below the details on a phone');
       await page.setViewportSize({ width: viewport?.width ?? 1280, height: 900 });
-      await page.goto(`${base}/gefen/`);
-      // the sample text is short; give the details the length a real description will have, so the card has room to travel
+      await page.goto(`${base}/artist-estate/`);
+      // give the details extra length, so the card always has room to travel whatever the description holds
       await page.locator('.cabin__details').evaluate((node) => {
         const filler = document.createElement('div');
         filler.style.height = '1600px';
@@ -149,19 +134,19 @@ for (const { base, label, position } of PAGES) {
     });
 
     test('lists the next three apartments and not this one', async ({ page }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       await expect(page.locator('.cabin__more .row')).toHaveCount(3);
-      await expect(page.locator('.cabin__more a[href*="/cabins/gefen"]')).toHaveCount(0);
+      await expect(page.locator('.cabin__more a[href*="/cabins/artist-estate"]')).toHaveCount(0);
       const links = page.locator('.cabin__more .row a.button');
-      for (const [index, id] of ['zayit', 'teena', 'artist-estate'].entries()) {
+      for (const [index, id] of ['atzulat-hakikar-b', 'atzulat-hakikar-a', 'tarpat-18'].entries()) {
         await expect(links.nth(index)).toHaveAttribute('href', new RegExp(`${base}/${id}/?$`));
       }
     });
 
     test('the list wraps to the start, so the last apartment is not left without others', async ({ page }) => {
-      await page.goto(`${base}/teena/`);
+      await page.goto(`${base}/tarpat-18/`);
       await expect(page.locator('.cabin__more .row')).toHaveCount(3);
-      await expect(page.locator('.cabin__more a[href*="/cabins/teena"]')).toHaveCount(0);
+      await expect(page.locator('.cabin__more a[href*="/cabins/tarpat-18"]')).toHaveCount(0);
       await expect(page.locator('.cabin__more .row a.button').first()).toHaveAttribute(
         'href',
         new RegExp(`${base}/artist-estate/?$`),
@@ -169,7 +154,7 @@ for (const { base, label, position } of PAGES) {
     });
 
     test('a button leads to the list of all the apartments on the home page', async ({ page }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       const all = page.locator('.cabin__all a');
       await expect(all).toHaveCount(1);
       await expect(all).toHaveAttribute('href', new RegExp(`${base === '/cabins' ? '/' : '/en/'}#cabins$`));
@@ -180,19 +165,19 @@ for (const { base, label, position } of PAGES) {
 
     test('on a phone a row loads the smallest file of its photo', async ({ page, viewport }) => {
       test.skip((viewport?.width ?? 0) > 480, 'only a phone is given the smallest file');
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       const photo = page.locator('.cabin__more .row__photo[srcset]').first();
       await photo.scrollIntoViewIfNeeded();
       await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.currentSrc)).toMatch(/-640\.webp$/);
     });
 
     test('no focused element is hidden behind a stuck bar or card', async ({ page }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       expect(await obscuredFocus(page)).toEqual([]);
     });
 
     test('a very long name wraps and the page never scrolls sideways', async ({ page }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       await page.locator('h1').evaluate((node) => {
         node.textContent = `${'Moses '.repeat(40)}${'x'.repeat(60)}`;
       });
@@ -201,7 +186,7 @@ for (const { base, label, position } of PAGES) {
     });
 
     test('has one h1 and no axe violations', async ({ page }) => {
-      await page.goto(`${base}/gefen/`);
+      await page.goto(`${base}/artist-estate/`);
       await expect(page.locator('h1')).toHaveCount(1);
       expect(await axeViolations(page)).toEqual([]);
     });

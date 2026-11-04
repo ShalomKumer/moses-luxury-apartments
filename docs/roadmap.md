@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-04 (stage 5 open; four real apartments built; a 960 px width added to every photo; an apartment page shows the next three apartments and a row loads the smallest photo file on a phone, so a new apartment no longer weighs on the other pages).
+A snapshot, not a history. Last update: 2026-11-04 (stage 5 open; four real apartments built and the three sample apartments removed, so the site shows real content only; an apartment page shows the next three apartments and a row loads the smallest photo file on a phone). Next, in the user's order: the detailed document for the owner, then the fifth apartment "אחוזת המעיין".
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -67,7 +67,7 @@ A snapshot, not a history. Last update: 2026-11-04 (stage 5 open; four real apar
   (PR #14; see "Committed next", 4e), and `fix/artist-estate-name` corrects the name: the first real apartment with ten photos, srcset, the
   weight check that reads it, and a fix of a latent gallery rule (a sixth photo was shown on a wide screen). The user's answers: the
   name is "אחוזת האמן-בית לבקובסקי"; the client took all the photos and made the logo (the user's word; written
-  confirmation to come); both phones are WhatsApp; the sample apartments stay for now; the site is in Hebrew and English only. The
+  confirmation to come); both phones are WhatsApp; the sample apartments stayed until `feature/remove-sample-apartments` (4k); the site is in Hebrew and English only. The
   questions to bring from the client (business details, coordinator, times, cancellation terms, an owner decision about the
   sample apartments, the domain) were listed in the chat on 2026-11-03.
 - **Decided by the user, 2026-11-01:** the build-only licence exceptions in `scripts/check-licenses.mjs` (the sharp
@@ -140,7 +140,7 @@ In this order; each one is its own branch, and nothing starts before the one abo
    (the owner's text in both languages, ten real photos through `npm run photos:add`, 14 guests, 6 bedrooms), first in the list; the home
    hero is its terrace; both phone numbers are WhatsApp; photos have a `srcset` and the weight check reads it; a photo beyond the
    grid is a link, not an `<img>`; the source folder `צימרים/` is git-ignored; the check-in and check-out times show nothing until the
-   owner gives them (`launch:check` fails on them). The three sample apartments stay for now (the user). Still to come in stage 5 (1 point):
+   owner gives them (`launch:check` fails on them). The three sample apartments stayed until 4k removed them. Still to come in stage 5 (1 point):
    the business details, the accessibility coordinator, the check-in and check-out times, the cancellation terms.
 4f. Stage 5, `feature/add-atzulat-hakikar-b` (content of the same kind as 4e, counted in its point, the total stays 27): the second real
    apartment, "אצולת הכיכר ב׳" / "Atzulat HaKikar B" (4 bedrooms, 11 beds, 3 bathrooms, a spa jacuzzi, a courtyard; ten photos, the main one
@@ -176,6 +176,10 @@ In this order; each one is its own branch, and nothing starts before the one abo
    Tarpat 18 811 -> 578 KB, Atzulat HaKikar B 740 -> 571 KB, the samples about 440 -> 150 to 220 KB, the home page 431 -> 351 KB. The home page still lists every apartment (about 30 to 60 KB each), so it
    has room for roughly 18; past that it needs a design decision (a limit with "show more", for the user). The budget is unchanged. Next, in the order the user set: remove the sample apartments, the
    detailed document for the owner, then the fifth real apartment "אחוזת המעיין" (its text is saved; the main photo is `IMG_8888_89_90_tonemapped`).
+4k. Stage 5, `feature/remove-sample-apartments` (counted in the same content point; built 2026-11-04, the user approved the plan): the three sample apartments (Gefen, Zayit, Teena) with their drawn SVG photos,
+   the sample banner, the `SITE.isSample` flag and its launch check are gone; the site lists the four real apartments. The browser tests that read the samples now read the Artist's Estate (ten photos, 14 guests) and Tarpat 18
+   (9 guests); the one-photo and three-photo browser tests are dropped (every real apartment has ten photos; `galleryShape` keeps its unit tests). Measured on a phone (2026-11-04): the rows of "other apartments" now hold real photos,
+   so the pages grew: Atzulat HaKikar A 770 -> 835 KB, the Artist's Estate 763 -> 762 KB, Tarpat 18 578 -> 691 KB, Atzulat HaKikar B 571 -> 608 KB, the home page 351 -> 346 KB; all under the 1,000 KB ceiling.
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both

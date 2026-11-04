@@ -4,8 +4,8 @@ import { expect, test } from '@playwright/test';
 import { axeViolations } from './helpers/run-axe';
 
 const PAGES = [
-  { path: '/cabins/gefen/', label: 'Hebrew', forward: 'ArrowLeft', back: 'ArrowRight', first: /1 מתוך/ },
-  { path: '/en/cabins/gefen/', label: 'English', forward: 'ArrowRight', back: 'ArrowLeft', first: /1 of/ },
+  { path: '/cabins/artist-estate/', label: 'Hebrew', forward: 'ArrowLeft', back: 'ArrowRight', first: /1 מתוך/ },
+  { path: '/en/cabins/artist-estate/', label: 'English', forward: 'ArrowRight', back: 'ArrowLeft', first: /1 of/ },
 ];
 
 for (const { path, label, forward, back, first } of PAGES) {

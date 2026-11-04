@@ -42,7 +42,7 @@ describe('addresses', () => {
   it('keeps Hebrew at the root and puts English under /en/', () => {
     expect(localizedPath('/', 'he')).toBe('/');
     expect(localizedPath('/', 'en')).toBe('/en/');
-    expect(localizedPath('/cabins/gefen', 'en')).toBe('/en/cabins/gefen');
+    expect(localizedPath('/cabins/tarpat-18', 'en')).toBe('/en/cabins/tarpat-18');
     expect(localizedPath('privacy', 'en')).toBe('/en/privacy');
     expect(localizedPath('/privacy', 'he')).toBe('/privacy');
   });

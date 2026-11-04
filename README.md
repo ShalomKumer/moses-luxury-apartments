@@ -21,4 +21,4 @@ Node 22.23 or later. No environment variables are needed today.
 - `npm run format`: formats the code with Prettier
 - `npm run photos:add -- <file> <apartment> <name>`: adds a photo (WebP, no camera data); see `docs/owner-guide.md`
 - `npm run verify`: format check, lint, type check, tests, build, build-output check, browser tests, performance budget, photo check, secret scan (files, build and git history), licence allow-list, `npm audit`
-- `npm run launch:check`: fails while any placeholder or sample content is left (expected until launch)
+- `npm run launch:check`: fails while any placeholder or leftover sample text is left (expected until launch)

@@ -4,7 +4,7 @@ import { PHOTOS_DIR } from './limits.mjs';
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
- * The path of one produced file, e.g. public/photos/gefen/living-room-1280.webp.
+ * The path of one produced file, e.g. public/photos/tarpat-18/living-room-1280.webp.
  * The apartment and the photo name are lower-case words joined by hyphens, so a name can never climb out of the folder.
  * @param {string} apartment
  * @param {string} name
