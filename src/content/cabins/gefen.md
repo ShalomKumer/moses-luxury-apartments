@@ -2,7 +2,7 @@
 name:
   he: דירת הגפן
   en: Gefen Apartment
-order: 3
+order: 4
 summary:
   he: דירה זוגית עם ג׳קוזי ומרפסת פתוחה אל הנוף. (תוכן לדוגמה)
   en: A couple's apartment with a jacuzzi and a balcony open to the view. (sample content)

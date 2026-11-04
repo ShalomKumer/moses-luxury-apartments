@@ -54,6 +54,11 @@ The sample apartments are not covered.
 - **The rest.** They are reached by "all photos" (the viewer) and, without JavaScript, by links named by their alt text. About ten photos
   in all keeps the page under its 1 MB ceiling on a phone; more is possible when the weight check still passes.
 
+- **A photo made or edited by AI is not used** (the user, 2026-11-03). I look for the marks in the file (a Content Credentials record, a
+  tool name) and for a picture that looks like an edited copy of another (a new sky, lights added, things removed); such a photo stays out
+  and the plan says so, with the reason. A phone screenshot or a WhatsApp copy is used only when no original exists, and the rights row says
+  the original is to be sent. A source narrower than 1280 px gets only the 640 and 960 files, and its `src` is the 960 one.
+
 ## What I do with it
 
 1. Plan (on Opus): the folder structure, the photo order, the alt texts (each describes only what the photo shows), the open questions,

@@ -24,7 +24,7 @@ is corrected in the same PR.
 | 6   | SEO                      | `feature/seo` (2): Open Graph, Twitter Cards, canonical, sitemap, an honest JSON-LD, absolute `hreflang`; needs the domain.                    | 2   | Not started                   |
 | 7   | Launch                   | Domain, HTTPS, host rules, axe and screen-reader pass, the lawyer's texts, `launch:check` green, the release PR from `dev` to `main`.          | 2   | Not started                   |
 
-Total 27 points; 22 done (stages 1 to 4 and the first feature of stage 5), about 81% of the project (an estimate); stage 5 is open (2026-11-03), at about 50%: its first feature, `feature/add-artist-estate` (1 of 2 points), is merged (PR #14). An admin editor for the apartments is not a stage and is
+Total 27 points; 22 done (stages 1 to 4 and the first feature of stage 5), about 81% of the project (an estimate); stage 5 is open (2026-11-03), at about 60% (four real apartments are in; before that about 50%): its first feature, `feature/add-artist-estate` (1 of 2 points), is merged (PR #14). An admin editor for the apartments is not a stage and is
 not counted; it is built only if the user asks (below). Stage 4 was closed (the user, 2026-11-03) and the user opened stage 5 the same day, in a new session. Still to come from the owner: the
 business details, the accessibility coordinator, the check-in and check-out times, the cancellation terms, the lawyer's texts.
 
@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate, Atzulat HaKikar B and Atzulat HaKikar A built; a 960 px width added to every photo to make room under the page budget).
+A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate, Atzulat HaKikar B, Atzulat HaKikar A and Tarpat 18 built; a 960 px width added to every photo to make room under the page budget).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -160,6 +160,15 @@ In this order; each one is its own branch, and nothing starts before the one abo
    byte-identical). Measured on a phone (build output, 2026-11-03): Atzulat HaKikar A 970 -> 844 KB, the Artist's Estate 942 -> 787 KB, Atzulat HaKikar B 
    759 -> 643 KB (the 1 MB ceiling is unchanged). Room for about two more real apartments (each adds its row, about 60 to 100 KB, to every other apartment's page); a phone at three times the 
    density still loads the 1280 file, as before.
+4i. Stage 5, `feature/add-tarpat-18` (content of the same kind, counted in the same point, the total stays 27): the fourth real apartment, "תרפ"ט 18" /
+   "Tarpat 18" (a family villa: 4 bedrooms, 9 beds, 2 bathrooms, a Shabbat kitchen, a courtyard of about 100 m² with a panoramic view; Wi-Fi from the owner's text),
+   third in the list (order 3), the samples after it; ten photos, the main one the daytime courtyard. **Left out:** the entrance picture (marked as made
+   by ChatGPT in its own file) and the sunset picture (it looks like an edited copy of the daytime one); the user chose the daytime photo as the main one and
+   agreed to the new rule that no photo made or edited by AI is shown as a photo of an apartment (`docs/compliance.md` C3, `docs/owner-guide.md`,
+   `docs/new-apartment-prompt.md`). The main photo and the seating photo are phone screenshots (cut to 3:2), so the main photo has only the 640 and 960 files and the seating
+   photo 640, 960 and 1280; **to ask the owner: the originals, who took the `AL6_*` photos (and a licence if a photographer did), and the guest cap (9, from the beds).**
+   Measured on a phone (2026-11-03): Tarpat 18 811 KB, Atzulat HaKikar A 844 -> 941 KB, the Artist's Estate 787 -> 884 KB, Atzulat HaKikar B 643 -> 740 KB, the samples
+   about 440 KB: **no room is left for a fifth real apartment** without a lighter main photo for that apartment (`--page-kb`), a smaller row, or a change of the budget (the user's decision).
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both

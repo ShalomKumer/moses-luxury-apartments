@@ -4,15 +4,41 @@
 // Add an entry when a real apartment arrives.
 import { expect, test } from '@playwright/test';
 
+// `gridSrc`: the width of the file each of the five grid photos names as its src. A small source (a phone photo, a
+// cropped screenshot) has no 1280 file, so its src is the 960 one; every other photo must keep its 1280 file.
+const FULL_SRC = [1280, 1280, 1280, 1280, 1280];
 const APARTMENTS = [
-  { id: 'artist-estate', second: 'living-room', maxGuests: 14, nameHe: 'אחוזת האמן', nameEn: "The Artist's Estate" },
-  { id: 'atzulat-hakikar-b', second: 'jacuzzi', maxGuests: 11, nameHe: 'אצולת הכיכר ב׳', nameEn: 'Atzulat HaKikar B' },
+  {
+    id: 'artist-estate',
+    second: 'living-room',
+    maxGuests: 14,
+    gridSrc: FULL_SRC,
+    nameHe: 'אחוזת האמן',
+    nameEn: "The Artist's Estate",
+  },
+  {
+    id: 'atzulat-hakikar-b',
+    second: 'jacuzzi',
+    maxGuests: 11,
+    gridSrc: FULL_SRC,
+    nameHe: 'אצולת הכיכר ב׳',
+    nameEn: 'Atzulat HaKikar B',
+  },
   {
     id: 'atzulat-hakikar-a',
     second: 'bedroom-stone',
     maxGuests: 11,
+    gridSrc: FULL_SRC,
     nameHe: 'אצולת הכיכר א׳',
     nameEn: 'Atzulat HaKikar A',
+  },
+  {
+    id: 'tarpat-18',
+    second: 'living-dining',
+    maxGuests: 9,
+    gridSrc: [960, 1280, 960, 1280, 1280],
+    nameHe: 'תרפ"ט 18',
+    nameEn: 'Tarpat 18',
   },
 ];
 
@@ -21,7 +47,7 @@ const LOCALES = [
   { label: 'English', base: '/en/cabins', forward: 'ArrowRight', position: /^.* \(10 of 10\)$/, wifi: 'Wi-Fi' },
 ];
 
-for (const { id, second, maxGuests } of APARTMENTS) {
+for (const { id, second, maxGuests, gridSrc } of APARTMENTS) {
   for (const { label, base, forward, position, wifi } of LOCALES) {
     test.describe(`${id}, ${label}`, () => {
       const path = `${base}/${id}/`;
@@ -41,8 +67,9 @@ for (const { id, second, maxGuests } of APARTMENTS) {
         const images = page.locator('.gallery__item:not(.gallery__item--extra) img');
         for (let index = 0; index < 5; index++) {
           const image = images.nth(index);
-          await expect(image).toHaveAttribute('srcset', /640w, .*1280w/);
-          await expect(image).toHaveAttribute('src', new RegExp(`/photos/${id}/.+-1280\\.webp$`));
+          const width = gridSrc[index];
+          await expect(image).toHaveAttribute('srcset', new RegExp(`640w, .*${width}w`));
+          await expect(image).toHaveAttribute('src', new RegExp(`/photos/${id}/.+-${width}\\.webp$`));
         }
         expect(await images.first().evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(
           true,
