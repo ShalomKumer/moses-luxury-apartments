@@ -1,6 +1,6 @@
 // Turns a source photo into WebP files: turned upright by its EXIF, resized, and carrying no metadata at all.
 import sharp from 'sharp';
-import { MAX_BYTES, QUALITIES, VIEWER_WIDTH } from './limits.mjs';
+import { MAX_BYTES, PHONE_WIDTH, QUALITIES, VIEWER_WIDTH } from './limits.mjs';
 import { planWidths } from './plan-variants.mjs';
 
 /**
@@ -38,10 +38,14 @@ async function encodeWidth(source, width, maxBytes) {
  * @param {number} [maxBytes] the size ceiling of one file; the standard one unless a test narrows it
  * @param {number} [pageMaxBytes] a lower ceiling for the files a page loads (every width below the viewer's), for a photo that
  *   sits in a row on other pages and would push them over the weight budget; the viewer's file keeps `maxBytes`
+ * @param {number} [phoneMaxBytes] a lower ceiling for the files a phone loads (the 640 and 960 ones only), for a detailed photo of
+ *   a page's own grid that would push the page over its budget; the 1280 and 1920 files keep the other ceilings
  * @returns {Promise<{ width: number, quality: number, data: Buffer }[]>}
  */
-export async function encodePhoto(source, maxBytes = MAX_BYTES, pageMaxBytes = maxBytes) {
+export async function encodePhoto(source, maxBytes = MAX_BYTES, pageMaxBytes = maxBytes, phoneMaxBytes = maxBytes) {
   const widths = planWidths(await uprightWidth(source));
-  const ceilingOf = (width) => (width < VIEWER_WIDTH ? Math.min(pageMaxBytes, maxBytes) : maxBytes);
+  const pageCeiling = (width) => (width < VIEWER_WIDTH ? Math.min(pageMaxBytes, maxBytes) : maxBytes);
+  const ceilingOf = (width) =>
+    width <= PHONE_WIDTH ? Math.min(pageCeiling(width), phoneMaxBytes) : pageCeiling(width);
   return Promise.all(widths.map((width) => encodeWidth(source, width, ceilingOf(width))));
 }

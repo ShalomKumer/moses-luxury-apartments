@@ -5,7 +5,7 @@ import { join, resolve } from 'node:path';
 import sharp from 'sharp';
 import { afterEach, describe, expect, it } from 'vitest';
 import { encodePhoto } from '../../../scripts/photos/encode.mjs';
-import { MAX_BYTES, VIEWER_WIDTH, WIDTHS } from '../../../scripts/photos/limits.mjs';
+import { MAX_BYTES, PHONE_WIDTH, VIEWER_WIDTH, WIDTHS } from '../../../scripts/photos/limits.mjs';
 import { outputPath } from '../../../scripts/photos/output-path.mjs';
 import { photoProblems } from '../../../scripts/photos/photo-rules.mjs';
 import { planWidths } from '../../../scripts/photos/plan-variants.mjs';
@@ -167,6 +167,25 @@ describe('encodePhoto', () => {
     }
     const viewer = variants.find((item) => item.width === VIEWER_WIDTH);
     expect(viewer?.quality).toBe(standard.find((item) => item.width === VIEWER_WIDTH)?.quality);
+  });
+
+  it('holds only the files a phone loads to the phone ceiling, and leaves the 1280 and viewer files alone', async () => {
+    const source = await sharp(await noise(240, 120))
+      .resize(2400, 1200)
+      .jpeg()
+      .toBuffer();
+    const standard = await encodePhoto(source);
+    const file960 = standard.find((item) => item.width === 960);
+    const phoneCeiling = Math.floor((file960?.data.length ?? 0) * 0.8); // below the 960 file, above the 640 one
+    const variants = await encodePhoto(source, MAX_BYTES, MAX_BYTES, phoneCeiling);
+    for (const variant of variants.filter((item) => item.width <= PHONE_WIDTH)) {
+      expect(variant.data.length).toBeLessThanOrEqual(phoneCeiling);
+    }
+    for (const width of [1280, VIEWER_WIDTH]) {
+      expect(variants.find((item) => item.width === width)?.quality).toBe(
+        standard.find((item) => item.width === width)?.quality,
+      );
+    }
   });
 
   it('never lets the page ceiling raise the standard one', async () => {
