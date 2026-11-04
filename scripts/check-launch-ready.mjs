@@ -21,6 +21,10 @@ const FORBIDDEN = [
   { pattern: /050-000-0000/, why: 'a sample phone number' },
   { pattern: /תוכן לדוגמה|תיאור לדוגמה|איור לדוגמה/, why: 'sample cabin text' },
   { pattern: /\|\s*sample,/, why: 'a sample photo (src/content/photos.md)' },
+  {
+    pattern: /creator or photographer to be confirmed/,
+    why: 'a photo whose creator or photographer is not yet confirmed (src/content/photos.md)',
+  },
   { pattern: /\*\*טיוטה\.\*\*/, why: 'a legal text still marked as a draft' },
   { pattern: /^draft:/, why: 'a legal page still marked as a draft (the `draft` field of its front matter)' },
   {
