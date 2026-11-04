@@ -2,7 +2,7 @@
 name:
   he: דירת הזית
   en: Zayit Apartment
-order: 4
+order: 5
 summary:
   he: דירה משפחתית עם שני חדרים וחצר פרטית. (תוכן לדוגמה)
   en: A family apartment with two bedrooms and a private yard. (sample content)

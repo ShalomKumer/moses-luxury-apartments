@@ -2,7 +2,7 @@
 name:
   he: דירת התאנה
   en: Teena Apartment
-order: 5
+order: 6
 summary:
   he: דירה זוגית שקטה בקצה המתחם, עם מקלחת גשם ופינת קריאה. (תוכן לדוגמה)
   en: A quiet couple's apartment at the edge of the compound, with a rain shower and a reading corner. (sample content)
