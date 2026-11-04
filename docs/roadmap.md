@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-04 (stage 5 open; four real apartments built and the three sample apartments removed, so the site shows real content only; an apartment page shows the next three apartments and a row loads the smallest photo file on a phone). Next, in the user's order: the detailed document for the owner, then the fifth apartment "אחוזת המעיין".
+A snapshot, not a history. Last update: 2026-11-04 (stage 5 open; four real apartments built and the three sample apartments removed, so the site shows real content only; an apartment page shows the next three apartments and a row loads the smallest photo file on a phone). The detailed document for the owner is written (`docs/owner-requests.md`, with a Word copy; 4l). Next, in the user's order: the fifth apartment "אחוזת המעיין".
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -180,6 +180,14 @@ In this order; each one is its own branch, and nothing starts before the one abo
    the sample banner, the `SITE.isSample` flag and its launch check are gone; the site lists the four real apartments. The browser tests that read the samples now read the Artist's Estate (ten photos, 14 guests) and Tarpat 18
    (9 guests); the one-photo and three-photo browser tests are dropped (every real apartment has ten photos; `galleryShape` keeps its unit tests). Measured on a phone (2026-11-04): the rows of "other apartments" now hold real photos,
    so the pages grew: Atzulat HaKikar A 770 -> 835 KB, the Artist's Estate 763 -> 762 KB, Tarpat 18 578 -> 691 KB, Atzulat HaKikar B 571 -> 608 KB, the home page 351 -> 346 KB; all under the 1,000 KB ceiling.
+4l. Stage 5, `docs/owner-document` (docs only, counted in the same content point): `docs/owner-requests.md`, the plain-Hebrew document the user sends the owner, and a Word copy of it
+   (`צימרים/בקשות-מהבעלים.docx`, git-ignored, made from the Markdown). It lists what is already received, then what is needed before launch, each with a place for the answer: the business
+   details (legal name, business number, address, the name shown, the domain), the accessibility coordinator and the apartments' accessible features, the check-in and check-out times and the house rules, the
+   cancellation terms (deposit, fees, refunds), written confirmation of the photos' and the logo's rights and the logo original, and the questions for each apartment (guest caps 9 and 11, the pool and the ALON
+   licence in Atzulat HaKikar A, the originals and the `AL6_*` photographer in Tarpat 18, the photos left out as made or edited by AI). Then the points for the owner's lawyer and accountant (the final legal texts,
+   Amendment 13, GDPR, licensing, accessibility scope, invoices) and what to send for each new apartment. Every item `launch:check` fails on has a question there, except the third home-page point, which is asked as 7.1.
+   Next, in the user's order: the fifth apartment "אחוזת המעיין". Found on the way, not done: four comment lines in `src/domain/text/fill-markers.ts` and `src/markdown/fill-markers-plugin.ts` quote the fill marker, so `launch:check` would fail on them
+   even when everything is filled (a small code fix, its own branch).
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both
@@ -194,7 +202,7 @@ The design branch is docs only (an artifact and `docs/design/home.md`), so the u
 
 ## Before launch: the owner and the lawyer
 
-Not code; the site waits for these.
+Not code; the site waits for these. The owner's side is written for him, with a place for each answer, in `docs/owner-requests.md`.
 
 - Business details: legal name, business number, address, phone for WhatsApp, booking email, accessibility coordinator
   (L11, A6).
