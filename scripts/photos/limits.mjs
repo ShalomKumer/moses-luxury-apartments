@@ -9,6 +9,9 @@ export const WIDTHS = [640, 960, 1280, 1920];
 /** The widest file: only the photo viewer loads it, so a page's weight does not include it. */
 export const VIEWER_WIDTH = WIDTHS[WIDTHS.length - 1];
 
+/** The widest file a phone loads: a page weighs the 960 files, so only the files up to this width count against its budget. */
+export const PHONE_WIDTH = 960;
+
 /** The most one photo file may weigh: the hero photo's ceiling is about 250 KB (CLAUDE.md, rule 2 for this project). */
 export const MAX_BYTES = 250_000;
 

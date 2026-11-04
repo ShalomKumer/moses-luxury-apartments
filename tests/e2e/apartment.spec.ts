@@ -144,9 +144,9 @@ for (const { base, label, position } of PAGES) {
     });
 
     test('the list wraps to the start, so the last apartment is not left without others', async ({ page }) => {
-      await page.goto(`${base}/tarpat-18/`);
+      await page.goto(`${base}/ahuzat-hamaayan/`);
       await expect(page.locator('.cabin__more .row')).toHaveCount(3);
-      await expect(page.locator('.cabin__more a[href*="/cabins/tarpat-18"]')).toHaveCount(0);
+      await expect(page.locator('.cabin__more a[href*="/cabins/ahuzat-hamaayan"]')).toHaveCount(0);
       await expect(page.locator('.cabin__more .row a.button').first()).toHaveAttribute(
         'href',
         new RegExp(`${base}/artist-estate/?$`),

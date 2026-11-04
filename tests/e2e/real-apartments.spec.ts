@@ -40,6 +40,14 @@ const APARTMENTS = [
     nameHe: 'תרפ"ט 18',
     nameEn: 'Tarpat 18',
   },
+  {
+    id: 'ahuzat-hamaayan',
+    second: 'living-loft',
+    maxGuests: 9,
+    gridSrc: FULL_SRC,
+    nameHe: 'אחוזת המעיין',
+    nameEn: 'Ahuzat HaMaayan',
+  },
 ];
 
 const LOCALES = [
