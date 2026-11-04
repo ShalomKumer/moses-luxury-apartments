@@ -1,11 +1,9 @@
 /**
  * The business behind the site: what does not depend on the language. The words (the brand's name and lines, the
  * placeholders for the business details) live in `src/i18n/messages`. Every placeholder is filled with the owner's real
- * details before launch; `npm run launch:check` fails while any is left or while isSample is true (L11).
+ * details before launch; `npm run launch:check` fails while any is left (L11).
  */
 export const SITE = {
-  /** True while the site shows sample cabins, photos and texts. */
-  isSample: true,
   /** The owner's logo, cropped from the file the user sent (docs/design/brand/logo-original.jpg). */
   logo: {
     full: '/brand/logo-full.jpg',

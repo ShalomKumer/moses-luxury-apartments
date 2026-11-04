@@ -23,7 +23,6 @@ export const en: Messages = {
   },
   common: {
     skipToMain: 'Skip to the main content',
-    sampleBanner: 'Site under construction: some of the apartments and photos here are samples only.',
     lastUpdated: 'Last updated',
     phone: 'Phone',
     email: 'Email',

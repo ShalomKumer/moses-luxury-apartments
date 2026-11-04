@@ -5,15 +5,6 @@ here is not used. `npm run launch:check` fails while any row says "sample".
 
 | File                         | Source                                        | Rights basis      |
 | ---------------------------- | --------------------------------------------- | ----------------- |
-| `gefen/1-outside.svg`        | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `gefen/2-inside.svg`         | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `gefen/3-view.svg`           | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `gefen/4-kitchen.svg`        | sample, drawn for this project (2026-11-02)   | our own artwork   |
-| `gefen/5-jacuzzi.svg`        | sample, drawn for this project (2026-11-02)   | our own artwork   |
-| `zayit/1-outside.svg`        | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `teena/1-outside.svg`        | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `teena/2-inside.svg`         | sample, drawn for this project (2026-10-31)   | our own artwork   |
-| `teena/3-view.svg`           | sample, drawn for this project (2026-10-31)   | our own artwork   |
 | `artist-estate/terrace-sunset-640.webp`, `-960`, `-1280` | the owner's photo `בית האומן צפת (1).png`, sent by the user on 2026-11-03; made with `npm run photos:add` | taken by the owner's client, the user's word (2026-11-03); **written confirmation still to come** |
 | `artist-estate/living-room-640.webp`, `-960`, `-1280`, `-1920` | the owner's photo `DSC04354.jpg`, sent by the user on 2026-11-03; made with `npm run photos:add` | taken by the owner's client, the user's word (2026-11-03); **written confirmation still to come** |
 | `artist-estate/dining-room-640.webp`, `-960`, `-1280` | the owner's photo `בית האומן צפת (3).png`, sent by the user on 2026-11-03; made with `npm run photos:add` | taken by the owner's client, the user's word (2026-11-03); **written confirmation still to come** |

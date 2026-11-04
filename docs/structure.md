@@ -49,7 +49,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── server/                     # KEPT, UNWIRED: calendar source, fetch, cache, service (for a future admin view)
 │   │
 │   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
-│   │   ├── layout/   BaseLayout, SkipLink, SampleBanner, SiteHeader (logo), SiteFooter
+│   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
 │   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, JumpToRequest, ApartmentRow, ApartmentRows
 │   │   │             #   (the rows are shared by the home page and the apartment pages)
@@ -67,7 +67,7 @@ Every exported function carries a one-line comment saying what it does.
 ├── scripts/
 │   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
 │   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7)
-│   ├── check-launch-ready.mjs      # no placeholder or sample content left (L11, C3)
+│   ├── check-launch-ready.mjs      # no placeholder or leftover sample text left (L11, C3)
 │   ├── budget/                     # the performance budget: limits, page-weight + pick-candidate (pure; a srcset counts at what a phone loads), check-budget (entry)
 │   ├── fonts/                      # the web fonts (C1): charset (Hebrew + Latin), fonts (the three), subset-fonts (entry:
 │   │                               #   npm run fonts:build -- <folder of the full .ttf files>, writes public/fonts/)

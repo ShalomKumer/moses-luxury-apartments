@@ -12,8 +12,7 @@ name, a past check-in date). Every photo opens the photo viewer.
 ## Assumptions (no questionnaire)
 
 - **The name stays as in the logo for now** (the user, 2026-11-02: "תשאיר כרגע דירות מוזס"): "דירת מוזס / Moses Luxury
-  Apartments", and each unit is a "דירה". The sample apartment is `gefen.md` renamed "דירת הגפן"; its texts and facts are
-  the file's sample content, labelled as sample (H1, H2).
+  Apartments", and each unit is a "דירה". (The sample apartments of the first drafts were removed on 2026-11-04.)
 - **The page's purpose:** a guest who came from the home page decides whether this apartment fits and sends a request.
   So the order is photos, then the facts, then the request, with the request always close to the facts.
 - **The language is the home page's** (`home.md`, "Decision"): ink, the logo's gold as a fill, white paper; Frank Ruhl
@@ -23,7 +22,7 @@ name, a past check-in date). Every photo opens the photo viewer.
   apartment's `maxGuests`), the message it will open, the WhatsApp and email buttons, and the notice with the policy
   links and the minimum age (L5, L10, H4). The dates only write the message; a past or reversed date shows a note and
   is left out of it. No availability is shown (`no-public-availability.test.ts`).
-- The photos are our own drawn sample scenes, never photos; the real ones come through the photo script (C3, rule 2).
+- Photos come through the photo script only (C3, rule 2); the drawn sample scenes of the first drafts are gone.
 - The other apartments appear under the page, so a guest who does not like this one is not sent back to the start.
 
 ## The five layouts
@@ -156,8 +155,8 @@ The page follows the decision above. Where the build differs or decides somethin
   first field. It sits at the end of the details' own column and sticks to the bottom of the screen while they scroll.
 - **The stuck card** (a wide and tall screen only, 62 rem by 48 rem) keeps its top 1 rem from the screen's top; on a short
   screen it scrolls with the page, because it would not fit (the critique's moderate finding).
-- **Sample content:** the first apartment has five drawn photos, the second one (to show the single-photo state), the
-  third three. The cabin wording in the content moved from "צימר" to "דירה".
+- **Sample content (removed 2026-11-04):** the drafts had apartments with five, one and three drawn photos; the shapes are
+  now covered by the unit tests of `galleryShape`. The cabin wording in the content moved from "צימר" to "דירה".
 
 ## Open for the user
 
