@@ -20,20 +20,40 @@ function imageFile(tag) {
   return candidate ?? tag.match(/\ssrc\s*=\s*["']([^"']+)["']/i)?.[1] ?? null;
 }
 
+const PICTURE = /<picture\b[\s\S]*?<\/picture>/gi;
+
+/**
+ * The file a phone loads for one `<picture>`: the `<source>` made for a narrow screen (its media asks for a `max-width`)
+ * names it, a single file or a `srcset`; without such a source the picture is its `<img>`. Other sources are not read.
+ */
+function pictureFile(picture) {
+  for (const [source] of picture.matchAll(/<source\b[^>]*>/gi)) {
+    const media = source.match(/\smedia\s*=\s*["']([^"']+)["']/i)?.[1] ?? '';
+    const srcset = source.match(/\ssrcset\s*=\s*["']([^"']+)["']/i)?.[1];
+    if (srcset && /max-width/i.test(media)) return pickCandidate(srcset) ?? srcset.trim().split(/[\s,]+/)[0];
+  }
+  const img = picture.match(/<img\b[^>]*>/i)?.[0];
+  return img ? imageFile(img) : null;
+}
+
 /**
  * The files a page names, split into scripts, stylesheets and images. A picture with a `srcset` is counted at the file a
- * phone loads (`pickCandidate`); a `<picture>` with several `<source>` elements is not read, and the site uses none.
+ * phone loads (`pickCandidate`); a `<picture>` is counted at its narrow-screen source (`pictureFile`), once, not also as its `<img>`.
  */
 function references(html) {
   const links = attributeValues(html, /<link\b[^>]*>/gi, 'href');
   const relOf = (tag) => (tag.match(/\srel\s*=\s*["']([^"']+)["']/i)?.[1] ?? '').toLowerCase();
+  const pictures = [...html.matchAll(PICTURE)].map(([picture]) => pictureFile(picture));
+  const loose = html.replace(PICTURE, '');
   return {
     js: [
       ...attributeValues(html, /<script\b[^>]*>/gi, 'src').map((ref) => ref.value),
       ...links.filter(({ tag }) => relOf(tag).includes('modulepreload')).map((ref) => ref.value),
     ],
     css: links.filter(({ tag }) => relOf(tag).includes('stylesheet')).map((ref) => ref.value),
-    images: [...html.matchAll(/<img\b[^>]*>/gi)].map(([tag]) => imageFile(tag)).filter((file) => file !== null),
+    images: [...[...loose.matchAll(/<img\b[^>]*>/gi)].map(([tag]) => imageFile(tag)), ...pictures].filter(
+      (file) => file !== null,
+    ),
   };
 }
 

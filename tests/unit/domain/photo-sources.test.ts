@@ -7,8 +7,14 @@ describe('photoSources', () => {
       src: '/photos/a/living-room-1280.webp',
       srcset:
         '/photos/a/living-room-640.webp 640w, /photos/a/living-room-1280.webp 1280w, /photos/a/living-room-1920.webp 1920w',
+      small: '/photos/a/living-room-640.webp',
       full: '/photos/a/living-room-1920.webp',
     });
+  });
+
+  it('names the smallest file for a phone, whatever order the widths come in', () => {
+    expect(photoSources('/photos/a/b-1280.webp', [1280, 960, 640]).small).toBe('/photos/a/b-640.webp');
+    expect(photoSources('/photos/a/b-960.webp', [960]).small).toBe('/photos/a/b-960.webp');
   });
 
   it('works with a photo that has two widths only', () => {
@@ -20,10 +26,12 @@ describe('photoSources', () => {
   it('keeps a single-file photo as it is, with no srcset', () => {
     expect(photoSources('/photos/gefen/1-outside.svg')).toEqual({
       src: '/photos/gefen/1-outside.svg',
+      small: '/photos/gefen/1-outside.svg',
       full: '/photos/gefen/1-outside.svg',
     });
     expect(photoSources('/photos/gefen/1-outside.svg', [])).toEqual({
       src: '/photos/gefen/1-outside.svg',
+      small: '/photos/gefen/1-outside.svg',
       full: '/photos/gefen/1-outside.svg',
     });
   });

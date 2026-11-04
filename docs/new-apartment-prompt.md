@@ -48,9 +48,10 @@ The sample apartments are not covered.
   different arrangement for a longer set is a code change (`src/domain/gallery/gallery-shape.ts`), so ask for it in the plan.
   Prefer landscape photos here; a portrait photo is cropped badly in the grid. A very detailed photo (grass, bamboo, foliage) can stay
   over the 250 KB ceiling at 1920 px; then it is cut to 1600 px first and gets only the 640, 960 and 1280 files.
-- **The main photo is also the apartment's row on every other apartment's page**, so each real apartment adds its weight to the others (the 1 MB
-  ceiling, `scripts/budget/limits.mjs`). If the budget check fails, add `--page-kb=120` to the main photo's `photos:add` (it lowers the ceiling of
-  the 640, 960 and 1280 files only; the viewer's 1920 file keeps the standard one). The budget counts the 960 file, the one a phone loads, so it is the 960 file that matters.
+- **The main photo is also the apartment's row on the home page and on the pages of the three apartments before it** (an apartment's page shows the next
+  three apartments only, `nextApartments`), and on a phone a row loads the photo's smallest file (the 640 one), so adding an apartment no longer pushes the other
+  pages toward the 1 MB ceiling (`scripts/budget/limits.mjs`). The apartment's own page still counts its own grid photos at the 960 file; if the budget check fails for
+  that page, add `--page-kb=120` to a photo's `photos:add` (it lowers the ceiling of the 640, 960 and 1280 files only; the viewer's 1920 file keeps the standard one).
 - **The rest.** They are reached by "all photos" (the viewer) and, without JavaScript, by links named by their alt text. About ten photos
   in all keeps the page under its 1 MB ceiling on a phone; more is possible when the weight check still passes.
 

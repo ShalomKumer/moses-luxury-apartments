@@ -7,6 +7,7 @@ import { pick } from '@i18n/pick';
 export interface PagePhoto {
   src: string;
   srcset?: string;
+  small: string;
   full: string;
   alt: string;
   width: number;

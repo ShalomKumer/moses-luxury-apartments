@@ -32,7 +32,7 @@ The owner's and the lawyer's own track ("Before launch", at the end of this file
 
 ## Where we stopped
 
-A snapshot, not a history. Last update: 2026-11-03 (stage 5 opened; the Artist's Estate, Atzulat HaKikar B, Atzulat HaKikar A and Tarpat 18 built; a 960 px width added to every photo to make room under the page budget).
+A snapshot, not a history. Last update: 2026-11-04 (stage 5 open; four real apartments built; a 960 px width added to every photo; an apartment page shows the next three apartments and a row loads the smallest photo file on a phone, so a new apartment no longer weighs on the other pages).
 
 - **Stage 1 is done and closed** (PR #1 and #2 merged into `dev`, 2026-11-01; `main` is still the empty first commit).
   It holds the architecture and the iron rules (`docs/architecture.md`, `docs/compliance.md`), the code structure
@@ -168,7 +168,14 @@ In this order; each one is its own branch, and nothing starts before the one abo
    `docs/new-apartment-prompt.md`). The main photo and the seating photo are phone screenshots (cut to 3:2), so the main photo has only the 640 and 960 files and the seating
    photo 640, 960 and 1280; **to ask the owner: the originals, who took the `AL6_*` photos (and a licence if a photographer did), and the guest cap (9, from the beds).**
    Measured on a phone (2026-11-03): Tarpat 18 811 KB, Atzulat HaKikar A 844 -> 941 KB, the Artist's Estate 787 -> 884 KB, Atzulat HaKikar B 643 -> 740 KB, the samples
-   about 440 KB: **no room is left for a fifth real apartment** without a lighter main photo for that apartment (`--page-kb`), a smaller row, or a change of the budget (the user's decision).
+   about 440 KB: **no room was left for a fifth real apartment** (fixed by 4j below).
+
+4j. Stage 5, `feature/lighter-apartment-rows` (counted in the same content point; built 2026-11-04, the user approved the plan): an apartment's page shows the **next three**
+   apartments (wrapping to the start) and an "All apartments" button instead of every other apartment, and on a phone (up to 480 px) a row loads the photo's smallest file (640 px; a `<picture>`
+   whose narrow-screen `<source>` the weight check reads). The page no longer grows with the number of apartments. Measured on a phone (2026-11-04): Atzulat HaKikar A 941 -> 770 KB, the Artist's Estate 884 -> 763 KB,
+   Tarpat 18 811 -> 578 KB, Atzulat HaKikar B 740 -> 571 KB, the samples about 440 -> 150 to 220 KB, the home page 431 -> 351 KB. The home page still lists every apartment (about 30 to 60 KB each), so it
+   has room for roughly 18; past that it needs a design decision (a limit with "show more", for the user). The budget is unchanged. Next, in the order the user set: remove the sample apartments, the
+   detailed document for the owner, then the fifth real apartment "אחוזת המעיין" (its text is saved; the main photo is `IMG_8888_89_90_tonemapped`).
 
 5. Stage 1, `feature/i18n-he-en` (3): **done and merged; built 2026-10-31** (the plan was approved by the user; there was no commit yet, so
    it is part of the first commit). Hebrew at `/`, English at `/en/`, a language link on every page, every text in both

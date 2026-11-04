@@ -14,6 +14,7 @@ import ContactDetails from '@components/contact/ContactDetails.astro';
 import BaseLayout from '@components/layout/BaseLayout.astro';
 import HeartRule from '@components/ui/HeartRule.astro';
 import Prose from '@components/ui/Prose.astro';
+import { nextApartments } from '@domain/apartments/next-apartments';
 import { splitParagraphs } from '@domain/text/paragraphs';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
@@ -26,6 +27,8 @@ interface Props {
 }
 
 const REQUEST_ID = 'request';
+/** How many other apartments the page recommends: the page weighs the same however many apartments the site has. */
+const OTHERS_SHOWN = 3;
 
 const { cabin, locale } = Astro.props;
 const t = getMessages(locale);
@@ -36,7 +39,7 @@ const paragraphs = splitParagraphs(pick(cabin.data.description, locale));
 const features = cabin.data.features.map((feature) => pick(feature, locale));
 const photos = cabin.data.photos.map((photo) => toPagePhoto(photo, locale));
 const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.data.order);
-const hasOthers = cabins.some((other) => other.id !== cabin.id);
+const others = nextApartments(cabins, cabin.id, OTHERS_SHOWN);
 ---
 
 <BaseLayout locale={locale} path={`/cabins/${cabin.id}`} title={name} description={summary}>
@@ -66,12 +69,17 @@ const hasOthers = cabins.some((other) => other.id !== cabin.id);
     </div>
   </div>
 
-  {hasOthers && (
+  {others.length > 0 && (
     <section class="section cabin__more" aria-labelledby="more-title">
       <div class="container">
         <h2 id="more-title">{t.cabin.more}</h2>
         <HeartRule />
-        <ApartmentRows cabins={cabins} locale={locale} except={cabin.id} />
+        <ApartmentRows cabins={others} locale={locale} />
+        <p class="cabin__all">
+          <a class="button button--secondary" href={`${localizedPath('/', locale)}#cabins`}>
+            {t.nav.allCabins}
+          </a>
+        </p>
       </div>
     </section>
   )}
@@ -109,6 +117,11 @@ const hasOthers = cabins.some((other) => other.id !== cabin.id);
 
   .cabin__aside {
     align-self: start;
+  }
+
+  .cabin__all {
+    margin: var(--space-8) 0 0;
+    text-align: center;
   }
 
   @media (min-width: 62rem) {

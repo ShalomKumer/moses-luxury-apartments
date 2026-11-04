@@ -118,7 +118,10 @@ Not drawn here, because the page has none: loading, empty and error states of da
 4. **Two columns:** the details ("about the apartment", then "what it has": guests, bedrooms, the features) and, beside
    them, the **request card** that stays in view while the details scroll. On a phone, one column: the details, then
    the card, and a button stuck to the bottom under the details that jumps to the card's first field (from 5).
-5. **More apartments** as the home page's alternating rows (from 2), then the contact area.
+5. **More apartments** as the home page's alternating rows (from 2), then the contact area. **Changed 2026-11-04 (approved by the user,
+   `feature/lighter-apartment-rows`):** the page shows the **next three** apartments in the list (wrapping to the start; never itself) and an
+   "All apartments" button to the home page's list, not every other apartment; on a phone a row loads the smallest file of its photo. Why: every
+   row costs a photo, so the page grew with each apartment the site gained and reached the 1 MB ceiling at five. The home page still lists all of them.
 
 **Rules for the build (stage 4):**
 - The request card is the home page's card without the apartment choice; its message names the apartment, and its
