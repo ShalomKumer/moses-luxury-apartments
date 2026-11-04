@@ -148,10 +148,42 @@ for (const { base, label, position } of PAGES) {
       expect(top).toBeLessThan(80);
     });
 
-    test('lists the other apartments and not this one', async ({ page }) => {
+    test('lists the next three apartments and not this one', async ({ page }) => {
       await page.goto(`${base}/gefen/`);
-      await expect(page.locator('.cabin__more .row')).toHaveCount(6);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/gefen"]')).toHaveCount(0);
+      const links = page.locator('.cabin__more .row a.button');
+      for (const [index, id] of ['zayit', 'teena', 'artist-estate'].entries()) {
+        await expect(links.nth(index)).toHaveAttribute('href', new RegExp(`${base}/${id}/?$`));
+      }
+    });
+
+    test('the list wraps to the start, so the last apartment is not left without others', async ({ page }) => {
+      await page.goto(`${base}/teena/`);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
+      await expect(page.locator('.cabin__more a[href*="/cabins/teena"]')).toHaveCount(0);
+      await expect(page.locator('.cabin__more .row a.button').first()).toHaveAttribute(
+        'href',
+        new RegExp(`${base}/artist-estate/?$`),
+      );
+    });
+
+    test('a button leads to the list of all the apartments on the home page', async ({ page }) => {
+      await page.goto(`${base}/gefen/`);
+      const all = page.locator('.cabin__all a');
+      await expect(all).toHaveCount(1);
+      await expect(all).toHaveAttribute('href', new RegExp(`${base === '/cabins' ? '/' : '/en/'}#cabins$`));
+      await all.click();
+      await expect(page.locator('#cabins')).toBeVisible();
+      expect(await page.locator('#cabins .row').count()).toBeGreaterThan(3);
+    });
+
+    test('on a phone a row loads the smallest file of its photo', async ({ page, viewport }) => {
+      test.skip((viewport?.width ?? 0) > 480, 'only a phone is given the smallest file');
+      await page.goto(`${base}/gefen/`);
+      const photo = page.locator('.cabin__more .row__photo[srcset]').first();
+      await photo.scrollIntoViewIfNeeded();
+      await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.currentSrc)).toMatch(/-640\.webp$/);
     });
 
     test('no focused element is hidden behind a stuck bar or card', async ({ page }) => {

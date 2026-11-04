@@ -4,6 +4,8 @@ export interface PhotoSources {
   src: string;
   /** Every width of the photo, `file width`, smallest first; absent for a photo that has a single file (an SVG). */
   srcset?: string;
+  /** The smallest file: what a small picture on a phone (an apartment's row) loads. */
+  small: string;
   /** The largest file: what the viewer opens. */
   full: string;
 }
@@ -17,7 +19,7 @@ const WIDTH_SUFFIX = /-(\d+)\.webp$/;
  * in a width, or widths that do not include the path's own, are a mistake in the content and stop the build.
  */
 export function photoSources(src: string, widths?: number[]): PhotoSources {
-  if (!widths || widths.length === 0) return { src, full: src };
+  if (!widths || widths.length === 0) return { src, small: src, full: src };
   const found = WIDTH_SUFFIX.exec(src);
   if (!found || !widths.includes(Number(found[1]))) {
     throw new Error(`The photo "${src}" must end in one of its widths (${widths.join(', ')}), like name-1280.webp.`);
@@ -27,6 +29,7 @@ export function photoSources(src: string, widths?: number[]): PhotoSources {
   return {
     src,
     srcset: sorted.map((width) => `${base}-${width}.webp ${width}w`).join(', '),
+    small: `${base}-${sorted[0]}.webp`,
     full: `${base}-${sorted[sorted.length - 1]}.webp`,
   };
 }

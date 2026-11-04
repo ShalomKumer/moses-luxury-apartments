@@ -35,9 +35,10 @@ Every exported function carries a one-line comment saying what it does.
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
 │   │   ├── dates/                  # date-key, date-range, format-date, month
+│   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start)
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, stay-dates, guests
 │   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
-│   │   ├── photos/                 # photo-sources (the src, srcset and largest file of a photo from its widths)
+│   │   ├── photos/                 # photo-sources (the src, srcset, smallest and largest file of a photo from its widths)
 │   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
 │   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
 │   │

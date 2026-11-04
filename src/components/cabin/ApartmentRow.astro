@@ -2,6 +2,8 @@
 /**
  * One apartment as a large row (the home page and the apartment pages): its photo (3:2) beside its name, summary, capacity and a button to its
  * page. The rows alternate sides by the start and end of the line, so they swap by themselves in right-to-left text.
+ * On a phone the photo is the smallest file of the photo (a row is a pointer to another page, not the place to see it);
+ * a wider screen picks from the whole `srcset`. The page-weight check reads this phone source (`scripts/budget`).
  */
 import type { CollectionEntry } from 'astro:content';
 import { toPagePhoto } from '@components/cabin/cabin-photo';
@@ -16,6 +18,9 @@ interface Props {
   locale: Locale;
 }
 
+/** A phone (up to 30rem, 480 px): it loads the smallest file; a wider stacked row (a tablet) picks from the whole `srcset`. */
+const PHONE_MEDIA = '(max-width: 30rem)';
+
 const { cabin, locale } = Astro.props;
 const t = getMessages(locale);
 const { maxGuests, photos } = cabin.data;
@@ -24,17 +29,20 @@ const cover = toPagePhoto(photos[0], locale);
 ---
 
 <article class="row">
-  <img
-    class="row__photo"
-    src={cover.src}
-    srcset={cover.srcset}
-    sizes="(min-width: 48rem) 40vw, 100vw"
-    alt={cover.alt}
-    width={cover.width}
-    height={cover.height}
-    loading="lazy"
-    decoding="async"
-  />
+  <picture class="row__picture">
+    {cover.srcset && <source media={PHONE_MEDIA} srcset={cover.small} />}
+    <img
+      class="row__photo"
+      src={cover.src}
+      srcset={cover.srcset}
+      sizes="(min-width: 48rem) 40vw, 100vw"
+      alt={cover.alt}
+      width={cover.width}
+      height={cover.height}
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
   <div class="row__body">
     <h3>{name}</h3>
     <p>{pick(cabin.data.summary, locale)}</p>
@@ -53,7 +61,12 @@ const cover = toPagePhoto(photos[0], locale);
     align-items: center;
   }
 
+  .row__picture {
+    display: block;
+  }
+
   .row__photo {
+    display: block;
     width: 100%;
     aspect-ratio: 3 / 2;
     object-fit: cover;
@@ -86,7 +99,7 @@ const cover = toPagePhoto(photos[0], locale);
     }
 
     /* every second row puts the photo on the other side; `order` follows the text direction */
-    :global(li:nth-child(even)) > .row > .row__photo {
+    :global(li:nth-child(even)) > .row > .row__picture {
       order: 2;
     }
   }
