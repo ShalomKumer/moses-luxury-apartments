@@ -1,5 +1,5 @@
-// The real apartments (stage 5), one table entry each: ten photos, so the grid shows five and the viewer reaches all
-// ten; the photos are WebP with a srcset; the request takes up to the apartment's own guest cap; the page works without
+// The real apartments (stage 5), one table entry each: ten photos unless the entry says `photos`, so the grid shows five and
+// the viewer reaches all of them; the photos are WebP with a srcset; the request takes up to the apartment's own guest cap; the page works without
 // JavaScript; the features list says Wi-Fi (the owner's standing rule). The home page opens with the first apartment's photo.
 // Add an entry when a real apartment arrives.
 import { expect, test } from '@playwright/test';
@@ -64,24 +64,47 @@ const APARTMENTS = [
     nameHe: 'אווירא דרשב"י',
     nameEn: "Avira D'Rashbi",
   },
+  {
+    // eight photos; most were cut to 1600 px for weight, so the second one's largest file is the 1280 one
+    id: 'maayan-a',
+    second: 'courtyard-jacuzzi',
+    secondWidth: 1280,
+    photos: 8,
+    maxGuests: 2,
+    gridSrc: FULL_SRC,
+    nameHe: 'מעיין א׳',
+    nameEn: "Ma'ayan A",
+  },
 ];
 
 const LOCALES = [
-  { label: 'Hebrew', base: '/cabins', forward: 'ArrowLeft', position: /^.* \(10 מתוך 10\)$/, wifi: 'אינטרנט אלחוטי' },
-  { label: 'English', base: '/en/cabins', forward: 'ArrowRight', position: /^.* \(10 of 10\)$/, wifi: 'Wi-Fi' },
+  {
+    label: 'Hebrew',
+    base: '/cabins',
+    forward: 'ArrowLeft',
+    position: (n: number) => new RegExp(`^.* \\(${n} מתוך ${n}\\)$`),
+    wifi: 'אינטרנט אלחוטי',
+  },
+  {
+    label: 'English',
+    base: '/en/cabins',
+    forward: 'ArrowRight',
+    position: (n: number) => new RegExp(`^.* \\(${n} of ${n}\\)$`),
+    wifi: 'Wi-Fi',
+  },
 ];
 
-for (const { id, second, maxGuests, gridSrc } of APARTMENTS) {
+for (const { id, second, secondWidth = 1920, maxGuests, gridSrc, photos = 10 } of APARTMENTS) {
   for (const { label, base, forward, position, wifi } of LOCALES) {
     test.describe(`${id}, ${label}`, () => {
       const path = `${base}/${id}/`;
 
-      test('the grid shows five photos, the other five are reached by the viewer only', async ({ page }) => {
+      test('the grid shows five photos, the rest are reached by the viewer only', async ({ page }) => {
         await page.goto(path);
         await expect(page.locator('.gallery__item:not(.gallery__item--extra) img')).toHaveCount(5);
-        await expect(page.locator('[data-gallery-item]')).toHaveCount(10);
+        await expect(page.locator('[data-gallery-item]')).toHaveCount(photos);
         await expect(page.locator('.gallery__item--extra img')).toHaveCount(0);
-        await expect(page.locator('[data-gallery-all]')).toContainText('10');
+        await expect(page.locator('[data-gallery-all]')).toContainText(String(photos));
         // once the script runs, the five beyond the grid are hidden (a rule once showed them on a wide screen)
         for (const extra of await page.locator('.gallery__item--extra').all()) await expect(extra).toBeHidden();
       });
@@ -100,16 +123,16 @@ for (const { id, second, maxGuests, gridSrc } of APARTMENTS) {
         );
       });
 
-      test('the viewer opens the largest file and reaches the tenth photo', async ({ page }) => {
+      test('the viewer opens the largest file and reaches the last photo', async ({ page }) => {
         await page.goto(path);
         await page.locator('[data-gallery-all]').click();
         await page.keyboard.press(forward);
         await expect(page.locator('[data-gallery-image]')).toHaveAttribute(
           'src',
-          new RegExp(`/photos/${id}/${second}-1920\\.webp$`),
+          new RegExp(`/photos/${id}/${second}-${secondWidth}\\.webp$`),
         );
-        for (let step = 0; step < 8; step++) await page.keyboard.press(forward);
-        await expect(page.locator('[data-gallery-caption]')).toHaveText(position);
+        for (let step = 0; step < photos - 2; step++) await page.keyboard.press(forward);
+        await expect(page.locator('[data-gallery-caption]')).toHaveText(position(photos));
       });
 
       test('the features list says the apartment has Wi-Fi (a standing rule of the owner)', async ({ page }) => {
@@ -154,7 +177,7 @@ for (const { label, home, nameKey } of [
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
-  for (const { id } of APARTMENTS) {
+  for (const { id, photos = 10 } of APARTMENTS) {
     test(`${id}: the photos beyond the grid are links named by their words, and every link goes to a real file`, async ({
       page,
       request,
@@ -162,13 +185,13 @@ test.describe('without JavaScript', () => {
     }) => {
       await page.goto(`/en/cabins/${id}/`);
       const extras = page.locator('.gallery__item--extra a');
-      await expect(extras).toHaveCount(5);
+      await expect(extras).toHaveCount(photos - 5);
       await expect(extras.first()).toBeVisible();
       await expect(extras.first()).not.toHaveText('');
       const hrefs = await page
         .locator('[data-gallery-item]')
         .evaluateAll((links) => links.map((link) => (link as HTMLAnchorElement).getAttribute('href')));
-      expect(hrefs).toHaveLength(10);
+      expect(hrefs).toHaveLength(photos);
       for (const href of hrefs) expect((await request.get(`${baseURL}${href}`)).ok(), href ?? '').toBe(true);
     });
   }
