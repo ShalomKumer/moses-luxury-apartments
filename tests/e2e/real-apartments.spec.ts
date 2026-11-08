@@ -56,6 +56,14 @@ const APARTMENTS = [
     nameHe: 'פנורמי ירושלים 97',
     nameEn: 'Panorami',
   },
+  {
+    id: 'avira-drashbi',
+    second: 'living-sofa',
+    maxGuests: 14,
+    gridSrc: FULL_SRC,
+    nameHe: 'אווירא דרשב"י',
+    nameEn: "Avira D'Rashbi",
+  },
 ];
 
 const LOCALES = [
