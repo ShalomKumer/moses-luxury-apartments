@@ -113,6 +113,18 @@ for (const { path, label, rtl } of PAGES) {
       expect(loaded.sort()).toEqual(['Frank Ruhl Libre', 'Gveret Levin', 'Heebo'].sort());
     });
 
+    test('keeps the headline and the slogan to two lines on a phone, in both languages', async ({ page, viewport }) => {
+      test.skip((viewport?.width ?? 0) >= 768, 'the lines are wide enough on a larger screen');
+      await page.goto(path);
+      for (const selector of ['.hero h1', '.hero__slogan']) {
+        const lines = await page.locator(selector).evaluate((element) => {
+          const style = getComputedStyle(element);
+          return Math.round(element.getBoundingClientRect().height / Number.parseFloat(style.lineHeight));
+        });
+        expect(lines, `${selector} wraps to ${lines} lines`).toBeLessThanOrEqual(2);
+      }
+    });
+
     test('alternates the apartment rows by the start and end of the line', async ({ page, viewport }) => {
       test.skip((viewport?.width ?? 0) < 768, 'the rows stack on a phone');
       await page.goto(path);
