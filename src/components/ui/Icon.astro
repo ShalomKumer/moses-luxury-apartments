@@ -1,0 +1,33 @@
+---
+/**
+ * Draws one icon of `icons/icon-paths.ts` next to a word. It is decoration only: hidden from a screen reader, which
+ * reads the word beside it (A4). Its colour is the text's colour (`currentColor`), so it follows the tokens.
+ */
+import { ICONS, type IconName } from './icons/icon-paths';
+
+interface Props {
+  name: IconName;
+}
+
+const { name } = Astro.props;
+const shape = ICONS[name];
+const stroked = shape.style === 'stroke';
+---
+
+<svg
+  class="icon"
+  viewBox="0 0 24 24"
+  width="1.25em"
+  height="1.25em"
+  aria-hidden="true"
+  focusable="false"
+  fill={stroked ? 'none' : 'currentColor'}
+  stroke={stroked ? 'currentColor' : undefined}
+  stroke-width={stroked ? 2 : undefined}
+  stroke-linecap={stroked ? 'round' : undefined}
+  stroke-linejoin={stroked ? 'round' : undefined}
+>
+  {shape.paths.map((d) => (
+    <path d={d} />
+  ))}
+</svg>

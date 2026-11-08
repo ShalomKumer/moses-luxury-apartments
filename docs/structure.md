@@ -36,7 +36,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
 │   │   ├── dates/                  # date-key, date-range, format-date, month
 │   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded)
-│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, stay-dates, guests
+│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, tel-link, stay-dates, guests
 │   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
 │   │   ├── photos/                 # photo-sources (the src, srcset, smallest and largest file of a photo from its widths)
 │   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
@@ -59,7 +59,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── booking/  BookingRequest + request-controller.ts (the home page's request with an apartment choice, and
 │   │   │             #   the apartment page's with the apartment fixed), BookingLinks + booking-links.ts,
 │   │   │             #   BookingDates (the only date field), BookingNotice
-│   │   └── ui/       Prose, UpdatedDate, HeartRule
+│   │   └── ui/       Prose, UpdatedDate, HeartRule, Icon (+ icons/: the path data of the three icons and their licences)
 │   │
 │   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css
 │   └── pages/        index, cabins/[id], [legal], 404, and the same three under en/     # ROUTES: thin files over components/pages

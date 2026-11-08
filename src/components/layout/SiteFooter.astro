@@ -1,7 +1,10 @@
 ---
 /** Business details and the legal links, on every page (L1-L3, H4, A6, L11), in the page's language. */
 import { getCollection } from 'astro:content';
+import Icon from '@components/ui/Icon.astro';
 import { SITE } from '@config/site';
+import { gmailComposeLink } from '@domain/booking/gmail-link';
+import { telLink } from '@domain/booking/tel-link';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
 import { localizedPath } from '@i18n/paths';
@@ -33,16 +36,23 @@ const legalPages = (await getCollection('legal'))
       <p>
         {SITE.phones.map((phone) => (
           <>
-            {t.common.phone}:{' '}
-            <a href={`tel:${phone.display}`}>
+            <Icon name="phone" />
+            <span class="visually-hidden">{t.common.phone}: </span>
+            <a href={telLink(phone.display) ?? undefined}>
               <bdi>{phone.display}</bdi>
             </a>
             <br />
           </>
         ))}
-        {t.common.email}:{' '}
+        <Icon name="mail" />
+        <span class="visually-hidden">{t.common.email}: </span>
         <a href={`mailto:${SITE.email}`}>
           <bdi dir="ltr">{SITE.email}</bdi>
+        </a>
+        {' · '}
+        <a href={gmailComposeLink(SITE.email, '', '')} target="_blank" rel="noopener noreferrer">
+          {t.common.gmail}
+          <span class="visually-hidden"> {t.contact.newTabHint}</span>
         </a>
       </p>
     </section>

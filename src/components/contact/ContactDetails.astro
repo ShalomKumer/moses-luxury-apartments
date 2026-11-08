@@ -1,8 +1,11 @@
 ---
 /** How to reach the owner: WhatsApp, phones, email, and the way there as links, never an embedded map (L7). */
 import HeartRule from '@components/ui/HeartRule.astro';
+import Icon from '@components/ui/Icon.astro';
 import { SITE, WHATSAPP_PHONE } from '@config/site';
+import { gmailComposeLink } from '@domain/booking/gmail-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
+import { telLink } from '@domain/booking/tel-link';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
@@ -37,25 +40,34 @@ const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
           <li>
             <a
               href={whatsappLink(phoneDigits, fillTemplate(t.contact.whatsappMessage, { name: t.brand.name }))}
-              rel="noopener"
+              target="_blank"
+              rel="noopener noreferrer"
             >
+              <Icon name="whatsapp" />
               {t.contact.whatsapp}
-              <span class="visually-hidden"> {t.contact.whatsappHint}</span>
+              <span class="visually-hidden"> {t.contact.newTabHint}</span>
             </a>
           </li>
         )}
         {SITE.phones.map((phone) => (
           <li>
-            {t.common.phone}:{' '}
-            <a href={`tel:${phone.display}`}>
+            <Icon name="phone" />
+            <span class="visually-hidden">{t.common.phone}: </span>
+            <a href={telLink(phone.display) ?? undefined}>
               <bdi>{phone.display}</bdi>
             </a>
           </li>
         ))}
         <li>
-          {t.common.email}:{' '}
+          <Icon name="mail" />
+          <span class="visually-hidden">{t.common.email}: </span>
           <a href={`mailto:${SITE.email}`}>
             <bdi dir="ltr">{SITE.email}</bdi>
+          </a>
+          {' · '}
+          <a href={gmailComposeLink(SITE.email, '', '')} target="_blank" rel="noopener noreferrer">
+            {t.common.gmail}
+            <span class="visually-hidden"> {t.contact.newTabHint}</span>
           </a>
         </li>
         {SITE.location && (

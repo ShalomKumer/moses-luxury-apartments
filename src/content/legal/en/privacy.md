@@ -16,7 +16,7 @@ The site does not ask you for any details. It has no forms and no sign-up. It do
 
 ## When you contact us on WhatsApp or by email
 
-The booking buttons open WhatsApp or your mail app with a ready message. The message is sent only if you press "Send" there. It passes through the service you chose (WhatsApp, a service of Meta, or your email provider and ours), which is governed by its own privacy policy.
+The booking buttons open WhatsApp or Gmail (or the mail app on your device) in a new tab, with a ready message. The message is sent only if you press "Send" there. It passes through the service you chose (WhatsApp, a service of Meta; Gmail, a service of Google; or your email provider and ours), which is governed by its own privacy policy. The site itself does not receive the message and does not store it.
 
 What you write to us (a name, a phone number or an email address, dates and the number of guests) is used only to handle your booking and your stay, and is kept for [TO FILL: retention period, to be set with the lawyer]. We will not pass it on to others unless the law requires it.
 

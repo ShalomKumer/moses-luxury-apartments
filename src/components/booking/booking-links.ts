@@ -1,8 +1,9 @@
 import { buildBookingSubject, type BookingTexts } from '@domain/booking/booking-message';
+import { gmailComposeLink } from '@domain/booking/gmail-link';
 import { mailtoLink } from '@domain/booking/mailto-link';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
 
-/** What the two booking links need besides the message: where they go and the texts of the subject line. */
+/** What the booking links need besides the message: where they go and the texts of the subject line. */
 export interface LinkTarget {
   /** The apartment's name for the subject line; null on the home page before one is chosen. */
   cabinName: string | null;
@@ -22,10 +23,13 @@ export function readLinkTarget(root: HTMLElement): LinkTarget | null {
   }
 }
 
-/** Points the WhatsApp and email links inside the element at the message. Without a script the plain links still work. */
+/** Points the WhatsApp, Gmail and mail-app links inside the element at the message. Without a script the plain links still work. */
 export function applyMessage(root: HTMLElement, target: LinkTarget, message: string): void {
   const whatsapp = root.querySelector<HTMLAnchorElement>('[data-booking-whatsapp]');
-  const email = root.querySelector<HTMLAnchorElement>('[data-booking-email]');
+  const gmail = root.querySelector<HTMLAnchorElement>('[data-booking-gmail]');
+  const mailApp = root.querySelector<HTMLAnchorElement>('[data-booking-email]');
+  const subject = buildBookingSubject(target.texts, target.cabinName);
   if (whatsapp && target.phoneDigits) whatsapp.href = whatsappLink(target.phoneDigits, message);
-  if (email) email.href = mailtoLink(target.email, buildBookingSubject(target.texts, target.cabinName), message);
+  if (gmail) gmail.href = gmailComposeLink(target.email, subject, message);
+  if (mailApp) mailApp.href = mailtoLink(target.email, subject, message);
 }

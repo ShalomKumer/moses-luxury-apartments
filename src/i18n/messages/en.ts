@@ -26,6 +26,7 @@ export const en: Messages = {
     lastUpdated: 'Last updated',
     phone: 'Phone',
     email: 'Email',
+    gmail: 'Gmail',
     pageTitle: '{title} | {site}',
   },
   nav: {
@@ -101,9 +102,10 @@ export const en: Messages = {
   },
   booking: {
     whatsapp: 'Send a request on WhatsApp',
-    whatsappHint: '{name} (opens WhatsApp)',
-    email: 'Send a request by email',
-    emailHint: '{name} (opens your mail app)',
+    gmail: 'Send a request by Gmail',
+    newTabHint: '{name} (opens in a new tab)',
+    mailApp: 'or use the mail app on your device',
+    mailAppHint: '{name} (opens your mail app)',
     message: {
       intro: "Hello, I'd like to check availability and book {cabin}.",
       introAny: "Hello, I'd like to check availability and book.",
@@ -118,7 +120,7 @@ export const en: Messages = {
   },
   notice: {
     before:
-      'The buttons open WhatsApp or your mail app with a ready message, and it is sent only if you press "Send" there. It reaches us through the service you chose. Details in the ',
+      'The buttons open WhatsApp or Gmail (or the mail app on your device) in a new tab with a ready message, and it is sent only if you press "Send" there. It reaches us through the service you chose. Details in the ',
     privacyLink: 'privacy policy',
     between: ' and the ',
     cancellationLink: 'cancellation policy',
@@ -127,7 +129,7 @@ export const en: Messages = {
   contact: {
     heading: 'Contact',
     whatsapp: 'WhatsApp',
-    whatsappHint: '(opens WhatsApp)',
+    newTabHint: '(opens in a new tab)',
     whatsappMessage: 'Hello, I have a question about {name}.',
   },
   footer: {

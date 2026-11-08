@@ -1,7 +1,12 @@
 ---
-/** The two booking buttons, WhatsApp and email, each opening the ready message. They work without JavaScript. */
+/**
+ * The booking buttons: WhatsApp and Gmail, each opening the ready message in a new tab, and under them a plain link for
+ * a mail app on the visitor's device. They work without JavaScript.
+ */
+import Icon from '@components/ui/Icon.astro';
 import { SITE, WHATSAPP_PHONE } from '@config/site';
 import { buildBookingSubject, type BookingTexts } from '@domain/booking/booking-message';
+import { gmailComposeLink } from '@domain/booking/gmail-link';
 import { mailtoLink } from '@domain/booking/mailto-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
@@ -23,29 +28,60 @@ const { locale, name, cabinName, message } = Astro.props;
 const t = getMessages(locale).booking;
 const texts: BookingTexts = t.message;
 const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
+const subject = buildBookingSubject(texts, cabinName);
 ---
 
 <div class="booking-links">
-  {phoneDigits && (
-    <a class="button" data-booking-whatsapp href={whatsappLink(phoneDigits, message)} rel="noopener">
-      {t.whatsapp}
-      <span class="visually-hidden"> - {fillTemplate(t.whatsappHint, { name })}</span>
+  <div class="booking-links__buttons">
+    {phoneDigits && (
+      <a
+        class="button"
+        data-booking-whatsapp
+        href={whatsappLink(phoneDigits, message)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="whatsapp" />
+        {t.whatsapp}
+        <span class="visually-hidden"> - {fillTemplate(t.newTabHint, { name })}</span>
+      </a>
+    )}
+    <a
+      class="button button--secondary"
+      data-booking-gmail
+      href={gmailComposeLink(SITE.email, subject, message)}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Icon name="mail" />
+      {t.gmail}
+      <span class="visually-hidden"> - {fillTemplate(t.newTabHint, { name })}</span>
     </a>
-  )}
-  <a
-    class="button button--secondary"
-    data-booking-email
-    href={mailtoLink(SITE.email, buildBookingSubject(texts, cabinName), message)}
-  >
-    {t.email}
-    <span class="visually-hidden"> - {fillTemplate(t.emailHint, { name })}</span>
+  </div>
+  <a class="booking-links__app" data-booking-email href={mailtoLink(SITE.email, subject, message)}>
+    {t.mailApp}
+    <span class="visually-hidden"> - {fillTemplate(t.mailAppHint, { name })}</span>
   </a>
 </div>
 
 <style>
-  .booking-links {
+  .booking-links,
+  .booking-links__buttons {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
+  }
+
+  .booking-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* A plain text link, still a full-height target (2.5.8). */
+  .booking-links__app {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-size);
+    font-size: var(--text-sm);
   }
 </style>
