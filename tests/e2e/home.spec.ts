@@ -144,11 +144,16 @@ for (const { path, label, rtl } of PAGES) {
 /** How many apartments the home page shows before the fold (the user's choice, 2026-11-08): pinned here on purpose, the same number as `ROWS_SHOWN` in `HomePage.astro`; changing one without the other fails the first test below. */
 const ROWS_SHOWN = 5;
 const FOLD = [
-  { path: '/', label: 'Hebrew', show: (n: number) => `הצגת עוד ${n} דירות`, hide: 'הסתרת הדירות הנוספות' },
+  {
+    path: '/',
+    label: 'Hebrew',
+    show: (n: number) => (n === 1 ? 'הצגת דירה נוספת' : `הצגת עוד ${n} דירות`),
+    hide: 'הסתרת הדירות הנוספות',
+  },
   {
     path: '/en/',
     label: 'English',
-    show: (n: number) => `Show ${n} more apartments`,
+    show: (n: number) => (n === 1 ? 'Show one more apartment' : `Show ${n} more apartments`),
     hide: 'Hide the other apartments',
   },
 ];
