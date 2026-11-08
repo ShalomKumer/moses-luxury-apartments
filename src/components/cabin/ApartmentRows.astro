@@ -1,7 +1,8 @@
 ---
 /**
  * The apartments as a list of large rows, shared by the home page (all of them) and the apartment pages (the next few,
- * chosen by `nextApartments`). It draws the list it is given.
+ * chosen by `nextApartments`). It draws the list it is given. `start` is the place of its first row in the whole list, so
+ * the rows keep alternating sides when a list continues after a fold (the home page's "show more").
  */
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '@i18n/locales';
@@ -10,15 +11,16 @@ import ApartmentRow from './ApartmentRow.astro';
 interface Props {
   cabins: CollectionEntry<'cabins'>[];
   locale: Locale;
+  start?: number;
 }
 
-const { cabins, locale } = Astro.props;
+const { cabins, locale, start = 0 } = Astro.props;
 ---
 
 <ul role="list" class="rows">
-  {cabins.map((cabin) => (
+  {cabins.map((cabin, index) => (
     <li>
-      <ApartmentRow cabin={cabin} locale={locale} />
+      <ApartmentRow cabin={cabin} locale={locale} flip={(start + index) % 2 === 1} />
     </li>
   ))}
 </ul>

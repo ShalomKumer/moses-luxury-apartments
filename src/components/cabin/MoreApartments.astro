@@ -1,0 +1,135 @@
+---
+/**
+ * The apartments of the home page that sit folded below the first few: a native `<details>`, so it opens with a click, Enter
+ * or Space, works without JavaScript and is found by the browser's search. Their photos are lazy, so a browser fetches none
+ * until the visitor opens it and the page keeps its weight however many apartments there are (the page-weight check reads
+ * it that way, `scripts/budget`). The control is a quiet pill between two hairlines, not a button: it says how many are
+ * folded, and "hide" once it is open, with a chevron that turns over.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import ApartmentRows from './ApartmentRows.astro';
+
+interface Props {
+  /** The folded apartments, in their order. */
+  cabins: CollectionEntry<'cabins'>[];
+  locale: Locale;
+  /** How many apartments are shown above the fold, so the rows keep alternating sides. */
+  start: number;
+}
+
+const { cabins, locale, start } = Astro.props;
+const t = getMessages(locale).home.moreApartments;
+const label = cabins.length === 1 ? t.one : fillTemplate(t.many, { count: cabins.length });
+---
+
+{cabins.length > 0 && (
+  <details class="more">
+    <summary class="more__summary">
+      <span class="more__label">
+        <span class="more__show">{label}</span>
+        <span class="more__hide">{t.hide}</span>
+        <span class="more__chevron" aria-hidden="true" />
+      </span>
+    </summary>
+    <div class="more__rows">
+      <ApartmentRows cabins={cabins} locale={locale} start={start} />
+    </div>
+  </details>
+)}
+
+<style>
+  .more {
+    margin-top: var(--space-8);
+  }
+
+  /* two hairlines with the pill between them; the whole line is the click target */
+  .more__summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-height: var(--target-size);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .more__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .more__summary::before,
+  .more__summary::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: color-mix(in srgb, var(--color-border) 45%, transparent);
+  }
+
+  /* the ring goes round the pill, not the whole line */
+  .more__summary:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .more__summary:focus-visible .more__label {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--color-surface);
+  }
+
+  .more__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--target-size);
+    padding-inline: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: calc(var(--radius) * 6); /* a full pill: the radius token times more than half the height */
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+  }
+
+  .more__summary:hover .more__label {
+    border-color: var(--color-text);
+    color: var(--color-text);
+  }
+
+  .more__hide,
+  .more[open] .more__show {
+    display: none;
+  }
+
+  .more[open] .more__hide {
+    display: inline;
+  }
+
+  /* a chevron cut out of a block of the text colour, so it looks the same in either direction; it turns up when open */
+  .more__chevron {
+    width: 0.7rem;
+    height: 0.45rem;
+    background: currentColor;
+    clip-path: polygon(0 19%, 12% 0, 50% 61%, 88% 0, 100% 19%, 50% 100%);
+    transition: transform 0.15s;
+  }
+
+  .more[open] .more__chevron {
+    transform: rotate(180deg);
+  }
+
+  .more__rows {
+    margin-top: var(--space-8);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .more__label,
+    .more__chevron {
+      transition: none;
+    }
+  }
+</style>

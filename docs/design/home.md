@@ -107,6 +107,16 @@ The code follows the decision above. Where it differs from the drawing, or the d
 - **A date problem** shows a short note (`role="alert"`) and the date stays out of the message: a check-in in the past
   drops both dates; a check-out on or before the check-in drops only the check-out (`stay-dates.ts`, tested).
 - Checked in Hebrew and English, at 1280 px and 375 px: axe, no sideways scroll, rows alternate by the text direction.
+- **Changed 2026-11-08 (approved by the user, `feature/home-show-more`): the list shows the first five apartments, the rest sit folded.**
+  Why: every apartment added about 70 KB to the home page's first load on a phone (415 KB with five), so it would have passed
+  the 1 MB ceiling at about the thirteenth of the owner's sixteen. A quiet pill (a 1 px outline in the border colour, muted text, a chevron) between two hairlines, below the fifth row:
+  "Show N more apartments" (one: "Show one more apartment"), opens a native `<details>` with the other rows, drawn like the first
+  ones and continuing their alternation; open, the same pill says "Hide the other apartments" and its chevron turns up. The user
+  first saw a full-width bordered button and asked for something gentler and for five rows by default (2026-11-08). No script: it opens by a click, Enter
+  or Space, works without JavaScript and is found by the browser's search. The folded rows' photos are lazy, so none is fetched
+  until it is opened, and the page-weight check does not count a lazy image folded in a closed `<details>`. The number shown is
+  `ROWS_SHOWN` in `HomePage.astro`; with five apartments nothing is folded yet, the fold appears with the sixth. Considered and not chosen: a JavaScript button (heavier without JS), a separate "all apartments"
+  page, smaller rows, and changing only how the weight is measured.
 
 ## Open for the user
 
