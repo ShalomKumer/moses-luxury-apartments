@@ -36,15 +36,32 @@ function pictureFile(picture) {
   return img ? imageFile(img) : null;
 }
 
+// A closed `<details>` ends at its first `</details>`: a nested one would leave the rest counted, which only makes the check stricter.
+const CLOSED_DETAILS = /<details\b(?![^>]*\sopen\b)[^>]*>[\s\S]*?<\/details>/gi;
+const LAZY_IMG = /<img\b[^>]*\sloading\s*=\s*["']lazy["'][^>]*>/i;
+
+/**
+ * The page without the lazy images folded inside a closed `<details>`: a browser does not render them, so it never fetches
+ * them until the visitor opens it. An image that is not lazy is fetched at once even when folded, so it stays counted.
+ */
+function withoutFoldedImages(html) {
+  const unlessLazy = (tag) => (LAZY_IMG.test(tag) ? '' : tag);
+  return html.replace(CLOSED_DETAILS, (block) =>
+    block.replace(PICTURE, unlessLazy).replace(/<img\b[^>]*>/gi, unlessLazy),
+  );
+}
+
 /**
  * The files a page names, split into scripts, stylesheets and images. A picture with a `srcset` is counted at the file a
  * phone loads (`pickCandidate`); a `<picture>` is counted at its narrow-screen source (`pictureFile`), once, not also as its `<img>`.
+ * A lazy image folded inside a closed `<details>` is not counted (`withoutFoldedImages`).
  */
 function references(html) {
   const links = attributeValues(html, /<link\b[^>]*>/gi, 'href');
   const relOf = (tag) => (tag.match(/\srel\s*=\s*["']([^"']+)["']/i)?.[1] ?? '').toLowerCase();
-  const pictures = [...html.matchAll(PICTURE)].map(([picture]) => pictureFile(picture));
-  const loose = html.replace(PICTURE, '');
+  const shown = withoutFoldedImages(html);
+  const pictures = [...shown.matchAll(PICTURE)].map(([picture]) => pictureFile(picture));
+  const loose = shown.replace(PICTURE, '');
   return {
     js: [
       ...attributeValues(html, /<script\b[^>]*>/gi, 'src').map((ref) => ref.value),
