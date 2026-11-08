@@ -48,6 +48,14 @@ const APARTMENTS = [
     nameHe: 'אחוזת המעיין',
     nameEn: 'Ahuzat HaMaayan',
   },
+  {
+    id: 'panorami-yerushalayim-97',
+    second: 'living-dining',
+    maxGuests: 18,
+    gridSrc: FULL_SRC,
+    nameHe: 'פנורמי ירושלים 97',
+    nameEn: 'Panorami',
+  },
 ];
 
 const LOCALES = [
