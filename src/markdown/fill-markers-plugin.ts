@@ -5,8 +5,8 @@ import { splitFillMarkers } from '../domain/text/fill-markers';
 const CODE_TAGS = new Set(['code', 'pre']);
 
 /**
- * A Markdown page plugin (Sätteri, Astro's Markdown processor): turns every "[למילוי: ...]" and "[TO FILL: ...]" into a
- * box that begins with the word "To fill:" (the word carries the meaning; the dashes only point to it). The source text
+ * A Markdown page plugin (Sätteri, Astro's Markdown processor): turns every square-bracketed part that opens with the Hebrew or the English
+ * "to fill" word and a colon into a box that begins with the word "To fill:" (the word carries the meaning; the dashes only point to it). The source text
  * keeps the marker, so `npm run launch:check` still fails while one is left (L11).
  */
 export const fillMarkersPlugin: HastPluginDefinition = {

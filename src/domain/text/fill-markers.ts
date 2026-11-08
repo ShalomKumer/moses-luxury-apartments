@@ -4,7 +4,7 @@ export type FillSegment = { kind: 'text'; value: string } | { kind: 'fill'; labe
 /** The word each marker language opens its box with. */
 const LABELS: Record<string, string> = { למילוי: 'למילוי:', 'TO FILL': 'To fill:' };
 
-/** Matches "[למילוי: ...]" and "[TO FILL: ...]"; the part inside never holds a closing bracket. */
+/** Matches a square-bracketed part that opens with a `LABELS` key and a colon; the part inside never holds a closing bracket. */
 const MARKER = /\[(למילוי|TO FILL):\s*([^\]]*)\]/g;
 
 /**
