@@ -83,6 +83,17 @@ ul[role='list'] {
   white-space: nowrap;
 }
 
+/* The small icon beside a word (Icon.astro): a gap on its inline-end side; a button already spaces its children. */
+.icon {
+  flex: none;
+  margin-inline-end: var(--space-2);
+  vertical-align: -0.2em;
+}
+
+.button > .icon {
+  margin-inline-end: 0;
+}
+
 .button {
   display: inline-flex;
   align-items: center;

@@ -78,7 +78,9 @@ describe('messages', () => {
     for (const path of keysOf(he).filter((p) => !p.startsWith('language.code'))) {
       const text = textAt(he, path);
       if (/^(brand\.logoAlt|common\.pageTitle|language\.)/.test(path)) continue;
-      expect(/[A-Za-z]{4,}/.test(text.replace(/\{\w+\}/g, '')), `he ${path} holds English words`).toBe(false);
+      // "Gmail" is a product's name, written in Latin letters in every language; any other English word still fails
+      const withoutNames = text.replace(/\{\w+\}/g, '').replaceAll('Gmail', '');
+      expect(/[A-Za-z]{4,}/.test(withoutNames), `he ${path} holds English words`).toBe(false);
     }
   });
 });

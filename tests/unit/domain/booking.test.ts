@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { buildBookingMessage, buildBookingSubject } from '@domain/booking/booking-message';
+import { gmailComposeLink } from '@domain/booking/gmail-link';
 import { mailtoLink } from '@domain/booking/mailto-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
+import { telLink } from '@domain/booking/tel-link';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
 import { fillTemplate } from '@domain/text/fill-template';
 import { splitParagraphs } from '@domain/text/paragraphs';
@@ -80,5 +82,22 @@ describe('links', () => {
       'https://wa.me/972545499445?text=%D7%A9%D7%9C%D7%95%D7%9D%0A%D7%90',
     );
     expect(mailtoLink('a@b.co', 'x y', 'z&w')).toBe('mailto:a@b.co?subject=x%20y&body=z%26w');
+  });
+
+  it('builds a Gmail compose link that keeps ampersands, new lines and Hebrew inside the body', () => {
+    expect(gmailComposeLink('a@b.co', 'x y', 'z&w\nא')).toBe(
+      'https://mail.google.com/mail/?view=cm&fs=1&to=a%40b.co&su=x%20y&body=z%26w%0A%D7%90',
+    );
+  });
+
+  it('builds a Gmail link with an empty subject and body', () => {
+    expect(gmailComposeLink('a@b.co', '', '')).toBe('https://mail.google.com/mail/?view=cm&fs=1&to=a%40b.co&su=&body=');
+  });
+
+  it('builds a tel link in international form, and none for a number it cannot read', () => {
+    expect(telLink('054-549-9445')).toBe('tel:+972545499445');
+    expect(telLink('+972 54 549 9445')).toBe('tel:+972545499445');
+    expect(telLink('123')).toBeNull();
+    expect(telLink('')).toBeNull();
   });
 });

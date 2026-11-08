@@ -23,6 +23,7 @@ export const he = {
     lastUpdated: 'עודכן לאחרונה',
     phone: 'טלפון',
     email: 'מייל',
+    gmail: 'Gmail',
     pageTitle: '{title} | {site}',
   },
   nav: {
@@ -98,9 +99,10 @@ export const he = {
   },
   booking: {
     whatsapp: 'שליחת בקשה בוואטסאפ',
-    whatsappHint: '{name} (נפתח בוואטסאפ)',
-    email: 'שליחת בקשה במייל',
-    emailHint: '{name} (נפתח בתוכנת המייל)',
+    gmail: 'שליחת בקשה ב-Gmail',
+    newTabHint: '{name} (נפתח בכרטיסייה חדשה)',
+    mailApp: 'או דרך תוכנת המייל במכשיר',
+    mailAppHint: '{name} (נפתח בתוכנת המייל)',
     message: {
       intro: 'שלום, אשמח לבדוק זמינות והזמנה ב{cabin}.',
       introAny: 'שלום, אשמח לבדוק זמינות והזמנה.',
@@ -115,7 +117,7 @@ export const he = {
   },
   notice: {
     before:
-      'הכפתורים פותחים את וואטסאפ או את תוכנת המייל שלכם עם הודעה מוכנה, וההודעה נשלחת רק אם תלחצו שם על "שליחה". היא מגיעה אלינו דרך השירות שבחרתם. פרטים ב',
+      'הכפתורים פותחים בכרטיסייה חדשה את וואטסאפ או את Gmail (או את תוכנת המייל שבמכשיר) עם הודעה מוכנה, וההודעה נשלחת רק אם תלחצו שם על "שליחה". היא מגיעה אלינו דרך השירות שבחרתם. פרטים ב',
     privacyLink: 'מדיניות הפרטיות',
     between: ' וב',
     cancellationLink: 'מדיניות הביטולים',
@@ -124,7 +126,7 @@ export const he = {
   contact: {
     heading: 'יצירת קשר',
     whatsapp: 'וואטסאפ',
-    whatsappHint: '(נפתח בוואטסאפ)',
+    newTabHint: '(נפתח בכרטיסייה חדשה)',
     whatsappMessage: 'שלום, יש לי שאלה על {name}.',
   },
   footer: {
