@@ -7,13 +7,18 @@ import { getCollection } from 'astro:content';
 import ContactDetails from '@components/contact/ContactDetails.astro';
 import BookingRequest from '@components/booking/BookingRequest.astro';
 import ApartmentRows from '@components/cabin/ApartmentRows.astro';
+import MoreApartments from '@components/cabin/MoreApartments.astro';
 import { toPagePhoto } from '@components/cabin/cabin-photo';
 import HomeHero from '@components/home/HomeHero.astro';
 import HomePoints from '@components/home/HomePoints.astro';
 import BaseLayout from '@components/layout/BaseLayout.astro';
 import HeartRule from '@components/ui/HeartRule.astro';
+import { splitList } from '@domain/apartments/split-list';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
+
+/** How many apartments the list shows before the fold; the rest open with "show more" (their photos load only then). */
+const ROWS_SHOWN = 5;
 
 interface Props {
   locale: Locale;
@@ -22,6 +27,7 @@ interface Props {
 const { locale } = Astro.props;
 const t = getMessages(locale);
 const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.data.order);
+const { shown, rest } = splitList(cabins, ROWS_SHOWN);
 ---
 
 <BaseLayout locale={locale} path="/" title={t.brand.name}>
@@ -33,7 +39,8 @@ const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.d
     <div class="container">
       <h2 id="cabins-title">{t.home.cabinsHeading}</h2>
       <HeartRule />
-      <ApartmentRows cabins={cabins} locale={locale} />
+      <ApartmentRows cabins={shown} locale={locale} />
+      <MoreApartments cabins={rest} locale={locale} start={shown.length} />
     </div>
   </section>
 

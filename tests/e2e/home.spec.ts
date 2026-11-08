@@ -1,6 +1,6 @@
 // The home page's booking-request bar and layout, in a real browser (docs/design/home.md): the message follows the
 // choices, a bad date shows a note and stays out of the message, the guests follow the apartment, the fonts load
-// from our own host, and the rows alternate by the text direction.
+// from our own host, the rows alternate by the text direction, and the rows beyond the first five sit folded (once there are more than five).
 import { expect, test, type Page } from '@playwright/test';
 import { axeViolations } from './helpers/run-axe';
 
@@ -116,6 +116,7 @@ for (const { path, label, rtl } of PAGES) {
     test('alternates the apartment rows by the start and end of the line', async ({ page, viewport }) => {
       test.skip((viewport?.width ?? 0) < 768, 'the rows stack on a phone');
       await page.goto(path);
+      if (await page.locator('.more').count()) await page.locator('.more__summary').click(); // rows beyond the fold
       const photos = await page
         .locator('.row__photo')
         .evaluateAll((nodes) =>
@@ -127,3 +128,103 @@ for (const { path, label, rtl } of PAGES) {
     });
   });
 }
+
+/** How many apartments the home page shows before the fold (the user's choice, 2026-11-08): pinned here on purpose, the same number as `ROWS_SHOWN` in `HomePage.astro`; changing one without the other fails the first test below. */
+const ROWS_SHOWN = 5;
+const FOLD = [
+  { path: '/', label: 'Hebrew', show: (n: number) => `הצגת עוד ${n} דירות`, hide: 'הסתרת הדירות הנוספות' },
+  {
+    path: '/en/',
+    label: 'English',
+    show: (n: number) => `Show ${n} more apartments`,
+    hide: 'Hide the other apartments',
+  },
+];
+
+for (const { path, label, show, hide } of FOLD) {
+  test.describe(`the fold of the home page, ${label}`, () => {
+    test('folds nothing while the apartments are no more than the number shown, and the rest beyond it', async ({
+      page,
+    }) => {
+      await page.goto(path);
+      const total = await page.locator('#cabins .row').count();
+      await expect(page.locator('.more')).toHaveCount(total > ROWS_SHOWN ? 1 : 0);
+      await expect(page.locator('#cabins .row:visible')).toHaveCount(Math.min(total, ROWS_SHOWN));
+    });
+
+    // The cases below need a fold, which exists once the apartments outnumber ROWS_SHOWN; until then there is nothing to open.
+    test('says how many apartments are folded', async ({ page }) => {
+      await page.goto(path);
+      test.skip((await page.locator('.more').count()) === 0, 'no fold until there are more apartments than are shown');
+      const total = await page.locator('#cabins .row').count();
+      await expect(page.locator('.more')).not.toHaveAttribute('open', '');
+      await expect(page.locator('.more__show')).toHaveText(show(total - ROWS_SHOWN));
+      await expect(page.locator('.more__show')).toBeVisible();
+      await expect(page.locator('.more__hide')).toBeHidden();
+    });
+
+    test('loads no photo of a folded apartment until it is opened', async ({ page }) => {
+      await page.goto(path);
+      test.skip((await page.locator('.more').count()) === 0, 'no fold until there are more apartments than are shown');
+      // the photo folders of the folded rows, read from their lazy images
+      const folded = await page
+        .locator('.more__rows img')
+        .evaluateAll((images) => [
+          ...new Set(
+            images.map(
+              (image) =>
+                new URL(image.getAttribute('src') ?? '', location.href).pathname.split('/').slice(0, 3).join('/') + '/',
+            ),
+          ),
+        ]);
+      expect(folded.length).toBeGreaterThan(0);
+      const requested: string[] = [];
+      page.on('request', (request) => requested.push(new URL(request.url()).pathname));
+      await page.reload();
+      await page.locator('.more').scrollIntoViewIfNeeded();
+      await page.waitForLoadState('networkidle');
+      expect(requested.filter((url) => folded.some((prefix) => url.startsWith(prefix)))).toEqual([]);
+      await page.locator('.more__summary').click();
+      await page.locator('.more__rows').scrollIntoViewIfNeeded();
+      await expect.poll(() => requested.some((url) => folded.some((prefix) => url.startsWith(prefix)))).toBe(true);
+    });
+
+    test('opens and closes by keyboard, and the control then says to hide them', async ({ page }) => {
+      await page.goto(path);
+      test.skip((await page.locator('.more').count()) === 0, 'no fold until there are more apartments than are shown');
+      const total = await page.locator('#cabins .row').count();
+      const summary = page.locator('.more__summary');
+      await summary.focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator('.more')).toHaveAttribute('open', '');
+      await expect(page.locator('#cabins .row:visible')).toHaveCount(total);
+      await expect(page.locator('.more__hide')).toHaveText(hide);
+      await expect(page.locator('.more__hide')).toBeVisible();
+      await expect(page.locator('.more__show')).toBeHidden();
+      await expect(summary).toBeFocused();
+      await page.keyboard.press('Space');
+      await expect(page.locator('.more')).not.toHaveAttribute('open', '');
+      await expect(page.locator('.more__show')).toBeVisible();
+    });
+
+    test('has no axe violations while open', async ({ page }) => {
+      await page.goto(path);
+      test.skip((await page.locator('.more').count()) === 0, 'no fold until there are more apartments than are shown');
+      await page.locator('.more__summary').click();
+      expect(await axeViolations(page)).toEqual([]);
+    });
+  });
+}
+
+test.describe('the fold of the home page without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('still opens, and shows every apartment', async ({ page }) => {
+    await page.goto('/');
+    test.skip((await page.locator('.more').count()) === 0, 'no fold until there are more apartments than are shown');
+    const total = await page.locator('#cabins .row').count();
+    await expect(page.locator('#cabins .row:visible')).toHaveCount(ROWS_SHOWN);
+    await page.locator('.more__summary').click();
+    await expect(page.locator('#cabins .row:visible')).toHaveCount(total);
+  });
+});

@@ -35,7 +35,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
 │   │   ├── dates/                  # date-key, date-range, format-date, month
-│   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start)
+│   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded)
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, stay-dates, guests
 │   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
 │   │   ├── photos/                 # photo-sources (the src, srcset, smallest and largest file of a photo from its widths)
@@ -51,7 +51,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
 │   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
-│   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, JumpToRequest, ApartmentRow, ApartmentRows
+│   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments (the home page's folded rows)
 │   │   │             #   (the rows are shared by the home page and the apartment pages)
 │   │   ├── legal/    LegalHead, LegalToc (sticky beside the text, folded <details> on a phone), DraftNotice,
 │   │   │             #   CoordinatorCard (the accessibility coordinator, from config/site.ts)

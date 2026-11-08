@@ -48,6 +48,11 @@ export const he = {
       },
     },
     cabinsHeading: 'הדירות',
+    moreApartments: {
+      one: 'הצגת דירה נוספת',
+      many: 'הצגת עוד {count} דירות',
+      hide: 'הסתרת הדירות הנוספות',
+    },
     points: {
       place: {
         title: 'בלב העיר העתיקה צפת',

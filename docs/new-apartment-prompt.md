@@ -51,6 +51,7 @@ Every real apartment lists **Wi-Fi** in its features (he: "אינטרנט אלח
   three apartments only, `nextApartments`), and on a phone a row loads the photo's smallest file (the 640 one), so adding an apartment no longer pushes the other
   pages toward the 1 MB ceiling (`scripts/budget/limits.mjs`). The apartment's own page still counts its own grid photos at the 960 file; if the budget check fails for
   that page, add `--page-kb=120` to a photo's `photos:add` (it lowers the ceiling of the 640, 960 and 1280 files only; the viewer's 1920 file keeps the standard one). A detailed photo of the page's own grid (stone, murals, foliage) that still passes it needs `--phone-kb=100` instead: it lowers only the 640 and 960 files, the ones a phone loads, so the 1280 file keeps its quality (Ahuzat HaMaayan, 2026-11-04).
+- **The home page shows the first five apartments and folds the rest** (`ROWS_SHOWN` in `HomePage.astro`; their photos load only when it is opened), so from the sixth apartment on the home page no longer grows with each one; the apartment pages are unchanged.
 - **The rest.** They are reached by "all photos" (the viewer) and, without JavaScript, by links named by their alt text. About ten photos
   in all keeps the page under its 1 MB ceiling on a phone; more is possible when the weight check still passes.
 

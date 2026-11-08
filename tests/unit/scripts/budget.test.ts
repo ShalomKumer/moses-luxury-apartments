@@ -118,6 +118,27 @@ describe('pageWeight', () => {
     expect(pageWeight(html, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(250_000);
   });
 
+  it('does not count a lazy image folded inside a closed <details>, which the browser does not fetch', () => {
+    const lazyRow =
+      '<picture><source media="(max-width: 30rem)" srcset="/photos/hero-1920.webp"><img src="/photos/x.webp" loading="lazy"></picture>';
+    const closed = `<details><summary>more</summary><ul><li>${lazyRow}</li><li><img src="local.webp" loading="lazy"></li></ul></details>`;
+    expect(pageWeight(closed, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf)).toMatchObject({
+      images: 0,
+      missing: [],
+    });
+  });
+
+  it('counts the same images once the <details> is open, and any image the browser fetches at once', () => {
+    const lazyRow =
+      '<picture><source media="(max-width: 30rem)" srcset="/photos/hero-1920.webp"><img src="/photos/x.webp" loading="lazy"></picture>';
+    const open = `<details open><summary>more</summary>${lazyRow}</details>`;
+    expect(pageWeight(open, 'dist/client/index.html', ROOT, sizeOf).images).toBe(200_000);
+    const eager = '<details><summary>more</summary><img src="local.webp"></details>';
+    expect(pageWeight(eager, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(50_000);
+    const notOpen = '<details data-open="1"><img src="local.webp" loading="lazy"></details>';
+    expect(pageWeight(notOpen, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(0);
+  });
+
   it('counts the bytes of Hebrew text, not its characters', () => {
     expect(pageWeight('שלום', 'dist/client/index.html', ROOT, sizeOf).html).toBe(8);
   });

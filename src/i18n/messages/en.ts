@@ -51,6 +51,11 @@ export const en: Messages = {
       },
     },
     cabinsHeading: 'The apartments',
+    moreApartments: {
+      one: 'Show one more apartment',
+      many: 'Show {count} more apartments',
+      hide: 'Hide the other apartments',
+    },
     points: {
       place: {
         title: "In the heart of Safed's Old City",

@@ -16,19 +16,21 @@ import { pick } from '@i18n/pick';
 interface Props {
   cabin: CollectionEntry<'cabins'>;
   locale: Locale;
+  /** Puts the photo on the other side on a wide screen; the list that draws the rows alternates it. */
+  flip?: boolean;
 }
 
 /** A phone (up to 30rem, 480 px): it loads the smallest file; a wider stacked row (a tablet) picks from the whole `srcset`. */
 const PHONE_MEDIA = '(max-width: 30rem)';
 
-const { cabin, locale } = Astro.props;
+const { cabin, locale, flip = false } = Astro.props;
 const t = getMessages(locale);
 const { maxGuests, photos } = cabin.data;
 const name = pick(cabin.data.name, locale);
 const cover = toPagePhoto(photos[0], locale);
 ---
 
-<article class="row">
+<article class:list={['row', { 'row--flip': flip }]}>
   <picture class="row__picture">
     {cover.srcset && <source media={PHONE_MEDIA} srcset={cover.small} />}
     <img
@@ -99,7 +101,7 @@ const cover = toPagePhoto(photos[0], locale);
     }
 
     /* every second row puts the photo on the other side; `order` follows the text direction */
-    :global(li:nth-child(even)) > .row > .row__picture {
+    .row--flip > .row__picture {
       order: 2;
     }
   }
