@@ -1,19 +1,24 @@
 ---
-/** A cabin's capacity, rooms, times and features, in the page's language. */
+/** A cabin's capacity, rooms, times, badges and features, in the page's language. */
 import { SITE } from '@config/site';
+import { orderHighlights, type Highlight } from '@domain/apartments/highlights';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
+import CabinHighlights from './CabinHighlights.astro';
 
 interface Props {
   locale: Locale;
   maxGuests: number;
   bedrooms: number;
+  bathrooms: number;
+  /** The badges: Wi-Fi, a jacuzzi, a sauna and what else the owner's text names. */
+  highlights: Highlight[];
   /** The features, already in the page's language. */
   features: string[];
 }
 
-const { locale, maxGuests, bedrooms, features } = Astro.props;
+const { locale, maxGuests, bedrooms, bathrooms, highlights, features } = Astro.props;
 const t = getMessages(locale).facts;
 ---
 
@@ -27,6 +32,10 @@ const t = getMessages(locale).facts;
     <div>
       <dt>{t.bedrooms}</dt>
       <dd>{bedrooms}</dd>
+    </div>
+    <div>
+      <dt>{t.bathrooms}</dt>
+      <dd>{bathrooms}</dd>
     </div>
     {SITE.checkInTime && (
       <div>
@@ -47,6 +56,9 @@ const t = getMessages(locale).facts;
       </div>
     )}
   </dl>
+  <div class="cabin-facts__highlights">
+    <CabinHighlights locale={locale} items={orderHighlights(highlights)} />
+  </div>
   <h3>{t.featuresHeading}</h3>
   <ul class="cabin-facts__features" role="list">
     {features.map((feature) => (
@@ -78,6 +90,10 @@ const t = getMessages(locale).facts;
   .cabin-facts__list dd {
     margin: 0;
     font-weight: 600;
+  }
+
+  .cabin-facts__highlights {
+    margin-block-end: var(--space-6);
   }
 
   .cabin-facts__features {

@@ -1,0 +1,62 @@
+---
+/**
+ * An apartment's badges: a short word (with a small icon) for each fact the owner's text names, such as "Wi-Fi" or
+ * "3 jacuzzis". The caller picks and orders them (`orderHighlights`, `specialHighlights`); this only draws them. The
+ * icon is hidden from a screen reader, which reads the word (A2, A4).
+ */
+import Icon from '@components/ui/Icon.astro';
+import type { Highlight } from '@domain/apartments/highlights';
+import { highlightLabel } from '@domain/apartments/highlights';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { HIGHLIGHT_ICONS } from './highlight-icons';
+
+interface Props {
+  locale: Locale;
+  items: Highlight[];
+}
+
+const { locale, items } = Astro.props;
+const t = getMessages(locale).facts;
+---
+
+{items.length > 0 && (
+  <ul class="tags" role="list" aria-label={t.highlightsLabel}>
+    {items.map((item) => (
+      <li class="tags__item" data-highlight={item.kind}>
+        <Icon name={HIGHLIGHT_ICONS[item.kind]} />
+        <span>{highlightLabel(item, t.highlights)}</span>
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tags__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    line-height: 1.4;
+  }
+
+  /* the icon is decoration beside the word; it does not take the global spacing that a button's icon gets */
+  .tags__item :global(.icon) {
+    margin-inline-end: 0;
+    flex: none;
+  }
+</style>

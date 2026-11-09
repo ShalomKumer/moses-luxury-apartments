@@ -21,6 +21,12 @@ description:
     Villa Panorami – where breathtaking views, spacious luxury, and the magical atmosphere of Tzfat come together for an unforgettable stay.
 maxGuests: 18
 bedrooms: 6
+bathrooms: 6
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: view
+  - kind: stone
 features:
   - he: 6 חדרי שינה מרווחים ונעימים
     en: 6 spacious bedrooms, comfortable and inviting

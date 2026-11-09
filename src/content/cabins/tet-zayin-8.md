@@ -21,6 +21,12 @@ description:
     Tet-Zayin 8 – where the timeless magic of Old Tzfat meets romance, tranquility, and luxurious comfort.
 maxGuests: 2
 bedrooms: 1
+bathrooms: 1
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: jacuzzi
+  - kind: stone
 features:
   - he: עיצוב אבן עתיק ואותנטי, בבית ערבי משוחזר, מלא אופי וקסם
     en: Authentic historic stone design, beautifully restored traditional architecture, rich in character and charm

@@ -33,6 +33,15 @@ description:
     Ahuzat HaMaayan – where art, breathtaking views, relaxation and the soul of Tzfat come together for an unforgettable vacation.
 maxGuests: 9
 bedrooms: 2
+bathrooms: 2
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: jacuzzi
+  - kind: courtyard
+  - kind: loft
+    count: 2
+  - kind: murals
 features:
   - he: 2 חדרי שינה זוגיים, נעימים ונוחים, המעניקים פרטיות לזוגות
     en: 2 comfortable double bedrooms, offering privacy and comfort for couples

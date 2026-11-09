@@ -21,6 +21,15 @@ description:
     Atzulat HaKikar A – where luxury, privacy, relaxation and the soul of Tzfat come together.
 maxGuests: 11
 bedrooms: 4
+bathrooms: 4
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: jacuzzi
+    count: 2
+  - kind: pool
+  - kind: balcony
+  - kind: courtyard
 features:
   - he: 4 חדרי שינה מרווחים, מתוכם 3 יחידות הורים פרטיות עם חדרי רחצה צמודים
     en: 4 spacious bedrooms, including 3 private master suites with en-suite bathrooms
@@ -38,6 +47,8 @@ features:
     en: A private courtyard with outdoor seating areas, an outdoor dining area, evening lighting and a gas BBQ grill
   - he: בית משופץ ומעוצב ברמה גבוהה, עם הקפדה על איכות ונוחות מרבית
     en: Beautifully renovated to a high standard, thoughtfully designed with elegant finishes and quality furnishings
+  - he: מטבח מאובזר לשבת, לחופשה נוחה גם בשבתות ובחגים
+    en: A fully equipped Shabbos kitchen, thoughtfully prepared for comfortable Shabbos and Yom Tov stays
   - he: אינטרנט אלחוטי
     en: Wi-Fi
 photos:

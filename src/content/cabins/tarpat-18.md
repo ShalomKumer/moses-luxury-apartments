@@ -29,6 +29,12 @@ description:
     Villa Tarpat 18 – where family comes together, breathtaking views inspire, and every stay becomes an unforgettable experience.
 maxGuests: 9
 bedrooms: 4
+bathrooms: 2
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: view
+  - kind: courtyard
 features:
   - he: 4 חדרי שינה מרווחים ונוחים לאירוח משפחתי
     en: 4 comfortable bedrooms, spacious and welcoming for family stays

@@ -12,6 +12,8 @@ const APARTMENTS = [
     id: 'artist-estate',
     second: 'living-room',
     maxGuests: 14,
+    bathrooms: 7,
+    kinds: ['wifi', 'shabbos-kitchen', 'view', 'courtyard'],
     gridSrc: FULL_SRC,
     nameHe: 'אחוזת האמן',
     nameEn: "The Artist's Estate",
@@ -20,6 +22,8 @@ const APARTMENTS = [
     id: 'atzulat-hakikar-b',
     second: 'jacuzzi',
     maxGuests: 11,
+    bathrooms: 3,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'courtyard'],
     gridSrc: FULL_SRC,
     nameHe: 'אצולת הכיכר ב׳',
     nameEn: 'Atzulat HaKikar B',
@@ -28,6 +32,8 @@ const APARTMENTS = [
     id: 'atzulat-hakikar-a',
     second: 'bedroom-stone',
     maxGuests: 11,
+    bathrooms: 4,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'pool', 'balcony', 'courtyard'],
     gridSrc: FULL_SRC,
     nameHe: 'אצולת הכיכר א׳',
     nameEn: 'Atzulat HaKikar A',
@@ -36,6 +42,8 @@ const APARTMENTS = [
     id: 'tarpat-18',
     second: 'living-dining',
     maxGuests: 9,
+    bathrooms: 2,
+    kinds: ['wifi', 'shabbos-kitchen', 'view', 'courtyard'],
     gridSrc: [960, 1280, 960, 1280, 1280],
     nameHe: 'תרפ"ט 18',
     nameEn: 'Tarpat 18',
@@ -44,6 +52,8 @@ const APARTMENTS = [
     id: 'ahuzat-hamaayan',
     second: 'living-loft',
     maxGuests: 9,
+    bathrooms: 2,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'courtyard', 'loft', 'murals'],
     gridSrc: FULL_SRC,
     nameHe: 'אחוזת המעיין',
     nameEn: 'Ahuzat HaMaayan',
@@ -52,6 +62,8 @@ const APARTMENTS = [
     id: 'panorami-yerushalayim-97',
     second: 'living-dining',
     maxGuests: 18,
+    bathrooms: 6,
+    kinds: ['wifi', 'shabbos-kitchen', 'view', 'stone'],
     gridSrc: FULL_SRC,
     nameHe: 'פנורמי ירושלים 97',
     nameEn: 'Panorami',
@@ -60,6 +72,8 @@ const APARTMENTS = [
     id: 'avira-drashbi',
     second: 'living-sofa',
     maxGuests: 14,
+    bathrooms: 4,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'sauna', 'view'],
     gridSrc: FULL_SRC,
     nameHe: 'אווירא דרשב"י',
     nameEn: "Avira D'Rashbi",
@@ -71,6 +85,8 @@ const APARTMENTS = [
     secondWidth: 1280,
     photos: 8,
     maxGuests: 2,
+    bathrooms: 1,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'courtyard', 'loft', 'stone'],
     gridSrc: FULL_SRC,
     nameHe: 'מעיין א׳',
     nameEn: "Ma'ayan A",
@@ -83,6 +99,8 @@ const APARTMENTS = [
     secondWidth: 1280,
     photos: 8,
     maxGuests: 2,
+    bathrooms: 1,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'courtyard', 'loft', 'stone'],
     gridSrc: FULL_SRC,
     nameHe: 'מעיין ב׳',
     nameEn: "Ma'ayan B",
@@ -93,6 +111,8 @@ const APARTMENTS = [
     second: 'bed',
     photos: 8,
     maxGuests: 2,
+    bathrooms: 1,
+    kinds: ['wifi', 'shabbos-kitchen', 'view', 'balcony'],
     gridSrc: FULL_SRC,
     nameHe: 'נוביליטי 1',
     nameEn: 'Nobility 1',
@@ -101,6 +121,8 @@ const APARTMENTS = [
     id: 'nobility-2',
     second: 'bedroom-jacuzzi',
     maxGuests: 2,
+    bathrooms: 1,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'view', 'balcony', 'separate-bedroom'],
     gridSrc: FULL_SRC,
     nameHe: 'נוביליטי 2',
     nameEn: 'Nobility 2',
@@ -109,6 +131,8 @@ const APARTMENTS = [
     id: 'nobility-3',
     second: 'suite-wide',
     maxGuests: 2,
+    bathrooms: 1,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'view', 'balcony', 'separate-bedroom'],
     gridSrc: FULL_SRC,
     nameHe: 'נוביליטי 3',
     nameEn: 'Nobility 3',
@@ -120,6 +144,8 @@ const APARTMENTS = [
     secondWidth: 960,
     photos: 6,
     maxGuests: 2,
+    bathrooms: 1,
+    kinds: ['wifi', 'shabbos-kitchen', 'jacuzzi', 'stone'],
     gridSrc: [960, 960, 960, 960, 960],
     nameHe: 'צימר ט״ז 8',
     nameEn: 'Tet-Zayin 8',
@@ -133,6 +159,8 @@ const LOCALES = [
     forward: 'ArrowLeft',
     position: (n: number) => new RegExp(`^.* \\(${n} מתוך ${n}\\)$`),
     wifi: 'אינטרנט אלחוטי',
+    bathroomsLabel: 'חדרי רחצה',
+    highlightsLabel: 'מה מיוחד בדירה',
   },
   {
     label: 'English',
@@ -140,11 +168,23 @@ const LOCALES = [
     forward: 'ArrowRight',
     position: (n: number) => new RegExp(`^.* \\(${n} of ${n}\\)$`),
     wifi: 'Wi-Fi',
+    bathroomsLabel: 'Bathrooms',
+    highlightsLabel: 'Apartment highlights',
   },
 ];
 
-for (const { id, photoFolder = id, second, secondWidth = 1920, maxGuests, gridSrc, photos = 10 } of APARTMENTS) {
-  for (const { label, base, forward, position, wifi } of LOCALES) {
+for (const {
+  id,
+  photoFolder = id,
+  second,
+  secondWidth = 1920,
+  maxGuests,
+  gridSrc,
+  photos = 10,
+  bathrooms,
+  kinds,
+} of APARTMENTS) {
+  for (const { label, base, forward, position, wifi, bathroomsLabel, highlightsLabel } of LOCALES) {
     test.describe(`${id}, ${label}`, () => {
       const path = `${base}/${id}/`;
 
@@ -189,6 +229,22 @@ for (const { id, photoFolder = id, second, secondWidth = 1920, maxGuests, gridSr
         await expect(page.locator('.cabin-facts__features')).toContainText(wifi);
       });
 
+      test('the details show the bathrooms and the badges the owner’s text backs, in the page order', async ({
+        page,
+      }) => {
+        await page.goto(path);
+        const facts = page.locator('.cabin-facts');
+        await expect(facts.locator('.cabin-facts__list div').filter({ hasText: bathroomsLabel })).toContainText(
+          String(bathrooms),
+        );
+        const shown = await facts
+          .locator('.tags__item')
+          .evaluateAll((items) => items.map((item) => (item as HTMLElement).dataset.highlight));
+        expect(shown).toEqual(kinds);
+        await expect(facts.locator('.tags')).toHaveAttribute('aria-label', highlightsLabel);
+        await expect(facts.locator('[data-highlight="wifi"]')).toContainText('Wi-Fi');
+      });
+
       test(`the request takes up to ${maxGuests} guests`, async ({ page }) => {
         await page.goto(path);
         const guests = page.locator('[data-request-guests]');
@@ -218,6 +274,22 @@ for (const { label, home, nameKey } of [
       const rows = page.locator('.row');
       for (const [index, apartment] of APARTMENTS.entries()) {
         await expect(rows.nth(index)).toContainText(apartment[nameKey]);
+      }
+    });
+
+    test('each row shows up to three badges that set the apartment apart, never Wi-Fi or the Shabbos kitchen', async ({
+      page,
+    }) => {
+      await page.goto(home);
+      const rows = page.locator('.row');
+      for (const [index, apartment] of APARTMENTS.entries()) {
+        const shown = await rows
+          .nth(index)
+          .locator('.tags__item')
+          .evaluateAll((items) => items.map((item) => (item as HTMLElement).dataset.highlight));
+        expect(shown, apartment.id).toEqual(
+          apartment.kinds.filter((kind) => kind !== 'wifi' && kind !== 'shabbos-kitchen').slice(0, 3),
+        );
       }
     });
   });

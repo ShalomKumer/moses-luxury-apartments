@@ -1,12 +1,27 @@
 /**
- * The outlines of the three icons, as plain path data on a 24 x 24 grid, so a component draws them without any markup
- * from outside (the site never writes HTML from a string, S1). Their licences sit beside this file: the phone and the envelope are from Lucide (ISC,
+ * The outlines of the icons, as plain path data on a 24 x 24 grid, so a component draws them without any markup
+ * from outside (the site never writes HTML from a string, S1). Their licences sit beside this file: the phone, the envelope and the apartment features (Wi-Fi, bath, flame, waves, mountain, door, trees, bed, wall,
+ * brush, utensils; Lucide v0.469.0) are from Lucide (ISC,
  * LICENSE-lucide.txt), the WhatsApp mark is from Simple Icons (CC0, LICENSE-simple-icons.txt). The WhatsApp name and mark
  * stay Meta's trademark: the mark is drawn unchanged, only to say "this opens WhatsApp", next to the word (C2).
  */
 
 /** The icons the site draws. */
-export type IconName = 'whatsapp' | 'mail' | 'phone';
+export type IconName =
+  | 'whatsapp'
+  | 'mail'
+  | 'phone'
+  | 'wifi'
+  | 'bath'
+  | 'flame'
+  | 'waves'
+  | 'mountain'
+  | 'balcony'
+  | 'trees'
+  | 'bed'
+  | 'brick-wall'
+  | 'paintbrush'
+  | 'utensils';
 
 /** One icon: drawn as an outline (a stroke) or as a solid shape (a fill), from one or more paths. */
 export interface IconShape {
@@ -34,5 +49,90 @@ export const ICONS: Record<IconName, IconShape> = {
     paths: [
       'M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384',
     ],
+  },
+  wifi: {
+    style: 'stroke',
+    paths: ['M12 20h.01', 'M2 8.82a15 15 0 0 1 20 0', 'M5 12.859a10 10 0 0 1 14 0', 'M8.5 16.429a5 5 0 0 1 7 0'],
+  },
+  bath: {
+    style: 'stroke',
+    paths: [
+      'M10 4 8 6',
+      'M17 19v2',
+      'M2 12h20',
+      'M7 19v2',
+      'M9 5 7.621 3.621A2.121 2.121 0 0 0 4 5v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5',
+    ],
+  },
+  flame: {
+    style: 'stroke',
+    paths: [
+      'M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z',
+    ],
+  },
+  waves: {
+    style: 'stroke',
+    paths: [
+      'M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1',
+      'M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1',
+      'M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1',
+    ],
+  },
+  mountain: { style: 'stroke', paths: ['m8 3 4 8 5-5 5 15H2L8 3z'] },
+  // Lucide's "door-open"
+  balcony: {
+    style: 'stroke',
+    paths: [
+      'M13 4h3a2 2 0 0 1 2 2v14',
+      'M2 20h3',
+      'M13 20h9',
+      'M10 12v.01',
+      'M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z',
+    ],
+  },
+  trees: {
+    style: 'stroke',
+    paths: [
+      'M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z',
+      'M7 16v6',
+      'M13 19v3',
+      'M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5',
+    ],
+  },
+  // Lucide's "bed-double"
+  bed: {
+    style: 'stroke',
+    paths: [
+      'M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8',
+      'M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4',
+      'M12 4v6',
+      'M2 18h20',
+    ],
+  },
+  // Lucide's "brick-wall" (its rectangle written as a path)
+  'brick-wall': {
+    style: 'stroke',
+    paths: [
+      'M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z',
+      'M12 9v6',
+      'M16 15v6',
+      'M16 3v6',
+      'M3 15h18',
+      'M3 9h18',
+      'M8 15v6',
+      'M8 3v6',
+    ],
+  },
+  paintbrush: {
+    style: 'stroke',
+    paths: [
+      'm14.622 17.897-10.68-2.913',
+      'M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z',
+      'M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15',
+    ],
+  },
+  utensils: {
+    style: 'stroke',
+    paths: ['M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2', 'M7 2v20', 'M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7'],
   },
 };
