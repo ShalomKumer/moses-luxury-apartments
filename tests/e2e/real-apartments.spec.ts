@@ -75,6 +75,18 @@ const APARTMENTS = [
     nameHe: 'מעיין א׳',
     nameEn: "Ma'ayan A",
   },
+  {
+    // the same eight photo files as Ma'ayan A (another unit; the user's decision, 2026-11-08)
+    id: 'maayan-b',
+    photoFolder: 'maayan-a',
+    second: 'courtyard-jacuzzi',
+    secondWidth: 1280,
+    photos: 8,
+    maxGuests: 2,
+    gridSrc: FULL_SRC,
+    nameHe: 'מעיין ב׳',
+    nameEn: "Ma'ayan B",
+  },
 ];
 
 const LOCALES = [
@@ -94,7 +106,7 @@ const LOCALES = [
   },
 ];
 
-for (const { id, second, secondWidth = 1920, maxGuests, gridSrc, photos = 10 } of APARTMENTS) {
+for (const { id, photoFolder = id, second, secondWidth = 1920, maxGuests, gridSrc, photos = 10 } of APARTMENTS) {
   for (const { label, base, forward, position, wifi } of LOCALES) {
     test.describe(`${id}, ${label}`, () => {
       const path = `${base}/${id}/`;
@@ -116,7 +128,7 @@ for (const { id, second, secondWidth = 1920, maxGuests, gridSrc, photos = 10 } o
           const image = images.nth(index);
           const width = gridSrc[index];
           await expect(image).toHaveAttribute('srcset', new RegExp(`640w, .*${width}w`));
-          await expect(image).toHaveAttribute('src', new RegExp(`/photos/${id}/.+-${width}\\.webp$`));
+          await expect(image).toHaveAttribute('src', new RegExp(`/photos/${photoFolder}/.+-${width}\\.webp$`));
         }
         expect(await images.first().evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(
           true,
@@ -129,7 +141,7 @@ for (const { id, second, secondWidth = 1920, maxGuests, gridSrc, photos = 10 } o
         await page.keyboard.press(forward);
         await expect(page.locator('[data-gallery-image]')).toHaveAttribute(
           'src',
-          new RegExp(`/photos/${id}/${second}-${secondWidth}\\.webp$`),
+          new RegExp(`/photos/${photoFolder}/${second}-${secondWidth}\\.webp$`),
         );
         for (let step = 0; step < photos - 2; step++) await page.keyboard.press(forward);
         await expect(page.locator('[data-gallery-caption]')).toHaveText(position(photos));
