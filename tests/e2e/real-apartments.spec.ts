@@ -76,10 +76,10 @@ const APARTMENTS = [
     nameEn: "Ma'ayan A",
   },
   {
-    // the same eight photo files as Ma'ayan A (another unit; the user's decision, 2026-11-08)
+    // the same eight photo files as Ma'ayan A (another unit; the user's decision, 2026-11-08), led by another photo (2026-11-09)
     id: 'maayan-b',
     photoFolder: 'maayan-a',
-    second: 'courtyard-jacuzzi',
+    second: 'bedroom-vault',
     secondWidth: 1280,
     photos: 8,
     maxGuests: 2,

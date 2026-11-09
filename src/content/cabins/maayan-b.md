@@ -43,6 +43,13 @@ features:
   - he: אינטרנט אלחוטי (Wi-Fi)
     en: Wi-Fi
 photos:
+  - src: /photos/maayan-a/living-loft-1280.webp
+    widths: [640, 960, 1280]
+    alt:
+      he: חלל מגורים עם קירות ותקרת אבן, כורסה חומה גבוהה בצורת קליפה, שטיח פרווה חום, טלוויזיה ולופט עץ מעל
+      en: A living area with stone walls and ceiling, a tall brown shell-shaped armchair, a brown fur rug, a television and a wooden loft above
+    width: 1280
+    height: 848
   - src: /photos/maayan-a/bedroom-vault-1280.webp
     widths: [640, 960, 1280]
     alt:
@@ -57,13 +64,6 @@ photos:
       en: A bubbling jacuzzi with a bowl of fruit on its edge, and behind it a swing seat with a fabric canopy, a lawn and stone walls
     width: 1280
     height: 850
-  - src: /photos/maayan-a/living-loft-1280.webp
-    widths: [640, 960, 1280]
-    alt:
-      he: חלל מגורים עם קירות ותקרת אבן, כורסה חומה גבוהה בצורת קליפה, שטיח פרווה חום, טלוויזיה ולופט עץ מעל
-      en: A living area with stone walls and ceiling, a tall brown shell-shaped armchair, a brown fur rug, a television and a wooden loft above
-    width: 1280
-    height: 848
   - src: /photos/maayan-a/courtyard-dining-1280.webp
     widths: [640, 960, 1280]
     alt:
