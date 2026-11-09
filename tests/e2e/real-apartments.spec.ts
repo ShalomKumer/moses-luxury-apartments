@@ -87,6 +87,43 @@ const APARTMENTS = [
     nameHe: 'מעיין ב׳',
     nameEn: "Ma'ayan B",
   },
+  {
+    // eight photos; the main photo is under 1920 px wide (no 1920 file), the second one has a 1920 file
+    id: 'nobility-1',
+    second: 'bed',
+    photos: 8,
+    maxGuests: 2,
+    gridSrc: FULL_SRC,
+    nameHe: 'נוביליטי 1',
+    nameEn: 'Nobility 1',
+  },
+  {
+    id: 'nobility-2',
+    second: 'bedroom-jacuzzi',
+    maxGuests: 2,
+    gridSrc: FULL_SRC,
+    nameHe: 'נוביליטי 2',
+    nameEn: 'Nobility 2',
+  },
+  {
+    id: 'nobility-3',
+    second: 'suite-wide',
+    maxGuests: 2,
+    gridSrc: FULL_SRC,
+    nameHe: 'נוביליטי 3',
+    nameEn: 'Nobility 3',
+  },
+  {
+    // six photos from 1024 px web copies, so every file is at most 960 px wide
+    id: 'tet-zayin-8',
+    second: 'jacuzzi-bath',
+    secondWidth: 960,
+    photos: 6,
+    maxGuests: 2,
+    gridSrc: [960, 960, 960, 960, 960],
+    nameHe: 'צימר ט״ז 8',
+    nameEn: 'Tet-Zayin 8',
+  },
 ];
 
 const LOCALES = [
