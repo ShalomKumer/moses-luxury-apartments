@@ -219,7 +219,7 @@ describe('photoProblems', () => {
     for (const path of ['public/photos/a.jpg', 'public/x.JPEG', 'src/assets/b.png', 'public/c.heic', 'public/d.avif']) {
       expect(photoProblems(path, never)).toHaveLength(1);
     }
-    expect(photoProblems('public/brand/logo-full.jpg', never)).toEqual([]);
+    expect(photoProblems('public/brand/logo-full.webp', never)).toEqual([]);
   });
 
   it('rejects a WebP that carries EXIF (and so maybe a GPS position)', async () => {

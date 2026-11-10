@@ -20,10 +20,10 @@ const home = localizedPath('/', locale);
   <div class="container site-header__inner">
     <a class="site-header__logo" href={home}>
       <img
-        src={SITE.logo.name}
+        src={SITE.logo.name.src}
         alt={t.brand.logoAlt}
-        width={SITE.logo.width}
-        height={SITE.logo.nameHeight}
+        width={SITE.logo.name.width}
+        height={SITE.logo.name.height}
         decoding="async"
       />
     </a>
@@ -63,7 +63,7 @@ const home = localizedPath('/', locale);
     line-height: 0;
   }
 
-  /* The logo is a JPEG on white; multiply drops the white so it sits on any light surface. */
+  /* The logo is an image on white; multiply drops the white so it sits on any light surface. */
   .site-header__logo img {
     height: 3.75rem;
     width: auto;

@@ -1,6 +1,6 @@
 # Brand: what the logo dictates
 
-The owner's logo (sent by the user on 2026-10-31, kept as `docs/design/brand/logo-original.jpg`) sets the style of the
+The owner's logo (sent by the user on 2026-10-31, kept as `docs/design/brand/logo-original.jpg`; the logo in use since 2026-11-10 is the file the user sent on 2026-11-08, `docs/design/brand/logo-combined-original.png`) sets the style of the
 whole site: the user's rule, "from now on the logo dictates the UI/UX style". Palette and type below are read from it.
 Status: **adopted for colours; the three fonts are downloaded, cut and self-hosted (the user's yes, 2026-11-02).**
 
@@ -62,10 +62,16 @@ font at the same size, so the swap does not move the text.
 
 ## The logo file
 
-- The user's file is a 1055 x 1491 JPEG of the lockup on a large white page, no transparency. Cropped copies are in
-  `public/brand/`: `logo-full.jpg` (everything) and `logo-name.jpg` (roof and both names, for the header).
-- The header shows the JPEG with `mix-blend-mode: multiply`, so its white drops out on any light surface.
-- **Ask the owner for the original** (SVG, PDF or a transparent PNG at a high resolution). A small JPEG blurs on a
+- The user's file (2026-11-08, `moses_combined_logo.png`) is a 1055 x 1491 PNG of the lockup on a large white page, no
+  transparency: the same roof, the same two names and the same Hebrew lines as the first file, with two English lines added under
+  them ("Luxury Apartments in the Heart of the Old City of Safed") and the slogan in English under the Hebrew one ("A Luxury
+  Experience, Tranquility and Breathtaking Views"). Two files are cut from it by `npm run brand:build -- <file>`
+  (`scripts/brand/`: it finds the drawing on the page, adds a thin margin and turns the paper's near-white, 250 to 254 in places, into pure white, so no faint box shows around the logo) into WebP, quality 92, in `public/brand/`:
+  `logo-full.webp` (the whole lockup, 720 px wide, for the contact area; both languages) and `logo-name.webp` (the roof and both
+  names, 520 px wide, for the top of every page: the small English lines would not be legible at 60 px high, so the header
+  keeps what it showed before). The sizes written in `src/config/site.ts` are checked against the files by a test.
+- The page shows each with `mix-blend-mode: multiply`, so its white drops out on any light surface.
+- **Ask the owner for the original** (SVG, PDF or a transparent PNG at a high resolution). A raster logo blurs on a
   high-density phone and cannot be put on a photo. Row C3 records the file and the rights question.
 - Rights: the logo is the owner's own mark, sent by the owner's representative. The user said on 2026-11-03 that the
   file in the repo is the original and that the owner's client made it, so the owner holds the rights; the written
