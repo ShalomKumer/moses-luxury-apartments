@@ -4,9 +4,12 @@
  * link to the full file, so the page works without JavaScript (the grid's photos then show in a plain grid, and the rest
  * as links named by their alt text: a photo beyond the grid is not an <img> in the page, so it weighs nothing until it is
  * opened); the controller turns the links into a viewer dialog with keyboard control (A3). On a phone the grid shows
- * the first photo only. Every label is in the page's language.
+ * the first photo only. The viewer is a frame of one fixed size: the photo fits inside a dark stage (a tall photo and a wide
+ * one take the same room), the arrows stay at the sides of the stage and the caption has a box of three lines, so no control
+ * moves from photo to photo. Every label is in the page's language.
  */
 import type { PagePhoto } from '@components/cabin/cabin-photo';
+import Icon from '@components/ui/Icon.astro';
 import { galleryShape } from '@domain/gallery/gallery-shape';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
@@ -73,24 +76,27 @@ const shape = galleryShape(photos.length);
 
   <dialog class="gallery__dialog" data-gallery-dialog aria-label={fillTemplate(t.dialog, { name })}>
     <figure class="gallery__figure">
-      <img data-gallery-image src={photos[0].src} alt={photos[0].alt} />
+      <div class="gallery__stage" data-gallery-stage>
+        <img data-gallery-image src={photos[0].src} alt={photos[0].alt} />
+        {shape.hasViewerControls && (
+          <>
+            <button type="button" class="gallery__arrow gallery__arrow--previous" data-gallery-prev>
+              <Icon name="chevron-left" />
+              <span class="visually-hidden">{t.previous}</span>
+            </button>
+            <button type="button" class="gallery__arrow gallery__arrow--next" data-gallery-next>
+              <Icon name="chevron-right" />
+              <span class="visually-hidden">{t.next}</span>
+            </button>
+          </>
+        )}
+      </div>
       <figcaption data-gallery-caption aria-live="polite"></figcaption>
     </figure>
-    <div class="gallery__controls">
-      {shape.hasViewerControls && (
-        <>
-          <button type="button" class="button button--secondary" data-gallery-prev>
-            {t.previous}
-          </button>
-          <button type="button" class="button button--secondary" data-gallery-next>
-            {t.next}
-          </button>
-        </>
-      )}
-      <button type="button" class="button" data-gallery-close>
-        {t.close}
-      </button>
-    </div>
+    <button type="button" class="gallery__close" data-gallery-close>
+      <Icon name="x" />
+      <span class="visually-hidden">{t.close}</span>
+    </button>
   </dialog>
 </section>
 
@@ -206,36 +212,145 @@ const shape = galleryShape(photos.length);
     }
   }
 
+  /*
+   * The viewer is one frame of a fixed size, so nothing in it moves from photo to photo: a wide window on a desktop, the whole
+   * screen on a phone. It is a grid only while open (a closed dialog stays hidden). Inside, the photo fits a dark stage
+   * (object-fit: contain), so a tall photo and a wide one take the same room; the arrows sit at the sides of the stage, the
+   * close button in the corner, and the caption has a box of three lines (a longer text ends in "...").
+   */
   .gallery__dialog {
-    width: min(100% - 2rem, 60rem);
-    padding: var(--space-4);
+    box-sizing: border-box;
+    width: min(94vw, 64rem);
+    max-width: none;
+    height: min(90vh, 46rem);
+    max-height: none;
+    margin: auto;
+    padding: 3.5rem var(--space-4) var(--space-4);
     border: none;
-    border-radius: var(--radius);
+    border-radius: calc(var(--radius) * 2);
     background: var(--color-surface);
     color: var(--color-text);
+    overflow: hidden;
+  }
+
+  .gallery__dialog[open] {
+    display: grid;
   }
 
   .gallery__dialog::backdrop {
     background: rgb(0 0 0 / 0.75);
   }
 
+  @supports (height: 100dvh) {
+    .gallery__dialog {
+      height: min(90dvh, 46rem);
+    }
+  }
+
+  /* a phone: the whole screen */
+  @media (max-width: 47.99rem) {
+    .gallery__dialog {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+      padding-inline: var(--space-2);
+    }
+
+    @supports (height: 100dvh) {
+      .gallery__dialog {
+        height: 100dvh;
+      }
+    }
+  }
+
   .gallery__figure {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: var(--space-2);
+    min-height: 0;
     margin: 0;
   }
 
-  .gallery__figure img {
+  .gallery__stage {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--color-scrim);
+    border-radius: var(--radius);
+    /* a finger's sideways movement is a swipe; the page behind is inert while the viewer is open */
+    touch-action: pan-y;
+  }
+
+  .gallery__stage img {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-height: 70vh;
+    height: 100%;
     object-fit: contain;
   }
 
   .gallery__figure figcaption {
-    padding-block: var(--space-2);
+    /* three lines, always: the stage above never grows or shrinks with the words. A longer text ends in "..." here;
+       the whole of it stays in the page for a screen reader (a box that scrolls cannot be reached by keyboard) */
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    height: 4.5em;
+    overflow: hidden;
+    line-height: 1.5;
+    font-size: var(--text-sm);
   }
 
-  .gallery__controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+  .gallery__arrow,
+  .gallery__close {
+    display: grid;
+    place-items: center;
+    width: var(--target-size);
+    height: var(--target-size);
+    padding: 0;
+    background: var(--color-surface);
+    border: 2px solid var(--color-text);
+    border-radius: 50%;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .gallery__arrow:hover,
+  .gallery__close:hover {
+    background: var(--color-bg);
+  }
+
+  .gallery__arrow {
+    position: absolute;
+    inset-block-start: 50%;
+    transform: translateY(-50%);
+  }
+
+  /* the previous arrow is at the start of the line, the next one at its end, whichever way the page reads */
+  .gallery__arrow--previous {
+    inset-inline-start: var(--space-3);
+  }
+
+  .gallery__arrow--next {
+    inset-inline-end: var(--space-3);
+  }
+
+  .gallery__close {
+    position: absolute;
+    inset-block-start: var(--space-2);
+    inset-inline-end: var(--space-2);
+  }
+
+  .gallery__arrow :global(.icon),
+  .gallery__close :global(.icon) {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-inline-end: 0;
+  }
+
+  /* in a right-to-left page the arrows point the other way: previous goes towards the right */
+  :global(html[dir='rtl']) .gallery__arrow :global(.icon) {
+    transform: scaleX(-1);
   }
 </style>

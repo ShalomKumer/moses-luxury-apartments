@@ -49,6 +49,8 @@ const EDGE_PAIRS: [string, string][] = [
   ['focus', 'surface'],
   ['unknown-text', 'surface'],
   ['selected-bg', 'surface'],
+  // the photo viewer's arrows and close button: a white face on the dark stage
+  ['surface', 'scrim'],
 ];
 
 /** Mixes a foreground over a background at a strength (0 to 1), as the browser blends a translucent plate. */
