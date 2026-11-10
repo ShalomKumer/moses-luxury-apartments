@@ -9,7 +9,7 @@ Every exported function carries a one-line comment saying what it does.
 ```
 /
 ├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
-├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, fonts:build, budget:check, secrets:check, licenses:check, launch:check
+├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, fonts:build, brand:build, budget:check, secrets:check, licenses:check, launch:check
 ├── scripts/secret-scan/            # the secret scan (S19): patterns, scan-text, forbidden-files, list-sources,
 │                                   #   parse-history + scan-history, report, reviewed-findings, check-secrets (entry)
 ├── .prettierrc.json, eslint.config.mjs   # formatting (code only) and lint (with the a11y template rules), both in verify
@@ -68,6 +68,8 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
 │   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7)
 │   ├── check-launch-ready.mjs      # no placeholder or leftover sample text left (L11, C3)
+│   ├── brand/                      # the logo files (C3): ink-bounds (pure: where the drawing is on the page), build-logo (entry:
+│   │                               #   npm run brand:build -- <the owner's logo file>, writes public/brand/)
 │   ├── budget/                     # the performance budget: limits, page-weight + pick-candidate (pure; a srcset counts at what a phone loads), check-budget (entry)
 │   ├── fonts/                      # the web fonts (C1): charset (Hebrew + Latin), fonts (the three), subset-fonts (entry:
 │   │                               #   npm run fonts:build -- <folder of the full .ttf files>, writes public/fonts/)

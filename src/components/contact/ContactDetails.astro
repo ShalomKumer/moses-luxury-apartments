@@ -24,10 +24,10 @@ const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
   <div class="container contact__inner">
     <img
       class="contact__logo"
-      src={SITE.logo.full}
+      src={SITE.logo.full.src}
       alt={t.brand.logoAlt}
-      width={SITE.logo.width}
-      height={SITE.logo.fullHeight}
+      width={SITE.logo.full.width}
+      height={SITE.logo.full.height}
       loading="lazy"
       decoding="async"
     />
@@ -97,7 +97,7 @@ const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
     align-items: center;
   }
 
-  /* The logo is a JPEG on white; multiply drops the white so it sits on the page. */
+  /* The logo is an image on white; multiply drops the white so it sits on the page. */
   .contact__logo {
     width: 14rem;
     max-width: 100%;
