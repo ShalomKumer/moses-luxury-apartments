@@ -21,6 +21,12 @@ description:
     Nobility 1 – wake up to breathtaking views, embrace the tranquility, and fall in love with Tzfat all over again.
 maxGuests: 2
 bedrooms: 1
+bathrooms: 1
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: balcony
+  - kind: view
 features:
   - he: מרפסת פרטית עם נוף פנורמי, פינה מושלמת לקפה של בוקר ולשקיעות מרהיבות
     en: A private balcony with panoramic views, the perfect spot for morning coffee and spectacular sunsets

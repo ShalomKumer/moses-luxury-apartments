@@ -32,7 +32,7 @@ const OTHERS_SHOWN = 3;
 
 const { cabin, locale } = Astro.props;
 const t = getMessages(locale);
-const { maxGuests, bedrooms } = cabin.data;
+const { maxGuests, bedrooms, bathrooms, highlights } = cabin.data;
 const name = pick(cabin.data.name, locale);
 const summary = pick(cabin.data.summary, locale);
 const paragraphs = splitParagraphs(pick(cabin.data.description, locale));
@@ -60,7 +60,14 @@ const others = nextApartments(cabins, cabin.id, OTHERS_SHOWN);
             ))}
           </Prose>
         </section>
-        <CabinFacts locale={locale} maxGuests={maxGuests} bedrooms={bedrooms} features={features} />
+        <CabinFacts
+          locale={locale}
+          maxGuests={maxGuests}
+          bedrooms={bedrooms}
+          bathrooms={bathrooms}
+          highlights={highlights}
+          features={features}
+        />
         <JumpToRequest locale={locale} targetId={REQUEST_ID} />
       </div>
       <div class="cabin__aside">

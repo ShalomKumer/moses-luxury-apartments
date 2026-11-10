@@ -31,7 +31,7 @@ the feature lifecycle in `CLAUDE.md` (plan on Opus, "מאשר", build on Sonnet,
 ## Standing rule (the user, 2026-11-03)
 
 Every real apartment lists **Wi-Fi** in its features (he: "אינטרנט אלחוטי", en: "Wi-Fi"), whether or not the owner's text says so, and a
-**jacuzzi** when the text or a photo shows one. `tests/e2e/real-apartments.spec.ts` fails when a real apartment's page lacks the Wi-Fi line.
+**jacuzzi** when the text or a photo shows one. `tests/e2e/real-apartments.spec.ts` fails when a real apartment's page lacks the Wi-Fi line. They are also **badges** (`highlights` in the content file): a feature that is a badge is written both in the features list and as a badge (the user, 2026-11-09), so a badge never says more than the owner's text.
 
 ## What each field does
 
@@ -66,8 +66,8 @@ Every real apartment lists **Wi-Fi** in its features (he: "אינטרנט אלח
    the iron rules touched (C3, A2, H1).
 2. Photos: every one through `npm run photos:add -- <file> <id> <name>` (WebP in widths 640, 960, 1280, 1920, no EXIF or GPS, at most 250 KB
    a file); a portrait photo is left out unless asked for, because its 1920 file is very tall.
-3. Content: `src/content/cabins/<id>.md` (name, order, summary, description, `maxGuests`, `bedrooms`, features, photos with alt in both
-   languages). Its `order` follows the last apartment.
+3. Content: `src/content/cabins/<id>.md` (name, order, summary, description, `maxGuests`, `bedrooms`, `bathrooms`, `highlights` (the badges), features, photos with alt in both
+   languages). Every badge needs its line in the features, in both languages (the build fails otherwise), and Wi-Fi and the Shabbos kitchen are always badges. Its `order` follows the last apartment.
 4. Tests: one entry in the `APARTMENTS` table of `tests/e2e/real-apartments.spec.ts`; the "other apartments" count in
    `tests/e2e/apartment.spec.ts`; `npm run verify`.
 5. Docs: one row per photo in `src/content/photos.md` (source and rights), the iron-rule rows C3 and H1, and `docs/roadmap.md`.

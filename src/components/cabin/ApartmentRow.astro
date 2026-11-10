@@ -6,7 +6,9 @@
  * a wider screen picks from the whole `srcset`. The page-weight check reads this phone source (`scripts/budget`).
  */
 import type { CollectionEntry } from 'astro:content';
+import CabinHighlights from '@components/cabin/CabinHighlights.astro';
 import { toPagePhoto } from '@components/cabin/cabin-photo';
+import { specialHighlights } from '@domain/apartments/highlights';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
@@ -28,6 +30,8 @@ const t = getMessages(locale);
 const { maxGuests, photos } = cabin.data;
 const name = pick(cabin.data.name, locale);
 const cover = toPagePhoto(photos[0], locale);
+/** What sets this apartment apart, at most three (every apartment has Wi-Fi and a Shabbos kitchen, so those stay off a row). */
+const special = specialHighlights(cabin.data.highlights, 3);
 ---
 
 <article class:list={['row', { 'row--flip': flip }]}>
@@ -49,6 +53,7 @@ const cover = toPagePhoto(photos[0], locale);
     <h3>{name}</h3>
     <p>{pick(cabin.data.summary, locale)}</p>
     <p class="row__meta">{fillTemplate(t.cabin.guestsUpTo, { count: maxGuests })}</p>
+    <CabinHighlights locale={locale} items={special} />
     <a class="button button--secondary" href={localizedPath(`/cabins/${cabin.id}`, locale)}>
       {t.cabin.details}
       <span class="visually-hidden"> - {name}</span>

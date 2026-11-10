@@ -33,6 +33,12 @@ description:
     The Artist's Estate – more than a place to stay. A place to create unforgettable memories.
 maxGuests: 14
 bedrooms: 6
+bathrooms: 7
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: view
+  - kind: courtyard
 features:
   - he: 6 חדרי שינה מרווחים ומעוצבים, לכל אחד חדר רחצה פרטי
     en: 6 spacious, designed bedrooms, each with its own en-suite bathroom

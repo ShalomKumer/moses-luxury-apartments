@@ -21,6 +21,14 @@ description:
     Avira D'Rashbi – where the magical atmosphere of Tzfat, the breathtaking beauty of Mount Meron, and luxurious comfort come together for an unforgettable stay.
 maxGuests: 14
 bedrooms: 6
+bathrooms: 4
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: jacuzzi
+    count: 3
+  - kind: sauna
+  - kind: view
 features:
   - he: 6 חדרי שינה נעימים ומרווחים
     en: 6 comfortable bedrooms, spacious and inviting

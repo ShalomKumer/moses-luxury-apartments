@@ -21,6 +21,14 @@ description:
     Nobility 2 – where the breathtaking beauty of Tzfat, romance, and luxurious comfort come together for an unforgettable getaway.
 maxGuests: 2
 bedrooms: 1
+bathrooms: 1
+highlights:
+  - kind: wifi
+  - kind: shabbos-kitchen
+  - kind: jacuzzi
+  - kind: balcony
+  - kind: view
+  - kind: separate-bedroom
 features:
   - he: חדר שינה זוגי נפרד, עם מיטות נוחות ומפנקות לשינה איכותית ולמנוחה מושלמת
     en: A separate private bedroom, with comfortable, cosy beds for restful nights and ultimate relaxation

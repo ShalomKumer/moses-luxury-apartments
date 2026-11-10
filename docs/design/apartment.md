@@ -114,7 +114,7 @@ Not drawn here, because the page has none: loading, empty and error states of da
 3. **The gallery:** one large photo and four small ones (with fewer photos the grid shrinks: 3 is one large and two,
    2 is two halves, 1 is one), and "all photos (n)" on its edge. Every photo opens the photo viewer. On a phone, the
    first photo with the button.
-4. **Two columns:** the details ("about the apartment", then "what it has": guests, bedrooms, the features) and, beside
+4. **Two columns:** the details ("about the apartment", then "what it has": guests, bedrooms, bathrooms, a row of badges, the features) and, beside
    them, the **request card** that stays in view while the details scroll. On a phone, one column: the details, then
    the card, and a button stuck to the bottom under the details that jumps to the card's first field (from 5).
 5. **More apartments** as the home page's alternating rows (from 2), then the contact area. **Changed 2026-11-04 (approved by the user,
