@@ -38,7 +38,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── scroll/                 # back-to-top (how far the page must be scrolled before the button shows)
 │   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded), highlights (the badges: kinds, order, the words each needs in the text, the label with a count)
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, tel-link, stay-dates, guests
-│   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
+│   │   ├── gallery/                # gallery-shape (how many photos the grid shows), swipe (what a finger's movement across the viewer means)
 │   │   ├── photos/                 # photo-sources (the src, srcset, smallest and largest file of a photo from its widths)
 │   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
 │   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
@@ -82,7 +82,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── e2e/                        # browser tests (Playwright + axe) over dist/client, run by `npm run test:e2e`:
 │   │   ├── server/                 #   a read-only static server that sends the real `_headers` (headers-file, serve-static, start)
 │   │   ├── helpers/                #   built-pages, run-axe, page-problems, focus-obscured (2.4.11)
-│   │   └── *.spec.ts               #   pages (every page x 2 widths), gallery (keyboard), checkers (the checks fail on bad pages)
+│   │   └── *.spec.ts               #   pages (every page x 2 widths), gallery (keyboard), gallery-frame (the viewer keeps its size), back-to-top, logo, checkers (the checks fail on bad pages)
 │   └── policy/                     # rules as tests: layers, no-third-party + no raw HTML, headers, contrast,
 │                                   #   no-public-availability
 └── docs/                           # architecture, structure, compliance, roadmap, design/, archive/

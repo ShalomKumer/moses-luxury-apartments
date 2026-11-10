@@ -127,6 +127,7 @@ Not drawn here, because the page has none: loading, empty and error states of da
   guests run up to the apartment's `maxGuests` (`buildBookingMessage` takes the name, as `home.md` says).
 - The gallery reads `photos` from the apartment's file in order; the first is the large one. The photos come through
   the photo script, 3:2, with `alt` from the file (A2, C3).
+- **Changed 2026-11-10 (the user: the viewer must not change size, and its buttons must not move):** the viewer is one frame of a fixed size (a wide window on a desktop, the whole screen on a phone). The photo fits a dark stage (`object-fit: contain`), so a tall photo and a wide one take the same room; the previous and next arrows sit at the sides of the stage (previous at the start of the line, next at its end), the close button in the corner, and the caption has a box of three lines (a longer text ends in "..."). The next and previous photos load before they are asked for, the picture changes after the new file is ready (a short fade, none under "reduce motion"), and a swipe moves on a touch screen.
 - The photo viewer is a native modal `<dialog>`: focus on "close" when it opens, the arrows step (mirrored in English),
   Escape closes, focus returns to the photo that opened it; a browser test walks it by keyboard (the existing
   `gallery.spec.ts` grows to it).
