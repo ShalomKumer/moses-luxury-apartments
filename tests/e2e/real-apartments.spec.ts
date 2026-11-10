@@ -248,8 +248,10 @@ for (const {
       test(`the request takes up to ${maxGuests} guests`, async ({ page }) => {
         await page.goto(path);
         const guests = page.locator('[data-request-guests]');
-        await expect(guests.locator(`option[value="${maxGuests}"]`)).toBeEnabled();
-        await expect(guests.locator(`option[value="${maxGuests + 1}"]`)).toHaveCount(0);
+        await guests.fill(String(maxGuests));
+        expect(await guests.inputValue()).toBe(String(maxGuests));
+        await guests.fill(String(maxGuests + 1));
+        expect(await guests.inputValue()).toBe(String(maxGuests));
       });
     });
   }

@@ -30,7 +30,8 @@ for (const { path, label, rtl } of PAGES) {
       expect(await whatsappText(page)).toBe(preview);
       const mail = await page.locator('[data-request-bar] [data-booking-email]').getAttribute('href');
       expect(decodeURIComponent(mail ?? '')).toContain(preview.split('\n')[0]);
-      expect(preview.split('\n')).toHaveLength(2);
+      // the apartment line, the name line (empty, to fill in the app) and the dates line
+      expect(preview.split('\n')).toHaveLength(3);
     });
 
     test('choosing an apartment and guests writes both into the message', async ({ page }) => {
@@ -38,26 +39,25 @@ for (const { path, label, rtl } of PAGES) {
       const unit = page.locator('[data-request-unit]');
       await unit.selectOption({ index: 1 });
       const name = (await unit.locator('option:checked').textContent())?.trim() ?? '';
-      await page.locator('[data-request-guests]').selectOption('2');
+      await page.locator('[data-request-guests]').fill('2');
       const text = await whatsappText(page);
       expect(text).toContain(name);
       expect(text).toContain('2');
       expect(await page.locator('[data-request-message]').textContent()).toBe(text);
     });
 
-    test('offers no more guests than the chosen apartment takes, and resets a number that is too high', async ({
-      page,
-    }) => {
+    test('takes no more guests than the chosen apartment, and lowers a number that is too high', async ({ page }) => {
       await page.goto(path);
       const unit = page.locator('[data-request-unit]');
       const guests = page.locator('[data-request-guests]');
-      await guests.selectOption('12');
+      await guests.fill('12');
       expect(await guests.inputValue()).toBe('12');
       // Tarpat 18 takes nine guests (the Artist's Estate, the first, takes fourteen)
       await unit.selectOption('tarpat-18');
-      expect(await guests.inputValue()).toBe('');
-      await expect(guests.locator('option[value="10"]')).toBeDisabled();
-      await expect(guests.locator('option[value="9"]')).toBeEnabled();
+      expect(await guests.inputValue()).toBe('9');
+      await expect(page.locator('[data-guests-note]')).toBeVisible();
+      await guests.fill('10');
+      expect(await guests.inputValue()).toBe('9');
     });
 
     test('two valid dates write the dates and the nights into the message', async ({ page }) => {
