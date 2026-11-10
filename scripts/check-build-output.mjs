@@ -46,7 +46,7 @@ for (const file of walk('dist')) {
 
 /**
  * Languages (A3, A6): every page declares its language and direction, links its other-language twin, and an English page
- * holds no Hebrew letters except in the language switch. Every Hebrew page has an English one (404 is one shared file).
+ * holds no Hebrew letters except in the language switch and the language offer. Every Hebrew page has an English one (404 is one shared file).
  */
 const pages = walk('dist/client')
   .filter((file) => file.endsWith('.html'))
@@ -62,7 +62,9 @@ for (const page of pages) {
     }
   }
   if (isEnglish(page)) {
-    const withoutSwitch = html.replace(/<a\b[^>]*data-lang-switch[^>]*>[\s\S]*?<\/a>/g, '');
+    const withoutSwitch = html
+      .replace(/<a\b[^>]*data-lang-switch[^>]*>[\s\S]*?<\/a>/g, '')
+      .replace(/<aside\b[^>]*data-language-offer[^>]*>[\s\S]*?<\/aside>/g, '');
     if (/[֐-׿]/.test(withoutSwitch)) problems.push(`${page.file}: Hebrew letters on an English page`);
   }
 }
