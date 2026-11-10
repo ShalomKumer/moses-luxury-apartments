@@ -45,9 +45,13 @@ const t = getMessages(locale);
   }
 </style>
 
-<!-- a focused or jumped-to element is never left under the stuck button (2.4.11) -->
+<!-- a focused or jumped-to element is never left under the stuck button (2.4.11); the back-to-top button rises above it -->
 <style is:global>
   @media (max-width: 61.99rem) {
+    :root {
+      --bottom-bar: 5rem;
+    }
+
     html {
       scroll-padding-block-end: 6rem;
     }

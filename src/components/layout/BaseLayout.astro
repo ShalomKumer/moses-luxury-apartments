@@ -5,6 +5,7 @@ import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
 import { directionOf, type Locale } from '@i18n/locales';
 import { alternatesOf } from '@i18n/paths';
+import BackToTop from './BackToTop.astro';
 import SiteFooter from './SiteFooter.astro';
 import SiteHeader from './SiteHeader.astro';
 import SkipLink from './SkipLink.astro';
@@ -40,11 +41,13 @@ const alternates = alternatesOf(path);
     <title>{fullTitle}</title>
   </head>
   <body>
+    <div id="top" tabindex="-1"></div>
     <SkipLink locale={locale} />
     <SiteHeader locale={locale} path={path} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
     <SiteFooter locale={locale} path={path} />
+    <BackToTop locale={locale} />
   </body>
 </html>

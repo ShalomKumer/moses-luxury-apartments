@@ -23,6 +23,7 @@ export const en: Messages = {
   },
   common: {
     skipToMain: 'Skip to the main content',
+    backToTop: 'Back to top',
     lastUpdated: 'Last updated',
     phone: 'Phone',
     email: 'Email',

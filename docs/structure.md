@@ -35,6 +35,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
 │   │   ├── dates/                  # date-key, date-range, format-date, month
+│   │   ├── scroll/                 # back-to-top (how far the page must be scrolled before the button shows)
 │   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded), highlights (the badges: kinds, order, the words each needs in the text, the label with a count)
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, tel-link, stay-dates, guests
 │   │   ├── gallery/                # gallery-shape (how many photos the grid shows)
@@ -49,7 +50,7 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── server/                     # KEPT, UNWIRED: calendar source, fetch, cache, service (for a future admin view)
 │   │
 │   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
-│   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter
+│   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter, BackToTop + back-to-top.ts (the corner button that returns to the top)
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
 │   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, CabinHighlights + highlight-icons.ts (the badges and their icons), JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments (the home page's folded rows)
 │   │   │             #   (the rows are shared by the home page and the apartment pages)

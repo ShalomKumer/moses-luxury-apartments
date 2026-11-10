@@ -1,0 +1,70 @@
+---
+/**
+ * A round button in the corner (the end of the line: the left in Hebrew, the right in English) that takes the visitor
+ * back to the top of a long page. It is a plain link to the top anchor, so it works without JavaScript; the script shows
+ * it only after scrolling (back-to-top.ts). On a phone it rises above the request bar of an apartment page (`--bottom-bar`).
+ */
+import Icon from '@components/ui/Icon.astro';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<a class="back-to-top" href="#top" data-back-to-top>
+  <Icon name="arrow-up" />
+  <span class="visually-hidden">{getMessages(locale).common.backToTop}</span>
+</a>
+
+<script>
+  import { initBackToTop } from './back-to-top';
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-back-to-top]').forEach(initBackToTop);
+</script>
+
+<style>
+  .back-to-top {
+    position: fixed;
+    z-index: 5;
+    inset-inline-end: var(--space-4);
+    inset-block-end: calc(var(--space-4) + var(--bottom-bar, 0px) + env(safe-area-inset-bottom, 0px));
+    display: grid;
+    place-items: center;
+    width: var(--target-size);
+    height: var(--target-size);
+    background: var(--color-surface);
+    border: 2px solid var(--color-text);
+    border-radius: 50%;
+    color: var(--color-text);
+  }
+
+  .back-to-top:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  /* once the script runs the button shows only after scrolling */
+  .back-to-top[data-enhanced]:not([data-visible]) {
+    display: none;
+  }
+
+  /* the icon is the whole button here: no space beside it */
+  .back-to-top :global(.icon) {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-inline-end: 0;
+  }
+</style>
+
+<!-- a focused element is never left under the button (2.4.11); a phone's apartment page asks for more in JumpToRequest -->
+<style is:global>
+  @media (min-width: 62rem) {
+    html {
+      scroll-padding-block-end: 4.5rem;
+    }
+  }
+</style>
