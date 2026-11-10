@@ -30,6 +30,10 @@ export interface BookingTexts {
   childOne: string;
   /** "{count} children" */
   childMany: string;
+  /** "Flexible dates: ±1 day" */
+  flexOne: string;
+  /** "Flexible dates: ±{count} days" */
+  flexMany: string;
   /** "Name: {name}" */
   name: string;
   /** The same without a name: ends with a colon and a space for the guest to write it in the app. */
@@ -52,6 +56,8 @@ export interface MessageExtras {
    * nothing after the colon, for the guest to fill in the app; a name (already cleaned, `cleanName`) is written after it.
    */
   name?: string;
+  /** How many days either side of the dates the guest could move; 0 or missing writes no line. */
+  flexDays?: number;
   /** The couples and children the total was worked out from; left out when the guest typed their own total. */
   split?: { couples: number; children: number };
 }
@@ -90,6 +96,9 @@ export function buildBookingMessage(
     lines.push(fillTemplate(texts.checkIn, { from: dates.from }));
   } else {
     lines.push(texts.datesPlaceholder);
+  }
+  if (dates.from && extras.flexDays && extras.flexDays > 0) {
+    lines.push(extras.flexDays === 1 ? texts.flexOne : fillTemplate(texts.flexMany, { count: extras.flexDays }));
   }
   if (guests) {
     const detail = extras.split ? splitDetail(texts, extras.split) : '';

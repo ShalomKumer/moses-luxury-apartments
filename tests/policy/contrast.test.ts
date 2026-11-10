@@ -39,6 +39,8 @@ const TEXT_PAIRS: [string, string][] = [
   ['taken-text', 'surface'],
   ['unknown-text', 'unknown-bg'],
   ['selected-text', 'selected-bg'],
+  // the date picker: a day between the two ends of the stay is shaded with the notice colour
+  ['text', 'notice-bg'],
 ];
 
 /** Edges of controls and the focus ring: 3:1. */
@@ -49,6 +51,8 @@ const EDGE_PAIRS: [string, string][] = [
   ['focus', 'surface'],
   ['unknown-text', 'surface'],
   ['selected-bg', 'surface'],
+  // the date picker's focus ring on a shaded day
+  ['focus', 'notice-bg'],
   // the photo viewer's arrows and close button: a white face on the dark stage
   ['surface', 'scrim'],
 ];

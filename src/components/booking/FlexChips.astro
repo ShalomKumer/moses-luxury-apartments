@@ -1,0 +1,78 @@
+---
+/**
+ * The flexibility buttons of the date picker: exact dates, or one, two, three or seven days either side. One of them is
+ * always pressed (`aria-pressed`); the picker's script moves the pressed state and writes the number into the message.
+ * They say nothing about what is free: they only tell the owner how much the guest can move (H7).
+ */
+import { FLEX_OPTIONS } from '@domain/dates/flex-days';
+import { fillTemplate } from '@domain/text/fill-template';
+import type { Messages } from '@i18n/messages/types';
+
+interface Props {
+  texts: Messages['home']['request']['picker'];
+}
+
+const { texts } = Astro.props;
+
+/** The words on a button. */
+function chipLabel(days: number): string {
+  if (days === 0) return texts.flexExact;
+  return days === 1 ? texts.flexOne : fillTemplate(texts.flexMany, { count: days });
+}
+---
+
+<div class="chips" role="group" aria-label={texts.flexLabel}>
+  <p class="chips__label" aria-hidden="true">
+    {texts.flexLabel}
+  </p>
+  <div class="chips__row">
+    {FLEX_OPTIONS.map((days) => (
+      <button type="button" class="chip" data-flex={days} aria-pressed={days === 0 ? 'true' : 'false'}>
+        {chipLabel(days)}
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .chips {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .chips__label {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .chips__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .chip {
+    min-height: var(--target-size);
+    padding: var(--space-1) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--text-sm);
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    background: var(--color-bg);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--color-selected-bg);
+    border-color: var(--color-selected-bg);
+    color: var(--color-selected-text);
+    font-weight: 600;
+  }
+</style>

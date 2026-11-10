@@ -1,12 +1,12 @@
 ---
 /**
- * The booking request: which apartment (on the home page; an apartment's own page has it fixed), the two dates, the
+ * The booking request: which apartment (on the home page; an apartment's own page has it fixed), the dates (one picker), the
  * couples, the children and the total of guests, a name, the WhatsApp and Gmail buttons, and the message that will open. It is a group of
  * controls, not a form: nothing is submitted to the site, and no availability is looked up (L5, L10, H4). Without
  * JavaScript the buttons still open a plain message.
  */
 import type { CollectionEntry } from 'astro:content';
-import BookingDates from '@components/booking/BookingDates.astro';
+import DateRangePicker from '@components/booking/DateRangePicker.astro';
 import BookingGuests from '@components/booking/BookingGuests.astro';
 import BookingLinks from '@components/booking/BookingLinks.astro';
 import BookingName from '@components/booking/BookingName.astro';
@@ -66,7 +66,7 @@ const message = buildBookingMessage(t.booking.message, fixedName, null, undefine
         </select>
       </div>
     )}
-    <BookingDates idPrefix="request" checkInLabel={request.checkIn} checkOutLabel={request.checkOut} />
+    <DateRangePicker locale={locale} idPrefix="request" />
     <BookingGuests locale={locale} idPrefix="request" />
     <BookingName locale={locale} idPrefix="request" />
     <p class="request__cap-note" data-guests-note role="status"></p>
@@ -110,6 +110,7 @@ const message = buildBookingMessage(t.booking.message, fixedName, null, undefine
   }
 
   .request__unit,
+  .request__fields :global(.request__dates),
   .request__fields :global(.request__total),
   .request__fields :global(.request__name),
   .request__cap-note {
@@ -133,7 +134,8 @@ const message = buildBookingMessage(t.booking.message, fixedName, null, undefine
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .request__unit {
+    .request__unit,
+    .request__fields :global(.request__dates) {
       grid-column: span 2;
     }
 

@@ -20,6 +20,8 @@ const texts: BookingTexts = {
   childMany: '{count} children',
   name: 'Name: {name}',
   namePlaceholder: 'Name: ',
+  flexOne: 'Flexible: 1 day',
+  flexMany: 'Flexible: {count} days',
   subject: 'Booking request - {cabin}',
 };
 

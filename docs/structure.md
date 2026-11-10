@@ -34,7 +34,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   └── availability.ts         # limits of the kept availability service (not wired)
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
-│   │   ├── dates/                  # date-key, date-range, format-date, month
+│   │   ├── dates/                  # date-key, date-range, format-date, month, calendar-month (the weeks of a month, what can be chosen), range-selection (first click, second click), day-navigation (the keys), flex-days
 │   │   ├── scroll/                 # back-to-top (how far the page must be scrolled before the button shows)
 │   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded), highlights (the badges: kinds, order, the words each needs in the text, the label with a count)
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, tel-link, stay-dates, guests, party (couples, children and the total within the apartment's guests), guest-name (the name made safe for the message)
@@ -59,7 +59,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
 │   │   ├── booking/  BookingRequest + request-controller.ts (the home page's request with an apartment choice, and
 │   │   │             #   the apartment page's with the apartment fixed), BookingLinks + booking-links.ts,
-│   │   │             #   BookingDates (the only date field), BookingGuests + GuestCounter (couples, children, total), BookingName
+│   │   │             #   DateRangePicker + FlexChips + calendar-render.ts + picker-controller.ts (the one date picker: a calendar that only fills the message), BookingGuests + GuestCounter (couples, children, total), BookingName
 │   │   └── ui/       Prose, UpdatedDate, HeartRule, Icon (+ icons/: the path data of the three icons and their licences)
 │   │
 │   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css

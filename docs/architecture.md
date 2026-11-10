@@ -32,8 +32,8 @@ Pages built ahead of time, no request to any server of ours after the page loads
 - `/privacy`, `/terms`, `/cancellation`, `/accessibility`, and a footer with the business details.
 
 `tests/policy/no-public-availability.test.ts` fails the build if a page or component imports the availability code,
-if an API route or an on-request page appears, or if a date field, a calendar grid or "free / taken" wording reaches a
-visitor.
+if an API route or an on-request page appears, if a native date field appears, if the calendar leaves the booking request's
+date picker (changed 2026-11-10: that one calendar only fills the message), or if "free / taken" wording reaches a visitor.
 
 ## What was removed (2026-10-31) and where it is
 

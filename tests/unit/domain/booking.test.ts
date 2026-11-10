@@ -145,3 +145,29 @@ describe('booking message with a name and a party', () => {
     );
   });
 });
+
+describe('booking message with flexible dates', () => {
+  const dates = { from: '10.11.2026', to: '13.11.2026', nights: 3 };
+
+  it('writes a flexibility line after the dates, with the singular for one day', () => {
+    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: 2 })).toBe(
+      'שלום, אשמח לבדוק זמינות והזמנה.\nתאריכים: 10.11.2026 עד 13.11.2026 (3 לילות)\nגמישות בתאריכים: ±2 ימים',
+    );
+    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: 1 })).toContain('±יום אחד');
+    expect(buildBookingMessage(en.booking.message, null, null, dates, { flexDays: 7 })).toContain(
+      'Flexible dates: ±7 days',
+    );
+    expect(buildBookingMessage(en.booking.message, null, null, dates, { flexDays: 1 })).toContain(
+      'Flexible dates: ±1 day',
+    );
+  });
+
+  it('writes no line for exact dates, for no dates, or for an odd value', () => {
+    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: 0 })).not.toContain('גמישות');
+    expect(buildBookingMessage(he.booking.message, null, null, dates)).not.toContain('גמישות');
+    expect(
+      buildBookingMessage(he.booking.message, null, null, { from: null, to: null, nights: null }, { flexDays: 3 }),
+    ).not.toContain('גמישות');
+    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: -1 })).not.toContain('גמישות');
+  });
+});

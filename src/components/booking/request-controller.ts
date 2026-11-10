@@ -3,6 +3,7 @@ import { cleanName } from '@domain/booking/guest-name';
 import { limitParty, maxChildren, maxCouples, parseCount, totalOf, typedTotal } from '@domain/booking/party';
 import { resolveStay, toChosenDates, type StayProblem } from '@domain/booking/stay-dates';
 import { toDateKey } from '@domain/dates/date-key';
+import { parseFlex } from '@domain/dates/flex-days';
 import { fillTemplate } from '@domain/text/fill-template';
 import { applyMessage, readLinkTarget } from './booking-links';
 
@@ -11,6 +12,8 @@ interface Parts {
   unit: HTMLSelectElement | null;
   checkIn: HTMLInputElement;
   checkOut: HTMLInputElement;
+  /** How many days either side the guest could move (the date picker's hidden field). */
+  flex: HTMLInputElement;
   couples: HTMLInputElement;
   children: HTMLInputElement;
   /** The total of guests: worked out from the two counters, or the guest's own number. */
@@ -28,6 +31,7 @@ function findParts(root: HTMLElement): Parts | null {
   const unit = find<HTMLSelectElement>('[data-request-unit]');
   const checkIn = find<HTMLInputElement>('[data-stay-in]');
   const checkOut = find<HTMLInputElement>('[data-stay-out]');
+  const flex = find<HTMLInputElement>('[data-stay-flex]');
   const couples = find<HTMLInputElement>('[data-counter="couples"] [data-counter-input]');
   const children = find<HTMLInputElement>('[data-counter="children"] [data-counter-input]');
   const total = find<HTMLInputElement>('[data-request-guests]');
@@ -35,8 +39,8 @@ function findParts(root: HTMLElement): Parts | null {
   const note = find('[data-guests-note]');
   const problem = find('[data-request-problem]');
   const message = find('[data-request-message]');
-  return checkIn && checkOut && couples && children && total && name && note && problem && message
-    ? { unit, checkIn, checkOut, couples, children, total, name, note, problem, message }
+  return checkIn && checkOut && flex && couples && children && total && name && note && problem && message
+    ? { unit, checkIn, checkOut, flex, couples, children, total, name, note, problem, message }
     : null;
 }
 
@@ -126,8 +130,6 @@ export function initBookingRequest(root: HTMLElement): void {
       rows.children >= maxChildren(unit.max, rows.couples),
     );
 
-    parts.checkIn.min = today;
-    parts.checkOut.min = parts.checkIn.value || today;
     const stay = resolveStay(parts.checkIn.value, parts.checkOut.value, today);
     parts.problem.textContent = stay.problem ? problems[stay.problem] : '';
 
@@ -135,6 +137,7 @@ export function initBookingRequest(root: HTMLElement): void {
     const split = total !== null && total === worked ? { couples: party.couples, children: party.children } : undefined;
     const message = buildBookingMessage(target.texts, unit.name, total, toChosenDates(stay), {
       name: cleanName(parts.name.value),
+      flexDays: parseFlex(parts.flex.value),
       split,
     });
     applyMessage(root, { ...target, cabinName: unit.name }, message);
@@ -176,7 +179,7 @@ export function initBookingRequest(root: HTMLElement): void {
     update();
   });
 
-  // the apartment and the dates
+  // the apartment, and the dates (the date picker announces its choice with a change event)
   root.addEventListener('change', update);
   update();
 }

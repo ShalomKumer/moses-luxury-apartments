@@ -21,17 +21,28 @@ The request card works: choosing an apartment or the number of guests changes th
 
 ## Assumptions (no questionnaire)
 
-- The site shows no availability to anyone, so there is no date field, no result and no free/taken mark (enforced by
-  `tests/policy/no-public-availability.test.ts`).
+- The site shows no availability to anyone, so there is no result and no free/taken mark (enforced by
+  `tests/policy/no-public-availability.test.ts`). **Changed 2026-11-10 (the user's list of ten, item 1):** the two native date
+  fields are replaced by **one date picker**, a calendar that only fills the dates of the message (see "The date picker" below).
 - The request card has: which apartment ("any apartment, I'd like an offer" by default), **a check-in and a check-out
   date** (added at the user's request, 2026-10-31, in layouts 1 to 4), the number of guests, the message that will open
   (shown to the guest; the dates enter it only when they are valid), a WhatsApp button and a Gmail button (the
   notice with the policy links and the minimum age was removed on 2026-11-10 at the user's request: L5, L10, H4). It is a group of controls, not a form: nothing is
   submitted to the site.
-- When the card is built, `tests/policy/no-public-availability.test.ts` is narrowed in the same change: a date field is
-  allowed only inside the booking-request card and never next to a calendar grid, a result or any free/taken wording.
-  The dates only write the message; invalid ones (past, or a check-out not after the check-in) show a short note and are
-  left out of the message.
+- When the card was built, `tests/policy/no-public-availability.test.ts` was narrowed; on 2026-11-10 it was narrowed again
+  for the picker: no native date field anywhere, the calendar only inside the picker's files, and no free/taken wording in
+  them or in the words they show. The dates only write the message.
+- **The date picker (2026-11-10, the user's list of ten, item 1; a screenshot of a hotel site's picker was the model, its
+  layout only):** one field "When?" (a button with a calendar icon) opens a window: **two months side by side on a wide
+  screen, one month with arrows on a phone** (a sheet the width of the screen). A click on a day is the check-in, the next
+  later day the check-out, the nights between are shaded; a click on the check-in again or on an earlier day starts over,
+  so there is no error to show. Days that passed and days more than **12 months ahead** are faded and cannot be chosen;
+  the week starts on **Sunday** in both languages; no minimum nights. Under the calendar: the flexibility buttons
+  **exact dates, ±1, ±2, ±3, ±7 days** (no "flexible dates" tab), "Clear" and "Done". The choice adds to the message
+  "Dates: ... (3 nights)" and, when flexible, "Flexible dates: ±2 days". Keyboard: every day is a button; the arrows follow
+  the page's direction (left is the next day in Hebrew), up and down a week, Home and End the week, Page Up and Page Down a
+  month, Enter chooses, Escape closes and the focus returns to the field. A native modal dialog does the focus. Nothing is
+  stored or sent; without JavaScript the fields stay hidden and the message keeps its "dates:" line to fill in.
 - The message on the home page has no apartment unless one is chosen: "שלום, אשמח לבדוק זמינות והזמנה." The cabin page's
   message names the apartment. (`buildBookingMessage` takes an optional name when this is built.)
 - The three points under the photo are written from what the site really does. The first (the old city of Safed) is
