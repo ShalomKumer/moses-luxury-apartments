@@ -1,5 +1,5 @@
 // The booking and contact links in a real browser: WhatsApp and Gmail open in a new tab with the ready message, a plain
-// mailto link stays for a mail app, phone numbers dial with `tel:`, and the icons beside the words are decoration.
+// (the mail-app link was removed 2026-11-10), phone numbers dial with `tel:`, and the icons beside the words are decoration.
 import { expect, test } from '@playwright/test';
 
 const PAGES = [
@@ -22,9 +22,7 @@ for (const { path, label } of PAGES) {
       }
     });
 
-    test('the Gmail link carries the same message as the preview, and the mail-app link stays a mailto', async ({
-      page,
-    }) => {
+    test('the Gmail link carries the same message as the preview', async ({ page }) => {
       await page.goto(path);
       const preview = (await page.locator('[data-request-message]').textContent()) ?? '';
       const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
@@ -33,9 +31,10 @@ for (const { path, label } of PAGES) {
       expect(gmail.searchParams.get('to')).toMatch(/^[^@\s]+@[^@\s]+$/);
       expect(gmail.searchParams.get('body')).toBe(preview);
       expect(gmail.searchParams.get('su')).toBeTruthy();
-      const mail = (await page.locator('[data-request-bar] [data-booking-email]').getAttribute('href')) ?? '';
-      expect(mail.startsWith('mailto:')).toBe(true);
-      await expect(page.locator('[data-request-bar] [data-booking-email]')).not.toHaveAttribute('target', /.+/);
+      // the booking bar has no other mail link: the plain mailto: of the mail app and the notice were removed (2026-11-10)
+      await expect(page.locator('[data-request-bar] a[href^="mailto:"]')).toHaveCount(0);
+      await expect(page.locator('[data-request-bar] [data-booking-email]')).toHaveCount(0);
+      await expect(page.locator('[data-request-bar] .booking-notice')).toHaveCount(0);
     });
 
     test('the Gmail link follows the choices, like the WhatsApp link', async ({ page }) => {

@@ -25,8 +25,8 @@ The request card works: choosing an apartment or the number of guests changes th
   `tests/policy/no-public-availability.test.ts`).
 - The request card has: which apartment ("any apartment, I'd like an offer" by default), **a check-in and a check-out
   date** (added at the user's request, 2026-10-31, in layouts 1 to 4), the number of guests, the message that will open
-  (shown to the guest; the dates enter it only when they are valid), a WhatsApp button and an email button, and
-  the notice with the policy links and the minimum age (L5, L10, H4). It is a group of controls, not a form: nothing is
+  (shown to the guest; the dates enter it only when they are valid), a WhatsApp button and a Gmail button (the
+  notice with the policy links and the minimum age was removed on 2026-11-10 at the user's request: L5, L10, H4). It is a group of controls, not a form: nothing is
   submitted to the site.
 - When the card is built, `tests/policy/no-public-availability.test.ts` is narrowed in the same change: a date field is
   allowed only inside the booking-request card and never next to a calendar grid, a result or any free/taken wording.
@@ -71,8 +71,8 @@ The request card works: choosing an apartment or the number of guests changes th
 1. Header: the logo, the two links, the language switch.
 2. **Hero (layout 2):** a photo across the full width, about 580 px high on a desktop and 700 px on a phone; the logo's two
    lines over it (the tagline as the heading, the slogan in handwriting) on a scrim; the **booking-request bar** at its
-   bottom: which apartment, check-in, check-out, guests, a WhatsApp button and an email button, the message that will
-   open, and the notice with the policy links and the minimum age.
+   bottom: which apartment, check-in, check-out, guests, a WhatsApp button and a Gmail button, the message that will
+   open (the notice with the policy links and the minimum age was removed on 2026-11-10).
 3. **The apartments (layout 3's lower part):** each apartment as a large row, photo (3:2) beside its name, summary,
    capacity and a "details and booking" button, the rows alternating sides.
 4. The three points (the third still a placeholder).

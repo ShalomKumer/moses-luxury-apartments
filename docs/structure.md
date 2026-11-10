@@ -59,7 +59,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
 │   │   ├── booking/  BookingRequest + request-controller.ts (the home page's request with an apartment choice, and
 │   │   │             #   the apartment page's with the apartment fixed), BookingLinks + booking-links.ts,
-│   │   │             #   BookingDates (the only date field), BookingGuests + GuestCounter (couples, children, total), BookingName, BookingNotice
+│   │   │             #   BookingDates (the only date field), BookingGuests + GuestCounter (couples, children, total), BookingName
 │   │   └── ui/       Prose, UpdatedDate, HeartRule, Icon (+ icons/: the path data of the three icons and their licences)
 │   │
 │   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css

@@ -28,8 +28,8 @@ for (const { path, label, rtl } of PAGES) {
       await page.goto(path);
       const preview = (await page.locator('[data-request-message]').textContent()) ?? '';
       expect(await whatsappText(page)).toBe(preview);
-      const mail = await page.locator('[data-request-bar] [data-booking-email]').getAttribute('href');
-      expect(decodeURIComponent(mail ?? '')).toContain(preview.split('\n')[0]);
+      const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
+      expect(gmail.searchParams.get('body')).toBe(preview);
       // the apartment line, the name line (empty, to fill in the app) and the dates line
       expect(preview.split('\n')).toHaveLength(3);
     });

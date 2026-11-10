@@ -19,8 +19,8 @@ name, a past check-in date). Every photo opens the photo viewer.
   Libre headings, Heebo text, Gveret Levin for the slogan only; the request card with its gold edge; the heart rule
   under a heading. The five vary the layout inside it, as `CLAUDE.md` ("Design") asks from the second page on.
 - **The request on this page names the apartment** and has no apartment choice: check-in, check-out, guests (up to the
-  apartment's `maxGuests`), the message it will open, the WhatsApp and email buttons, and the notice with the policy
-  links and the minimum age (L5, L10, H4). The dates only write the message; a past or reversed date shows a note and
+  apartment's `maxGuests`), the message it will open, the WhatsApp and Gmail buttons (the notice with the policy
+  links and the minimum age was removed on 2026-11-10 at the user's request: L5, L10, H4). The dates only write the message; a past or reversed date shows a note and
   is left out of it. No availability is shown (`no-public-availability.test.ts`).
 - Photos come through the photo script only (C3, rule 2); the drawn sample scenes of the first drafts are gone.
 - The other apartments appear under the page, so a guest who does not like this one is not sent back to the start.
