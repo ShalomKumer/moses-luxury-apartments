@@ -1,0 +1,55 @@
+---
+/**
+ * The party of the booking request: a counter of couples, a counter of children and the total (worked out from the two,
+ * typed over if the guest wants another number).
+ * A couple is two people and each child is one. The numbers only write the message, nothing is stored (L3).
+ */
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import GuestCounter from './GuestCounter.astro';
+
+interface Props {
+  locale: Locale;
+  /** Makes the field ids unique on the page. */
+  idPrefix: string;
+}
+
+const { locale, idPrefix } = Astro.props;
+const t = getMessages(locale).home.request;
+---
+
+<GuestCounter
+  id={`${idPrefix}-couples`}
+  kind="couples"
+  label={t.couples}
+  lessLabel={t.couplesLess}
+  moreLabel={t.couplesMore}
+/>
+<GuestCounter
+  id={`${idPrefix}-children`}
+  kind="children"
+  label={t.children}
+  lessLabel={t.childrenLess}
+  moreLabel={t.childrenMore}
+/>
+<div class="field request__total">
+  <label for={`${idPrefix}-guests`}>{t.total}</label>
+  <input
+    id={`${idPrefix}-guests`}
+    type="text"
+    inputmode="numeric"
+    autocomplete="off"
+    maxlength="3"
+    aria-describedby={`${idPrefix}-total-hint`}
+    data-request-guests
+  />
+  <small id={`${idPrefix}-total-hint`} class="request__hint">
+    {t.totalHint}
+  </small>
+</div>
+
+<style>
+  .request__hint {
+    color: var(--color-text-muted);
+  }
+</style>

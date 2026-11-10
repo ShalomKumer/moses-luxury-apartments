@@ -98,6 +98,7 @@ The code follows the decision above. Where it differs from the drawing, or the d
 - **The plate.** Text over the photo sits on a dark plate (`--color-scrim` at `--scrim-strength`, 66%) that fades in from the
   photo and is solid under the heading, the slogan and the bar; `contrast.test.ts` pins white on that plate at 4.5:1 even
   over a pure white photo. The bar itself is a white card (A1).
+- **Changed 2026-11-10 (the user's list of ten, items 2 and 3):** the guests select is replaced by **couples**, **children** and a **total**. Each counter has "-" and "+" buttons and a field the guest can type in (digits only); a couple is two people and each child is one; the total is worked out from the two, shows empty while both are 0, and can be typed over (the guest's own number stays until a counter changes). Every number stays within the apartment's guests (couples first, children take what is left; a number too high is lowered with a short note). A **name** field (optional, at most 60 characters) adds a "Name:" line to the message; what is typed goes into the message only and is not stored. The message then reads: greeting, name, dates, "guests: 5 (2 couples, 1 child)".
 - **Guests start as "not chosen"**, not 1, so the message claims no number the guest did not pick. The options follow
   the chosen apartment's capacity (more than it takes are disabled; a number already too high resets).
 - **The hero is taller on a desktop** (50 rem, not 580 px): the bar with its message preview and notice is about 300 px

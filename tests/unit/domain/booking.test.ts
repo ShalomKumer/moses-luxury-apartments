@@ -101,3 +101,49 @@ describe('links', () => {
     expect(telLink('')).toBeNull();
   });
 });
+
+describe('booking message with a name and a party', () => {
+  const noDates = { from: null, to: null, nights: null };
+
+  it('writes the name line after the greeting, in Hebrew and English', () => {
+    expect(buildBookingMessage(he.booking.message, 'נוביליטי 2', null, noDates, { name: 'ישראל ישראלי' })).toBe(
+      'שלום, אשמח לבדוק זמינות והזמנה בנוביליטי 2.\nשם: ישראל ישראלי\nהתאריכים שמתאימים לי: ',
+    );
+    expect(buildBookingMessage(en.booking.message, 'Nobility 2', null, noDates, { name: 'Dana Cohen' })).toBe(
+      "Hello, I'd like to check availability and book Nobility 2.\nName: Dana Cohen\nThe dates that suit me: ",
+    );
+  });
+
+  it('leaves the name for the guest to write when the field is empty, and leaves the line out when there is no field', () => {
+    expect(buildBookingMessage(he.booking.message, null, null, noDates, { name: '' })).toBe(
+      'שלום, אשמח לבדוק זמינות והזמנה.\nשם: \nהתאריכים שמתאימים לי: ',
+    );
+    expect(buildBookingMessage(he.booking.message, null, null, noDates, {})).not.toContain('שם:');
+  });
+
+  it('writes the couples and children after the total, with a plural only where one is needed', () => {
+    const message = (couples: number, children: number, total: number) =>
+      buildBookingMessage(he.booking.message, null, total, noDates, { split: { couples, children } });
+    expect(message(2, 3, 7)).toContain('מספר אורחים: 7 (2 זוגות, 3 ילדים)');
+    expect(message(1, 1, 3)).toContain('מספר אורחים: 3 (זוג אחד, ילד אחד)');
+    expect(message(1, 0, 2)).toContain('מספר אורחים: 2 (זוג אחד)');
+    expect(message(0, 4, 4)).toContain('מספר אורחים: 4 (4 ילדים)');
+    expect(buildBookingMessage(en.booking.message, null, 5, noDates, { split: { couples: 2, children: 1 } })).toContain(
+      'Number of guests: 5 (2 couples, 1 child)',
+    );
+  });
+
+  it('writes only the total when the guest typed their own number, and nothing when there is none', () => {
+    expect(buildBookingMessage(he.booking.message, null, 6, noDates, {})).toContain('מספר אורחים: 6');
+    expect(buildBookingMessage(he.booking.message, null, 6, noDates, {})).not.toContain('(');
+    expect(
+      buildBookingMessage(he.booking.message, null, null, noDates, { split: { couples: 1, children: 0 } }),
+    ).not.toContain('אורחים');
+  });
+
+  it('keeps a name that looks like a slot as it is, without filling it', () => {
+    expect(buildBookingMessage(en.booking.message, null, null, noDates, { name: '{cabin} {count}' })).toContain(
+      'Name: {cabin} {count}',
+    );
+  });
+});

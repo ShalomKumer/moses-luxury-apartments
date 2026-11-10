@@ -1,0 +1,90 @@
+---
+/**
+ * One counter of the booking request: a label, a "-" button, the number and a "+" button. The number is a text field
+ * for digits, so it can be typed as well as stepped (the user's wish, 2026-11-10); the buttons stay reachable at a
+ * limit (the page marks them `aria-disabled`, it never disables them, so focus is not lost). It only draws the
+ * counter: the request's script keeps the numbers within the apartment's guests.
+ */
+interface Props {
+  /** Makes the field's id unique on the page. */
+  id: string;
+  /** What the counter counts, as its visible label: "Couples". */
+  label: string;
+  /** The accessible names of the two buttons: "Fewer couples" and "One more couple". */
+  lessLabel: string;
+  moreLabel: string;
+  /** Which count this is, for the script: "couples" or "children". */
+  kind: 'couples' | 'children';
+}
+
+const { id, label, lessLabel, moreLabel, kind } = Astro.props;
+---
+
+<div class="field counter" data-counter={kind}>
+  <label for={id}>{label}</label>
+  <div class="counter__row">
+    <button type="button" class="counter__button" data-counter-less aria-label={lessLabel}>
+      &minus;
+    </button>
+    <input
+      id={id}
+      class="counter__input"
+      type="text"
+      inputmode="numeric"
+      autocomplete="off"
+      maxlength="3"
+      value="0"
+      data-counter-input
+    />
+    <button type="button" class="counter__button" data-counter-more aria-label={moreLabel}>
+      +
+    </button>
+  </div>
+</div>
+
+<style>
+  .counter__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .counter__button {
+    flex: none;
+    width: var(--target-size);
+    height: var(--target-size);
+    padding: 0;
+    background: var(--color-surface);
+    border: 2px solid var(--color-text);
+    border-radius: 50%;
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--text-lg);
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .counter__button:hover {
+    background: var(--color-bg);
+  }
+
+  /* at a limit the button looks off but stays focusable and tells a screen reader (aria-disabled), so focus is never lost */
+  .counter__button[aria-disabled='true'] {
+    border-color: var(--color-border);
+    color: var(--color-text-muted);
+    cursor: default;
+  }
+
+  .counter__input {
+    flex: 1;
+    min-width: 0;
+    min-height: var(--target-size);
+    padding-inline: var(--space-1);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    text-align: center;
+  }
+</style>

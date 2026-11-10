@@ -39,12 +39,14 @@ for (const { base, label, position } of PAGES) {
       expect(await page.locator('[data-request-message]').textContent()).toBe(text);
     });
 
-    test('offers no more guests than the apartment takes', async ({ page }) => {
+    test('takes no more guests than the apartment', async ({ page }) => {
       await page.goto(`${base}/artist-estate/`);
       const guests = page.locator('[data-request-guests]');
-      await expect(guests.locator('option[value="14"]')).toBeEnabled();
-      await expect(guests.locator('option[value="15"]')).toHaveCount(0);
-      await guests.selectOption('2');
+      await guests.fill('14');
+      expect(await guests.inputValue()).toBe('14');
+      await guests.fill('15');
+      expect(await guests.inputValue()).toBe('14');
+      await guests.fill('2');
       expect(await whatsappText(page)).toContain('2');
     });
 

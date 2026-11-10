@@ -1,13 +1,16 @@
 ---
 /**
  * The booking request: which apartment (on the home page; an apartment's own page has it fixed), the two dates, the
- * number of guests, the WhatsApp and email buttons, the message that will open, and the notice. It is a group of
+ * couples, the children and the total of guests, a name, the WhatsApp and email buttons, the message that will open, and
+ * the notice. It is a group of
  * controls, not a form: nothing is submitted to the site, and no availability is looked up (L5, L10, H4). Without
  * JavaScript the buttons still open a plain message.
  */
 import type { CollectionEntry } from 'astro:content';
 import BookingDates from '@components/booking/BookingDates.astro';
+import BookingGuests from '@components/booking/BookingGuests.astro';
 import BookingLinks from '@components/booking/BookingLinks.astro';
+import BookingName from '@components/booking/BookingName.astro';
 import BookingNotice from '@components/booking/BookingNotice.astro';
 import { SITE, WHATSAPP_PHONE } from '@config/site';
 import { buildBookingMessage } from '@domain/booking/booking-message';
@@ -31,9 +34,9 @@ const t = getMessages(locale);
 const request = t.home.request;
 const units = cabins.map((cabin) => ({ id: cabin.id, name: pick(cabin.data.name, locale), max: cabin.data.maxGuests }));
 const maxGuests = maxGuestsOf(units.map((unit) => unit.max));
-const guestOptions = Array.from({ length: maxGuests }, (_, index) => index + 1);
 const fixedName = fixed ? (units[0]?.name ?? null) : null;
-const message = buildBookingMessage(t.booking.message, fixedName, null);
+// without the script the message still has its name line, for the guest to fill in the app
+const message = buildBookingMessage(t.booking.message, fixedName, null, undefined, { name: '' });
 ---
 
 <div
@@ -47,6 +50,7 @@ const message = buildBookingMessage(t.booking.message, fixedName, null);
   data-email={SITE.email}
   data-texts={JSON.stringify(t.booking.message)}
   data-problems={JSON.stringify(request.problems)}
+  data-cap-note={request.capNote}
   data-max-guests={maxGuests}
   data-unit-name={fixedName ?? undefined}
 >
@@ -65,15 +69,9 @@ const message = buildBookingMessage(t.booking.message, fixedName, null);
       </div>
     )}
     <BookingDates idPrefix="request" checkInLabel={request.checkIn} checkOutLabel={request.checkOut} />
-    <div class="field request__guests">
-      <label for="request-guests">{request.guests}</label>
-      <select id="request-guests" data-request-guests>
-        <option value="">{request.guestsNone}</option>
-        {guestOptions.map((count) => (
-          <option value={count}>{count}</option>
-        ))}
-      </select>
-    </div>
+    <BookingGuests locale={locale} idPrefix="request" />
+    <BookingName locale={locale} idPrefix="request" />
+    <p class="request__cap-note" data-guests-note role="status"></p>
   </div>
   <p class="request__problem" data-request-problem role="alert"></p>
   <BookingLinks locale={locale} name={fixedName ?? t.brand.name} cabinName={fixedName} message={message} />
@@ -114,21 +112,41 @@ const message = buildBookingMessage(t.booking.message, fixedName, null);
     display: none;
   }
 
-  .request__unit {
+  .request__unit,
+  .request__fields :global(.request__total),
+  .request__fields :global(.request__name),
+  .request__cap-note {
     grid-column: 1 / -1;
   }
 
+  .request__cap-note {
+    margin: 0;
+    color: var(--color-taken-text);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .request__cap-note:empty {
+    display: none;
+  }
+
+  /* wide: the apartment and the two dates in one row, then the couples, the children, the total and the name */
   @container (min-width: 46rem) {
     .request__fields {
-      grid-template-columns: 1.4fr 1fr 1fr 0.7fr;
-    }
-
-    .request--fixed .request__fields {
-      grid-template-columns: 1fr 1fr 0.7fr;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .request__unit {
+      grid-column: span 2;
+    }
+
+    .request__fields :global(.request__total),
+    .request__fields :global(.request__name) {
       grid-column: auto;
+    }
+
+    .request__cap-note {
+      grid-column: 1 / -1;
     }
   }
 

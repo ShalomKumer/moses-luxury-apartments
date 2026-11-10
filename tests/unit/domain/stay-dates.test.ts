@@ -13,6 +13,13 @@ const texts: BookingTexts = {
   oneNight: 'one night',
   nights: '{count} nights',
   guests: 'Guests: {count}',
+  guestsDetail: 'Guests: {count} ({detail})',
+  couplesOne: '1 couple',
+  couplesMany: '{count} couples',
+  childOne: '1 child',
+  childMany: '{count} children',
+  name: 'Name: {name}',
+  namePlaceholder: 'Name: ',
   subject: 'Booking request - {cabin}',
 };
 

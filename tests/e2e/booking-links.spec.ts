@@ -40,7 +40,7 @@ for (const { path, label } of PAGES) {
 
     test('the Gmail link follows the choices, like the WhatsApp link', async ({ page }) => {
       await page.goto(path);
-      await page.locator('[data-request-guests]').selectOption('2');
+      await page.locator('[data-request-guests]').fill('2');
       const preview = (await page.locator('[data-request-message]').textContent()) ?? '';
       const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
       expect(gmail.searchParams.get('body')).toBe(preview);
