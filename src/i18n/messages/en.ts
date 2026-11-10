@@ -135,8 +135,6 @@ export const en: Messages = {
     whatsapp: 'Send a request on WhatsApp',
     gmail: 'Send a request by Gmail',
     newTabHint: '{name} (opens in a new tab)',
-    mailApp: 'or use the mail app on your device',
-    mailAppHint: '{name} (opens your mail app)',
     message: {
       intro: "Hello, I'd like to check availability and book {cabin}.",
       introAny: "Hello, I'd like to check availability and book.",
@@ -155,14 +153,6 @@ export const en: Messages = {
       namePlaceholder: 'Name: ',
       subject: 'Booking request - {cabin}',
     },
-  },
-  notice: {
-    before:
-      'The buttons open WhatsApp or Gmail (or the mail app on your device) in a new tab with a ready message, and it is sent only if you press "Send" there. It reaches us through the service you chose. The name and numbers you write here go into the message only and are not stored on the site. Details in the ',
-    privacyLink: 'privacy policy',
-    between: ' and the ',
-    cancellationLink: 'cancellation policy',
-    after: '. Booking is from age {age}.',
   },
   contact: {
     heading: 'Contact',

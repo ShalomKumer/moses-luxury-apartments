@@ -1,13 +1,11 @@
 ---
 /**
- * The booking buttons: WhatsApp and Gmail, each opening the ready message in a new tab, and under them a plain link for
- * a mail app on the visitor's device. They work without JavaScript.
+ * The booking buttons: WhatsApp and Gmail, each opening the ready message in a new tab. They work without JavaScript.
  */
 import Icon from '@components/ui/Icon.astro';
 import { SITE, WHATSAPP_PHONE } from '@config/site';
 import { buildBookingSubject, type BookingTexts } from '@domain/booking/booking-message';
 import { gmailComposeLink } from '@domain/booking/gmail-link';
-import { mailtoLink } from '@domain/booking/mailto-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
 import { fillTemplate } from '@domain/text/fill-template';
@@ -58,10 +56,6 @@ const subject = buildBookingSubject(texts, cabinName);
       <span class="visually-hidden"> - {fillTemplate(t.newTabHint, { name })}</span>
     </a>
   </div>
-  <a class="booking-links__app" data-booking-email href={mailtoLink(SITE.email, subject, message)}>
-    {t.mailApp}
-    <span class="visually-hidden"> - {fillTemplate(t.mailAppHint, { name })}</span>
-  </a>
 </div>
 
 <style>
@@ -75,13 +69,5 @@ const subject = buildBookingSubject(texts, cabinName);
   .booking-links {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  /* A plain text link, still a full-height target (2.5.8). */
-  .booking-links__app {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--target-size);
-    font-size: var(--text-sm);
   }
 </style>

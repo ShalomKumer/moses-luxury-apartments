@@ -145,8 +145,6 @@ for (const { label, home, apartment, big, twoCouples, oneChild, guests, nameLine
       expect(whatsapp.searchParams.get('text')).toBe(text);
       const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
       expect(gmail.searchParams.get('body')).toBe(text);
-      const mail = (await page.locator('[data-request-bar] [data-booking-email]').getAttribute('href')) ?? '';
-      expect(decodeURIComponent(mail.split('body=')[1])).toBe(text);
     });
 
     test('a name with markup is text in the preview, never markup', async ({ page }) => {

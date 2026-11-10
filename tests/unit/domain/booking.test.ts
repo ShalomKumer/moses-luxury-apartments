@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buildBookingMessage, buildBookingSubject } from '@domain/booking/booking-message';
 import { gmailComposeLink } from '@domain/booking/gmail-link';
-import { mailtoLink } from '@domain/booking/mailto-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
 import { telLink } from '@domain/booking/tel-link';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
@@ -77,11 +76,10 @@ describe('links', () => {
     expect(toInternationalDigits('123')).toBeNull();
   });
 
-  it('encodes the message into the WhatsApp and mail links', () => {
+  it('encodes the message into the WhatsApp link', () => {
     expect(whatsappLink('972545499445', 'שלום\nא')).toBe(
       'https://wa.me/972545499445?text=%D7%A9%D7%9C%D7%95%D7%9D%0A%D7%90',
     );
-    expect(mailtoLink('a@b.co', 'x y', 'z&w')).toBe('mailto:a@b.co?subject=x%20y&body=z%26w');
   });
 
   it('builds a Gmail compose link that keeps ampersands, new lines and Hebrew inside the body', () => {
