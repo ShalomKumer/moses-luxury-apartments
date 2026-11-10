@@ -5,17 +5,13 @@
 // galleryShape, since every real apartment has ten photos. Update the numbers if its content changes.
 import { expect, test, type Page } from '@playwright/test';
 import { obscuredFocus } from './helpers/focus-obscured';
+import { dayFromNow, openPicker, pickStay } from './helpers/date-picker';
 import { axeViolations } from './helpers/run-axe';
 
 const PAGES = [
   { base: '/cabins', label: 'Hebrew', position: /1 מתוך 10/ },
   { base: '/en/cabins', label: 'English', position: /1 of 10/ },
 ];
-
-/** A day offset from today as "YYYY-MM-DD" (UTC; the offsets used are far enough from midnight not to matter). */
-function dayFromNow(days: number): string {
-  return new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
-}
 
 /** The message the WhatsApp link carries, decoded. */
 async function whatsappText(page: Page): Promise<string> {
@@ -50,22 +46,21 @@ for (const { base, label, position } of PAGES) {
       expect(await whatsappText(page)).toContain('2');
     });
 
-    test('two valid dates write the dates and the nights, with no note', async ({ page }) => {
+    test('two days chosen in the calendar write the dates and the nights, with no note', async ({ page }) => {
       await page.goto(`${base}/artist-estate/`);
-      await page.locator('[data-stay-in]').fill(dayFromNow(10));
-      await page.locator('[data-stay-out]').fill(dayFromNow(13));
+      await pickStay(page, 10, 13);
       expect(await whatsappText(page)).toMatch(/\d{2}\.\d{2}\.\d{4}.*\d{2}\.\d{2}\.\d{4}/);
       await expect(page.locator('[data-request-problem]')).toBeHidden();
     });
 
-    test('a check-in in the past shows a note, stays out of the message, and the page has no axe violations', async ({
+    test('a day that has passed cannot be chosen, and the page with the calendar open has no axe violations', async ({
       page,
     }) => {
       await page.goto(`${base}/artist-estate/`);
       const before = await whatsappText(page);
-      await page.locator('[data-stay-in]').fill('2020-01-01');
-      await page.locator('[data-stay-out]').fill(dayFromNow(13));
-      await expect(page.locator('[data-request-problem]')).toBeVisible();
+      await openPicker(page);
+      const yesterday = page.locator(`[data-picker-months] [data-date="${dayFromNow(-1)}"]`);
+      if ((await yesterday.count()) > 0) await expect(yesterday).toBeDisabled();
       expect(await whatsappText(page)).toBe(before);
       expect(await axeViolations(page)).toEqual([]);
     });

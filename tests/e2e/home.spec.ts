@@ -2,17 +2,13 @@
 // choices, a bad date shows a note and stays out of the message, the guests follow the apartment, the fonts load
 // from our own host, the rows alternate by the text direction, and the rows beyond the first five sit folded (once there are more than five).
 import { expect, test, type Page } from '@playwright/test';
+import { clickDay, dayFromNow, openPicker, pickStay } from './helpers/date-picker';
 import { axeViolations } from './helpers/run-axe';
 
 const PAGES = [
   { path: '/', label: 'Hebrew', rtl: true },
   { path: '/en/', label: 'English', rtl: false },
 ];
-
-/** A day offset from today as "YYYY-MM-DD" (UTC; the offsets used are far enough from midnight not to matter). */
-function dayFromNow(days: number): string {
-  return new Date(Date.now() + days * 86_400_000).toISOString().slice(0, 10);
-}
 
 /** The message the WhatsApp link carries, decoded. */
 async function whatsappText(page: Page): Promise<string> {
@@ -60,45 +56,44 @@ for (const { path, label, rtl } of PAGES) {
       expect(await guests.inputValue()).toBe('9');
     });
 
-    test('two valid dates write the dates and the nights into the message', async ({ page }) => {
+    test('two days chosen in the calendar write the dates and the nights into the message', async ({ page }) => {
       await page.goto(path);
-      await page.locator('[data-stay-in]').fill(dayFromNow(10));
-      await page.locator('[data-stay-out]').fill(dayFromNow(13));
+      await pickStay(page, 10, 13);
       const text = await whatsappText(page);
       expect(text).toMatch(/\d{2}\.\d{2}\.\d{4}.*\d{2}\.\d{2}\.\d{4}/);
       expect(text).toContain('3');
       await expect(page.locator('[data-request-problem]')).toBeHidden();
     });
 
-    test('a check-in in the past shows a note, stays out of the message, and the page still has no axe violations', async ({
-      page,
-    }) => {
+    test('a day that has passed cannot be chosen, and the open calendar has no axe violations', async ({ page }) => {
       await page.goto(path);
       const before = await whatsappText(page);
-      await page.locator('[data-stay-in]').fill('2020-01-01');
-      await page.locator('[data-stay-out]').fill(dayFromNow(13));
-      const note = page.locator('[data-request-problem]');
-      await expect(note).toBeVisible();
-      await expect(note).not.toBeEmpty();
+      await openPicker(page);
+      await expect(page.locator(`[data-picker-months] [data-date="${dayFromNow(0)}"]`)).toBeEnabled();
+      const yesterday = page.locator(`[data-picker-months] [data-date="${dayFromNow(-1)}"]`);
+      if ((await yesterday.count()) > 0) await expect(yesterday).toBeDisabled();
       expect(await whatsappText(page)).toBe(before);
       expect(await axeViolations(page)).toEqual([]);
     });
 
-    test('a check-out that is not after the check-in shows a note and keeps only the check-in', async ({ page }) => {
+    test('a second click on an earlier day starts the stay over, so there is never a note to show', async ({
+      page,
+    }) => {
       await page.goto(path);
-      await page.locator('[data-stay-in]').fill(dayFromNow(10));
-      await page.locator('[data-stay-out]').fill(dayFromNow(10));
-      await expect(page.locator('[data-request-problem]')).toBeVisible();
-      expect(await whatsappText(page)).toMatch(/\d{2}\.\d{2}\.\d{4}/);
+      await openPicker(page);
+      await clickDay(page, dayFromNow(12));
+      await clickDay(page, dayFromNow(10));
+      await page.locator('[data-picker-done]').click();
       expect((await whatsappText(page)).match(/\d{2}\.\d{2}\.\d{4}/g)).toHaveLength(1);
-      await page.locator('[data-stay-out]').fill(dayFromNow(12));
       await expect(page.locator('[data-request-problem]')).toBeHidden();
     });
 
     test('has one h1, and every control of the bar has a visible label', async ({ page }) => {
       await page.goto(path);
       await expect(page.locator('h1')).toHaveCount(1);
-      for (const control of await page.locator('[data-request-bar] select, [data-request-bar] input').all()) {
+      for (const control of await page
+        .locator('[data-request-bar] select, [data-request-bar] input:not([type="hidden"])')
+        .all()) {
         const id = await control.getAttribute('id');
         await expect(page.locator(`label[for="${id}"]`)).toBeVisible();
       }

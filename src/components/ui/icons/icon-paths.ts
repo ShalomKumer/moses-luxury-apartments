@@ -1,7 +1,7 @@
 /**
  * The outlines of the icons, as plain path data on a 24 x 24 grid, so a component draws them without any markup
  * from outside (the site never writes HTML from a string, S1). Their licences sit beside this file: the phone, the envelope and the apartment features (Wi-Fi, bath, flame, waves, mountain, door, trees, bed, wall,
- * brush, utensils; the back-to-top arrow; the viewer's two arrows and its cross; Lucide v0.469.0) are from Lucide (ISC,
+ * brush, utensils; the back-to-top arrow; the viewer's two arrows and its cross; the date picker's calendar; Lucide v0.469.0) are from Lucide (ISC,
  * LICENSE-lucide.txt), the WhatsApp mark is from Simple Icons (CC0, LICENSE-simple-icons.txt). The WhatsApp name and mark
  * stay Meta's trademark: the mark is drawn unchanged, only to say "this opens WhatsApp", next to the word (C2).
  */
@@ -25,7 +25,8 @@ export type IconName =
   | 'arrow-up'
   | 'chevron-left'
   | 'chevron-right'
-  | 'x';
+  | 'x'
+  | 'calendar';
 
 /** One icon: drawn as an outline (a stroke) or as a solid shape (a fill), from one or more paths. */
 export interface IconShape {
@@ -139,6 +140,11 @@ export const ICONS: Record<IconName, IconShape> = {
   'chevron-left': { style: 'stroke', paths: ['m15 18-6-6 6-6'] },
   'chevron-right': { style: 'stroke', paths: ['m9 18 6-6-6-6'] },
   x: { style: 'stroke', paths: ['M18 6 6 18', 'm6 6 12 12'] },
+  // the date picker's field (Lucide calendar: its rectangle written as a path)
+  calendar: {
+    style: 'stroke',
+    paths: ['M8 2v4', 'M16 2v4', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z', 'M3 10h18'],
+  },
   // Lucide's "arrow-up"
   'arrow-up': { style: 'stroke', paths: ['m5 12 7-7 7 7', 'M12 19V5'] },
   utensils: {

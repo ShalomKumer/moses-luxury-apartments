@@ -197,7 +197,7 @@ for (const { label, home, apartment, big, twoCouples, oneChild, guests, nameLine
       await page.goto(apartment);
       await couples(page).fill('9');
       await expect(page.locator('[data-guests-note]')).toBeVisible();
-      for (const control of await page.locator('[data-request-bar] input').all()) {
+      for (const control of await page.locator('[data-request-bar] input:not([type="hidden"])').all()) {
         const id = await control.getAttribute('id');
         await expect(page.locator(`label[for="${id}"]`)).toBeVisible();
       }

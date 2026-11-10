@@ -1,0 +1,339 @@
+---
+/**
+ * The one date field of the booking request: "When?", a button that opens a window with the calendar, "from date to
+ * date". The calendar only fills the dates of the message (WhatsApp or Gmail): it never looks anything up, shows no
+ * day as free or taken and books nothing (H7, tests/policy/no-public-availability.test.ts). Three hidden fields carry the
+ * choice to the request's script; nothing is stored or sent anywhere (L3, S9). The months are drawn by
+ * `picker-controller.ts`, because "today" is the visitor's day. Without the script the whole request's fields stay hidden.
+ */
+import FlexChips from '@components/booking/FlexChips.astro';
+import Icon from '@components/ui/Icon.astro';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  /** Makes the ids unique on the page. */
+  idPrefix: string;
+}
+
+const { locale, idPrefix } = Astro.props;
+const t = getMessages(locale).home.request.picker;
+const rtl = locale === 'he';
+// the words the script needs, read from the page so they stay in the page's language
+const texts = {
+  placeholder: t.placeholder,
+  summary: t.summary,
+  summaryStart: t.summaryStart,
+  hintStart: t.hintStart,
+  hintEnd: t.hintEnd,
+  hintDone: t.hintDone,
+  checkIn: t.checkIn,
+  checkOut: t.checkOut,
+  inStay: t.inStay,
+  nightsOne: t.nightsOne,
+  nights: t.nights,
+};
+---
+
+<div
+  class="field request__dates picker"
+  data-picker
+  data-locale={rtl ? 'he-IL' : 'en-GB'}
+  data-rtl={rtl ? '' : undefined}
+  data-texts={JSON.stringify(texts)}
+>
+  <label for={`${idPrefix}-dates`}>{t.label}</label>
+  <button type="button" id={`${idPrefix}-dates`} class="picker__field" aria-haspopup="dialog" data-picker-open>
+    <span class="picker__summary" data-picker-summary>
+      {t.placeholder}
+    </span>
+    <Icon name="calendar" />
+  </button>
+  <input type="hidden" data-stay-in />
+  <input type="hidden" data-stay-out />
+  <input type="hidden" data-stay-flex value="0" />
+
+  <dialog class="picker__dialog" data-picker-dialog closedby="any" aria-labelledby={`${idPrefix}-dates-title`}>
+    <div class="picker__bar">
+      <h2 class="picker__title" id={`${idPrefix}-dates-title`}>
+        {t.dialog}
+      </h2>
+      <button type="button" class="picker__close" data-picker-close>
+        <Icon name="x" />
+        <span class="visually-hidden">{t.close}</span>
+      </button>
+    </div>
+    <p class="picker__hint" role="status" data-picker-hint></p>
+    <div class="picker__calendar">
+      <button type="button" class="picker__step picker__step--previous" data-picker-prev>
+        <Icon name="chevron-left" />
+        <span class="visually-hidden">{t.previous}</span>
+      </button>
+      <div class="picker__months" data-picker-months></div>
+      <button type="button" class="picker__step picker__step--next" data-picker-next>
+        <Icon name="chevron-right" />
+        <span class="visually-hidden">{t.next}</span>
+      </button>
+    </div>
+    <FlexChips texts={t} />
+    <div class="picker__actions">
+      <button type="button" class="button button--secondary" data-picker-clear>
+        {t.clear}
+      </button>
+      <button type="button" class="button" data-picker-done>
+        {t.done}
+      </button>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  import { initDatePicker } from './picker-controller';
+
+  document.querySelectorAll<HTMLElement>('[data-picker]').forEach(initDatePicker);
+</script>
+
+<style>
+  .picker__field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    width: 100%;
+    min-height: var(--target-size);
+    padding-inline: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+
+  .picker__summary {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .picker__summary[data-empty] {
+    color: var(--color-text-muted);
+  }
+
+  /*
+   * The window is a modal dialog: the page behind is inert and the focus stays inside (the browser does both). On a
+   * phone it is one sheet the width of the screen, fixed to the bottom; on a wide screen it is a centred box with two
+   * months side by side.
+   */
+  .picker__dialog {
+    box-sizing: border-box;
+    width: min(94vw, 46rem);
+    max-width: none;
+    max-height: 94vh;
+    margin: auto;
+    padding: var(--space-4);
+    border: none;
+    border-radius: calc(var(--radius) * 2);
+    background: var(--color-surface);
+    color: var(--color-text);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .picker__dialog[open] {
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .picker__dialog::backdrop {
+    background: color-mix(in srgb, var(--color-scrim) var(--scrim-strength), transparent);
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
+
+  @supports (height: 100dvh) {
+    .picker__dialog {
+      max-height: 94dvh;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .picker__dialog {
+      width: 100vw;
+      margin-block-end: 0;
+      border-end-start-radius: 0;
+      border-end-end-radius: 0;
+      padding-inline: var(--space-3);
+    }
+  }
+
+  .picker__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .picker__title {
+    margin: 0;
+    font-size: var(--text-lg);
+  }
+
+  .picker__close,
+  .picker__step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--target-size);
+    min-height: var(--target-size);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .picker__close:hover,
+  .picker__step:hover {
+    background: var(--color-bg);
+  }
+
+  /* the arrows are drawn for a left-to-right page; a right-to-left page mirrors them (as the photo viewer does) */
+  :global(html[dir='rtl']) .picker__step :global(.icon) {
+    transform: scaleX(-1);
+  }
+
+  .picker__step[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  /* a short line that says what to pick next; its room is kept so the calendar does not jump */
+  .picker__hint {
+    min-height: 1.5em;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  /* the two arrows sit in the corners, at the height of the month titles, so the days keep the whole width */
+  .picker__calendar {
+    position: relative;
+  }
+
+  .picker__step {
+    position: absolute;
+    inset-block-start: 0;
+    z-index: 1;
+  }
+
+  .picker__step--previous {
+    inset-inline-start: 0;
+  }
+
+  .picker__step--next {
+    inset-inline-end: 0;
+  }
+
+  .picker__months {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 48rem) {
+    .picker__months {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .picker__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  /* the months are drawn by the script, so they are styled from here */
+  .picker__months :global(.cal__title) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--target-size);
+    margin: 0;
+    padding-inline: calc(var(--target-size) + var(--space-2));
+    font-size: var(--text-base);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .picker__months :global(.cal__grid) {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .picker__months :global(.cal__weekday) {
+    padding-block: var(--space-1);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .picker__months :global(.cal__cell) {
+    padding: 0;
+    text-align: center;
+  }
+
+  .picker__months :global(.cal__day) {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: var(--target-size);
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--color-text);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .picker__months :global(.cal__day:hover:not(:disabled)) {
+    border-color: var(--color-border);
+  }
+
+  /* a day that cannot be chosen (passed, or more than a year ahead) is faded; it says nothing about the apartments */
+  .picker__months :global(.cal__day:disabled) {
+    color: var(--color-text-muted);
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  /* today has a ring; the days between the two ends are shaded; the two ends are filled */
+  .picker__months :global(.cal__day[data-today]) {
+    border-color: var(--color-text);
+  }
+
+  .picker__months :global(.cal__day[data-between]) {
+    border-radius: 0;
+    background: var(--color-notice-bg);
+  }
+
+  .picker__months :global(.cal__day[data-edge]) {
+    background: var(--color-selected-bg);
+    border-color: var(--color-selected-bg);
+    color: var(--color-selected-text);
+    font-weight: 700;
+  }
+
+  .picker__months :global(.cal__day:focus-visible),
+  .picker__step:focus-visible,
+  .picker__close:focus-visible,
+  .picker__field:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+</style>

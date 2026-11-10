@@ -2,8 +2,9 @@
 
 A public Hebrew site for a client's holiday units (the logo says "דירת מוזס / Moses Luxury Apartments"; the first brief said
 "אחוזות מוזס" and cabins - being confirmed): each unit's photos and details, and booking by WhatsApp or email.
-**The site shows no availability and has no date search or calendar** (the user, 2026-10-31); the owner sees his bookings
-in his own Google Calendars. No form, no sign-in, no database, no server code, no payment on the site. An admin view of
+**The site shows no availability and has no date search** (the user, 2026-10-31); the owner sees his bookings in his own
+Google Calendars. **One calendar is allowed, only to choose the dates of the booking message** (the user, 2026-11-10:
+"from date to date", like a hotel site): it marks no day as free or taken, looks nothing up and books nothing. No form, no sign-in, no database, no server code, no payment on the site. An admin view of
 availability would need a sign-in: a separate feature, not built (`docs/architecture.md`).
 
 The working rules below were taken from the user's trading-bot project (`New-Bot---09.26`) on 2026-10-31, at the user's

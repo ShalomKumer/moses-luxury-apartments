@@ -85,8 +85,9 @@ the contact area; the differences are structure, density, where the photos sit a
 - **Keyboard:** every photo is a button named "enlarge photo 2 of 5: <what it shows>"; the viewer is a native modal
   dialog, opens with focus on "close", the arrows step through the photos (mirrored for English), Escape closes it,
   and focus returns to the photo that opened it. The carousel of 5 has "previous" and "next" buttons with a live count.
-- **Errors:** a past or reversed date shows a note in words (3.3.1), marks the field `aria-invalid` and is announced
-  (`role="alert"`); the date fields point at the note with `aria-describedby`.
+- **Dates (changed 2026-11-10):** the two date fields are one date picker (`docs/design/home.md`). A past day cannot be
+  chosen and an earlier second click starts over, so there is no error note for dates; the old note stays in the code only
+  as a defence.
 - **Direction:** one layout serves right to left and left to right (logical properties; the back and next arrows flip).
 - **For the build (stage 4):** any bar stuck to the bottom needs `scroll-padding-bottom` on the page so a focused
   element is never hidden under it (2.4.11; the browser tests check it); the viewer's arrows and focus return get a
