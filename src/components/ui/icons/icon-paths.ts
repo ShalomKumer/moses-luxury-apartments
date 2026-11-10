@@ -1,7 +1,7 @@
 /**
  * The outlines of the icons, as plain path data on a 24 x 24 grid, so a component draws them without any markup
  * from outside (the site never writes HTML from a string, S1). Their licences sit beside this file: the phone, the envelope and the apartment features (Wi-Fi, bath, flame, waves, mountain, door, trees, bed, wall,
- * brush, utensils; Lucide v0.469.0) are from Lucide (ISC,
+ * brush, utensils; the back-to-top arrow; Lucide v0.469.0) are from Lucide (ISC,
  * LICENSE-lucide.txt), the WhatsApp mark is from Simple Icons (CC0, LICENSE-simple-icons.txt). The WhatsApp name and mark
  * stay Meta's trademark: the mark is drawn unchanged, only to say "this opens WhatsApp", next to the word (C2).
  */
@@ -21,7 +21,8 @@ export type IconName =
   | 'bed'
   | 'brick-wall'
   | 'paintbrush'
-  | 'utensils';
+  | 'utensils'
+  | 'arrow-up';
 
 /** One icon: drawn as an outline (a stroke) or as a solid shape (a fill), from one or more paths. */
 export interface IconShape {
@@ -131,6 +132,8 @@ export const ICONS: Record<IconName, IconShape> = {
       'M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15',
     ],
   },
+  // Lucide's "arrow-up"
+  'arrow-up': { style: 'stroke', paths: ['m5 12 7-7 7 7', 'M12 19V5'] },
   utensils: {
     style: 'stroke',
     paths: ['M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2', 'M7 2v20', 'M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7'],

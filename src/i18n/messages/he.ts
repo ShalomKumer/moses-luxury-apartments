@@ -20,6 +20,7 @@ export const he = {
   },
   common: {
     skipToMain: 'דילוג לתוכן הראשי',
+    backToTop: 'חזרה למעלה',
     lastUpdated: 'עודכן לאחרונה',
     phone: 'טלפון',
     email: 'מייל',

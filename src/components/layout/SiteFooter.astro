@@ -88,7 +88,8 @@ const legalPages = (await getCollection('legal'))
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
     gap: var(--space-8);
-    padding-block: var(--space-8);
+    /* room under the last line for the back-to-top button, so it never covers a link (2.4.11) */
+    padding-block: var(--space-8) calc(var(--space-8) + 3.5rem);
   }
 
   .site-footer__title {
