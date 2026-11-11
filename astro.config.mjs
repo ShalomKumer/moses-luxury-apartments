@@ -13,6 +13,9 @@ export default defineConfig({
   image: { service: passthroughImageService() },
   // Stylesheets as files, never inline, so the CSP can stay "style-src 'self'" (S10).
   build: { inlineStylesheets: 'never' },
+  // A scoped style marks its elements with a short class, not a long data attribute: the same specificity, about 4 KB less
+  // on the home page, which is close to its code budget (rule 3).
+  scopedStyleStrategy: 'class',
   // No source maps in production (S4); scripts as files, never inline, so the CSP can stay "script-src 'self'".
   vite: { build: { sourcemap: false, assetsInlineLimit: 0 } },
   // Legal pages: a part still to fill becomes a labelled box; section headings and tables become keyboard targets (L11, A3).

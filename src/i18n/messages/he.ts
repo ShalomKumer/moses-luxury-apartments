@@ -4,6 +4,8 @@
  */
 export const he = {
   language: { code: 'he', name: 'עברית', switchHint: 'מעבר לעברית' },
+  /** The offer shown on the English page to a visitor whose browser prefers Hebrew (written in Hebrew, for that visitor). */
+  languageOffer: { label: 'הצעת שפה', message: 'האתר זמין גם בעברית', close: 'סגירה' },
   brand: {
     name: 'דירת מוזס',
     /** The logo's own line (the owner's words). */

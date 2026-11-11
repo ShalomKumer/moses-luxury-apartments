@@ -8,6 +8,8 @@ import type { Messages } from './types';
  */
 export const en: Messages = {
   language: { code: 'en', name: 'English', switchHint: 'Switch to English' },
+  /** The offer shown on the Hebrew page to a visitor whose browser prefers English (written in English, for that visitor). */
+  languageOffer: { label: 'Language offer', message: 'This site is also available in English', close: 'Close' },
   brand: {
     name: 'Moses Luxury Apartments',
     tagline: "Luxury apartments in the heart of Safed's Old City",

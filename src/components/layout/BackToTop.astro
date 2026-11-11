@@ -31,7 +31,9 @@ const { locale } = Astro.props;
     position: fixed;
     z-index: 5;
     inset-inline-end: var(--space-4);
-    inset-block-end: calc(var(--space-4) + var(--bottom-bar, 0px) + env(safe-area-inset-bottom, 0px));
+    inset-block-end: calc(
+      var(--space-4) + var(--bottom-bar, 0px) + var(--offer-bar, 0px) + env(safe-area-inset-bottom, 0px)
+    );
     display: grid;
     place-items: center;
     width: var(--target-size);

@@ -6,6 +6,7 @@ import { getMessages } from '@i18n/get-messages';
 import { directionOf, type Locale } from '@i18n/locales';
 import { alternatesOf } from '@i18n/paths';
 import BackToTop from './BackToTop.astro';
+import LanguageOffer from './LanguageOffer.astro';
 import SiteFooter from './SiteFooter.astro';
 import SiteHeader from './SiteHeader.astro';
 import SkipLink from './SkipLink.astro';
@@ -43,6 +44,7 @@ const alternates = alternatesOf(path);
   <body>
     <div id="top" tabindex="-1"></div>
     <SkipLink locale={locale} />
+    <LanguageOffer locale={locale} path={path} />
     <SiteHeader locale={locale} path={path} />
     <main id="main" tabindex="-1">
       <slot />
