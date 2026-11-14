@@ -19,6 +19,10 @@ const FORBIDDEN = [
   { pattern: /sample content|sample description|sample illustration/i, why: 'sample English text' },
   { pattern: /example\.com/, why: 'a sample email address' },
   { pattern: /050-000-0000/, why: 'a sample phone number' },
+  {
+    pattern: /domain-to-fill\.invalid/,
+    why: 'the placeholder site address: write the real domain in src/config/site-url.ts (E2 to E4)',
+  },
   { pattern: /תוכן לדוגמה|תיאור לדוגמה|איור לדוגמה/, why: 'sample cabin text' },
   { pattern: /\|\s*sample,/, why: 'a sample photo (src/content/photos.md)' },
   {

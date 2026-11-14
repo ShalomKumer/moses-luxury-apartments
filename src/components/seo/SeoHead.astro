@@ -1,0 +1,56 @@
+---
+/**
+ * The search and sharing part of a page's head (E2, E3, E6): the canonical address, the `hreflang` alternates, and the Open Graph
+ * and Twitter/X tags with the site's preview image, all absolute. A page that must stay out of a search engine (the 404 page)
+ * says `noindex` and writes none of them. Everything is written at build time; nothing is loaded from another host.
+ */
+import { absoluteUrl } from '@domain/seo/absolute-url';
+import { buildShareTags } from '@domain/seo/share-meta';
+import { SITE } from '@config/site';
+import { SITE_URL } from '@config/site-url';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+import { languageLinks } from './language-links';
+
+interface Props {
+  locale: Locale;
+  /** The page's own address without a language ("/", "/cabins/tarpat-18", "/privacy"). */
+  path: string;
+  /** The page's whole title, as in `<title>`. */
+  title: string;
+  description: string;
+  /** True for a page that is not to be found by a search engine. */
+  noindex?: boolean;
+}
+
+const { locale, path, title, description, noindex = false } = Astro.props;
+const t = getMessages(locale);
+const canonical = absoluteUrl(SITE_URL, localizedPath(path, locale));
+const share = noindex
+  ? []
+  : buildShareTags({
+      locale,
+      siteName: t.brand.name,
+      title,
+      description,
+      url: canonical,
+      image: {
+        url: absoluteUrl(SITE_URL, SITE.shareImage.src),
+        width: SITE.shareImage.width,
+        height: SITE.shareImage.height,
+        alt: t.brand.logoAlt,
+      },
+    });
+---
+
+{noindex && <meta name="robots" content="noindex" />}
+{!noindex && <link rel="canonical" href={canonical} />}
+{!noindex && languageLinks(path).map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.url} />)}
+{share.map((tag) =>
+  tag.attribute === 'property' ? (
+    <meta property={tag.key} content={tag.content} />
+  ) : (
+    <meta name={tag.key} content={tag.content} />
+  ),
+)}

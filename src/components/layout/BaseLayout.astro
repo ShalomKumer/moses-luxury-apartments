@@ -4,7 +4,7 @@ import '../../styles/global.css';
 import { fillTemplate } from '@domain/text/fill-template';
 import { getMessages } from '@i18n/get-messages';
 import { directionOf, type Locale } from '@i18n/locales';
-import { alternatesOf } from '@i18n/paths';
+import SeoHead from '../seo/SeoHead.astro';
 import BackToTop from './BackToTop.astro';
 import LanguageOffer from './LanguageOffer.astro';
 import SiteFooter from './SiteFooter.astro';
@@ -17,12 +17,14 @@ interface Props {
   path: string;
   title: string;
   description?: string;
+  /** True for a page that is not to be found by a search engine (the 404 page); it then has no canonical or sharing tags. */
+  noindex?: boolean;
 }
 
-const { locale, path, title, description } = Astro.props;
+const { locale, path, title, description, noindex = false } = Astro.props;
 const t = getMessages(locale);
 const fullTitle = title === t.brand.name ? title : fillTemplate(t.common.pageTitle, { title, site: t.brand.name });
-const alternates = alternatesOf(path);
+const pageDescription = description ?? t.brand.description;
 ---
 
 <!doctype html>
@@ -30,15 +32,12 @@ const alternates = alternatesOf(path);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description ?? t.brand.description} />
+    <meta name="description" content={pageDescription} />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/heebo/heebo.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/frank-ruhl-libre/frank-ruhl-libre.woff2" as="font" type="font/woff2" crossorigin />
-    {alternates.map((alternate) => (
-      <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />
-    ))}
-    <link rel="alternate" hreflang="x-default" href={alternates[0].href} />
+    <SeoHead locale={locale} path={path} title={fullTitle} description={pageDescription} noindex={noindex} />
     <title>{fullTitle}</title>
   </head>
   <body>
