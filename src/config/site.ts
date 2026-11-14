@@ -14,6 +14,11 @@ export const SITE = {
     name: { src: '/brand/logo-name.webp', width: 520, height: 252 },
   },
   /**
+   * The preview image a chat app or a social network shows when a page is shared (E2): the owner's logo alone, never a photo of
+   * an apartment (C3), made by `npm run brand:share`. The size is that of the file (tests/unit/config/share-image.test.ts).
+   */
+  shareImage: { src: '/brand/share.jpg', width: 1200, height: 630 },
+  /**
    * The phone numbers (given by the user, 2026-10-31; both are on WhatsApp, the user, 2026-11-03). The first marked
    * `whatsapp` receives the booking messages.
    */

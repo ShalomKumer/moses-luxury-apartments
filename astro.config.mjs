@@ -4,8 +4,11 @@ import { defineConfig, passthroughImageService } from 'astro/config';
 import { satteri } from '@astrojs/markdown-satteri';
 import { fillMarkersPlugin } from './src/markdown/fill-markers-plugin.ts';
 import { pageStructurePlugin } from './src/markdown/page-structure-plugin.ts';
+import { SITE_URL } from './src/config/site-url.ts';
 
 export default defineConfig({
+  // The live site's address, the one place it is written: canonical links, hreflang, sharing tags, the sitemap and robots.txt are built from it (E2 to E4).
+  site: SITE_URL,
   // Every page is built ahead of time; only /api/availability runs on request.
   output: 'static',
   // Photos are prepared before they are added, so no image processing runs at build time or on request.

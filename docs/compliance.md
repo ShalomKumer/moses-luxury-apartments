@@ -123,11 +123,11 @@ The standard is `docs/standards.md`, section 5. Most rows need the domain (`site
 | Id  | Rule | Status | How it is met, or what is missing | How to check |
 | --- | ---- | ------ | --------------------------------- | ------------ |
 | E1  | A title and a meta description on every page, per page and per language | Met | `BaseLayout.astro` writes them from the page: a cabin's name and summary, a legal page's title and description, the brand lines for the home page, in the page's language. | `dist/**/*.html` |
-| E2  | Open Graph tags, Twitter/X Cards and a preview image | Gap | None yet. Needs an absolute URL for a preview image of ours (not a photo whose rights are unconfirmed: C3) and the domain. | View the `<head>` of a page |
-| E3  | A canonical URL and `hreflang` alternates | Partial | `hreflang` (he, en, x-default) is on every page and checked by `check-build-output.mjs`, but the addresses are relative; the canonical link is missing. Both need `site` set to the domain. | `check-build-output.mjs` |
-| E4  | `sitemap.xml` and robots rules | Partial | `public/robots.txt` exists (it still disallows `/api/`, which no longer exists). The sitemap is missing and needs `site`; Astro's sitemap integration would build it, and its licence goes through `npm run licenses:check` first. | `dist/sitemap-index.xml` |
-| E5  | Structured data (`LodgingBusiness`) with real details only | Not yet | Added after the real business details (L11) and the real photos (C3) exist; never a rating, review or price without a source (H1, H2). | The page's JSON-LD |
-| E6  | Public pages indexable, private pages not exposed | Met | Every page is public and indexable; there are no private or authenticated pages. An admin view, if built, is excluded by `noindex` and by robots. | Read `robots.txt` |
+| E2  | Open Graph tags, Twitter/X Cards and a preview image | Partial | Built (`feature/seo`): `SeoHead.astro` writes `og:*` and `twitter:*` on every page but 404, with the page's own title, description and address, in its language, and a large card of ours, `public/brand/share.jpg` (1200 x 630), made from the owner's logo alone with `npm run brand:share`: never a photo of an apartment, so no photo whose rights are unconfirmed leaves the site (C3). Every address is built from `SITE_URL` in `src/config/site-url.ts`, a placeholder (`.invalid`, which never resolves) until the owner has a domain; `npm run launch:check` fails while it is left. | View the `<head>` of a page; `check-build-output.mjs` |
+| E3  | A canonical URL and `hreflang` alternates | Partial | Built: one absolute canonical link and absolute `hreflang` (he, en, x-default) on every page but 404, from `SITE_URL`; the 404 page is `noindex` and has none. The head and the sitemap use the same list (`language-links.ts`), so they cannot disagree. Partial only until the domain replaces the placeholder. | `check-build-output.mjs` |
+| E4  | `sitemap.xml` and robots rules | Partial | Built, with no new package: `src/pages/sitemap.xml.ts` lists every page in both languages with its alternates, from the same content files the page routes use, so a new apartment is in it at once; it states no date, priority or change frequency (there is nothing honest to put there: H1). `src/pages/robots.txt.ts` allows everything and names the sitemap; the old static file and its `/api/` line are gone. Partial only until the domain replaces the placeholder. | `dist/client/sitemap.xml` and `robots.txt`; `check-build-output.mjs` |
+| E5  | Structured data (`LodgingBusiness`) with real details only | Not yet | Added after the real business details (L11) and the real photos (C3) exist, with the directions (`feature/directions`), which need the address; never a rating, review or price without a source (H1, H2). | The page's JSON-LD |
+| E6  | Public pages indexable, private pages not exposed | Met | Every page is public and indexable; there are no private or authenticated pages. `robots.txt` disallows nothing, and the 404 page, which is not a page to find, is marked `noindex` (checked in the build). An admin view, if built, is excluded by `noindex` and by robots. | Read `robots.txt`; `check-build-output.mjs` |
 
 ## The client's checklist, item by item
 
@@ -165,7 +165,8 @@ The list the user sent on 2026-10-31, and the row that carries each item.
 
 | Row                                                | Where (`docs/roadmap.md`)                      |
 | -------------------------------------------------- | ---------------------------------------------- |
-| E2-E5 (preview image, canonical, sitemap, JSON-LD) | `feature/seo`, once the domain and the real business details are known |
+| E2-E4 (sharing tags, canonical, sitemap) | Built in `feature/seo`; the real domain goes into `src/config/site-url.ts` at launch (stage 7) |
+| E5 (JSON-LD) | With the directions, once the real business address (L11) is known |
 | L13 (retention and deletion policy)                | The lawyer, with the privacy text (L12)        |
 | S18 (environments, rollback, limits)               | Stage 7, launch                                |
 | L11, C3, H1, L10 (the facts, the photos)           | Stage 5, content from the owner                |

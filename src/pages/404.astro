@@ -11,7 +11,7 @@ import { localizedPath } from '@i18n/paths';
 const he = getMessages('he');
 ---
 
-<BaseLayout locale="he" path="/" title={he.notFound.title}>
+<BaseLayout locale="he" path="/" title={he.notFound.title} noindex>
   <div class="container section">
     {LOCALES.map((locale) => {
       const t = getMessages(locale);

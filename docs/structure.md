@@ -20,9 +20,9 @@ Every exported function carries a one-line comment saying what it does.
 │
 ├── public/
 │   ├── _headers                    # security headers: CSP, HSTS, nosniff, frame (S2, S10)
-│   ├── brand/                      # the owner's logo, cropped (docs/design/brand.md)
-│   ├── photos/<cabin-id>/          # cabin photos; source and rights in src/content/photos.md (C3)
-│   └── robots.txt
+│   ├── brand/                      # the owner's logo, cropped (docs/design/brand.md), and share.jpg, the sharing image (E2)
+│   └── photos/<cabin-id>/          # cabin photos; source and rights in src/content/photos.md (C3)
+│                                   #   (robots.txt and sitemap.xml are not here: they are built from src/pages, E4)
 │
 ├── src/
 │   ├── content.config.ts           # collection schemas; photo alt is required (A2)
@@ -30,7 +30,8 @@ Every exported function carries a one-line comment saying what it does.
 │   ├── i18n/                       # PURE: locales (he, en, direction), paths (the address of a page in a language), pick,
 │   │   │                           #   get-messages, messages/{he,en,types}.ts (every text of the site, same keys)
 │   ├── config/
-│   │   ├── site.ts                 # brand, business details, phones, email, logo (L11)
+│   │   ├── site.ts                 # brand, business details, phones, email, logo, sharing image (L11)
+│   │   ├── site-url.ts             # the live site's address, the one place it is written (astro.config `site`, E2-E4); a placeholder until the domain
 │   │   └── availability.ts         # limits of the kept availability service (not wired)
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
@@ -50,7 +51,9 @@ Every exported function carries a one-line comment saying what it does.
 │   │
 │   ├── server/                     # KEPT, UNWIRED: calendar source, fetch, cache, service (for a future admin view)
 │   │
+│   │   ├── seo/                    # absolute-url (a page's path + the site address), share-meta (the Open Graph and Twitter tags), sitemap-xml, robots-txt (E2-E4, E6)
 │   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
+│   │   ├── seo/      SeoHead (canonical, hreflang, sharing tags, noindex), language-links.ts (the absolute hreflang list), site-pages.ts (every page's path), seo-documents.ts (sitemap and robots text)
 │   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter, BackToTop + back-to-top.ts (the corner button that returns to the top), LanguageOffer + language-offer.ts (the thin "also in English / בעברית" bar)
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
 │   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, CabinHighlights + highlight-icons.ts (the badges and their icons), JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments (the home page's folded rows)
@@ -64,14 +67,15 @@ Every exported function carries a one-line comment saying what it does.
 │   │   └── ui/       Prose, UpdatedDate, HeartRule, Icon (+ icons/: the path data of the three icons and their licences)
 │   │
 │   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css
-│   └── pages/        index, cabins/[id], [legal], 404, and the same three under en/     # ROUTES: thin files over components/pages
+│   └── pages/        index, cabins/[id], [legal], 404, and the same three under en/; sitemap.xml.ts, robots.txt.ts     # ROUTES: thin files over components/pages
 │
 ├── scripts/
 │   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
-│   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7)
+│   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7); canonical, hreflang, sharing tags, sitemap, robots, 404 noindex (E2-E4, E6)
 │   ├── check-launch-ready.mjs      # no placeholder or leftover sample text left (L11, C3)
 │   ├── brand/                      # the logo files (C3): ink-bounds (pure: where the drawing is on the page), build-logo (entry:
-│   │                               #   npm run brand:build -- <the owner's logo file>, writes public/brand/)
+│   │                               #   npm run brand:build -- <the owner's logo file>, writes public/brand/); build-share-image (entry:
+│   │                               #   npm run brand:share, the 1200 x 630 sharing card from the logo, public/brand/share.jpg, E2)
 │   ├── budget/                     # the performance budget: limits, page-weight + pick-candidate (pure; a srcset counts at what a phone loads), check-budget (entry)
 │   ├── fonts/                      # the web fonts (C1): charset (Hebrew + Latin), fonts (the three), subset-fonts (entry:
 │   │                               #   npm run fonts:build -- <folder of the full .ttf files>, writes public/fonts/)

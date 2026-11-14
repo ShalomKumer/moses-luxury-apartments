@@ -4,7 +4,7 @@ export interface EntryFacts {
   navigationType: string | null;
   /** The address of the page the visitor came from; empty when there is none (a typed address, a messaging app). */
   referrer: string;
-  /** The origin of this site ("https://example.com"). */
+  /** The origin of this site ("https://host"). */
   ownOrigin: string;
 }
 

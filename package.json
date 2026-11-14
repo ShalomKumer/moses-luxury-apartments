@@ -18,6 +18,7 @@
     "photos:add": "node scripts/photos/add-photo.mjs",
     "fonts:build": "node scripts/fonts/subset-fonts.mjs",
     "brand:build": "node scripts/brand/build-logo.mjs",
+    "brand:share": "node scripts/brand/build-share-image.mjs",
     "photos:check": "node scripts/photos/check-photos.mjs",
     "budget:check": "node scripts/budget/check-budget.mjs",
     "licenses:check": "node scripts/check-licenses.mjs",
