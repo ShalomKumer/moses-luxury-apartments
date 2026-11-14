@@ -139,6 +139,29 @@ describe('pageWeight', () => {
     expect(pageWeight(notOpen, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(0);
   });
 
+  it('does not count a lazy image inside a closed <dialog> (the photo viewer), which the browser does not fetch', () => {
+    const closed =
+      '<dialog class="gallery__dialog" data-gallery-dialog><figure><img data-gallery-image src="local.webp" loading="lazy" alt=""></figure></dialog>';
+    expect(pageWeight(closed, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf)).toMatchObject({
+      images: 0,
+      missing: [],
+    });
+  });
+
+  it('counts a <dialog> image that is not lazy, and every image of a <dialog> that is open', () => {
+    const eager = '<dialog><img src="local.webp" alt=""></dialog>';
+    expect(pageWeight(eager, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(50_000);
+    const open = '<dialog open><img src="local.webp" loading="lazy" alt=""></dialog>';
+    expect(pageWeight(open, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(50_000);
+    const notOpen = '<dialog data-open="1"><img src="local.webp" loading="lazy" alt=""></dialog>';
+    expect(pageWeight(notOpen, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(0);
+  });
+
+  it('still counts the images outside a closed <dialog>', () => {
+    const html = '<img src="local.webp"><dialog><img src="local.webp" loading="lazy" alt=""></dialog>';
+    expect(pageWeight(html, 'dist/client/cabins/gefen/index.html', ROOT, sizeOf).images).toBe(50_000);
+  });
+
   it('counts the bytes of Hebrew text, not its characters', () => {
     expect(pageWeight('שלום', 'dist/client/index.html', ROOT, sizeOf).html).toBe(8);
   });

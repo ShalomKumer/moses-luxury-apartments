@@ -152,7 +152,10 @@ The page follows the decision above. Where the build differs or decides somethin
   in a plain grid; the grid hides photos only once the controller has marked the gallery `data-enhanced`. **Changed
   2026-11-03 (the Artist's Estate has ten photos):** a photo beyond the grid is no longer an `<img>` in the page but a
   link named by its alt text, so without JavaScript the rest are links to the full file, and the page weighs five
-  photos, not ten (the budget). Every grid photo has a `srcset` of the widths the photo script made.
+  photos, not ten (the budget). Every grid photo has a `srcset` of the widths the photo script made. **Changed 2026-11-14:**
+  the closed viewer's own `<img>` is `loading="lazy"`: a browser fetches even a hidden image otherwise, and the first photo
+  was loaded twice (the grid's file and the viewer's 1280 px file, 248 KB on the heaviest page). The controller sets the
+  file when the viewer opens.
 - **The jump button** is a plain link to the request's id, so it needs no script; the next Tab lands in the request's
   first field. It sits at the end of the details' own column and sticks to the bottom of the screen while they scroll.
 - **The stuck card** (a wide and tall screen only, 62 rem by 48 rem) keeps its top 1 rem from the screen's top; on a short

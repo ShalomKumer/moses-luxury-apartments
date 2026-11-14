@@ -77,7 +77,9 @@ const shape = galleryShape(photos.length);
   <dialog class="gallery__dialog" data-gallery-dialog aria-label={fillTemplate(t.dialog, { name })}>
     <figure class="gallery__figure">
       <div class="gallery__stage" data-gallery-stage>
-        <img data-gallery-image src={photos[0].src} alt={photos[0].alt} />
+        {/* lazy: the viewer is closed, and a browser fetches even a hidden image unless it is lazy: without this the first
+            photo came twice on every page, once here at 1280 px and once in the grid. The controller sets the file when it opens. */}
+        <img data-gallery-image src={photos[0].src} alt={photos[0].alt} loading="lazy" />
         {shape.hasViewerControls && (
           <>
             <button type="button" class="gallery__arrow gallery__arrow--previous" data-gallery-prev>
