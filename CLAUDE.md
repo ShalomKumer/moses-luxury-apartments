@@ -99,9 +99,13 @@ push. A row that is not _Met_ is scheduled in `docs/roadmap.md`, never just reme
    for every feature. Fix what they find, or tell the user why a finding does not apply. Never push, and never open a
    PR, on a branch that has not been through both.
 4. `/ship`: secret check, `npm run verify`, conventional commit, push, PR link (base `dev`).
-5. The user merges the PR and says "מוזג" -> verify the merge -> the user runs `/compact` (or opens a new session).
+5. The user merges the PR and says "מוזג" (a reply button offered after `/ship`, or typed; it only says the word, the merge is
+   still verified) -> verify the merge -> read the context percent: above 40% tell the user to run `/compact` (or open a
+   new session), at or below 40% no compact, one short line with the percent -> always end with "מה הלאה" (the stage report and
+   the menu), without being asked. The `/ship` message ends with the PR link, the PR text just above it, so the user never
+   scrolls up to find it (the user, 2026-11-15).
 
-Never start the next feature before the previous one is pushed, merged, and the context was compacted.
+Never start the next feature before the previous one is pushed and merged (and, when the context is above 40%, compacted).
 
 ## Model protocol (remind every time - the user forgets to switch)
 
@@ -151,11 +155,11 @@ Check the session's skill list at the start of every session for their exact nam
   any commit or push. Ask when unclear.
 - Reply to the user in Hebrew; code, docs and commits in English; site text in Hebrew.
 - **Stages** (`docs/roadmap.md`, "Stages"; the user, 2026-11-01): seven stages, one stage open at a time, **one session
-  per stage** (inside a stage, `/compact` when the context fills). After every merge, before any further work, report two
+  per stage** (inside a stage, `/compact` when the context is above 40%). After every merge, before any further work, report two
   figures: the open stage's percent and the whole project's percent (points done over points; a small feature counts 1, a
   medium 2, a large 3; say it is an estimate), with what is left. When a stage is finished, describe everything it holds
   and ask whether to move on - **never start the next stage without the user's explicit approval**; the next stage opens
-  in a new session (or after `/compact`).
+  in a new session (or after `/compact`, when the context is above 40%).
 - Keep context lean: `tail`/`grep` tool output, don't re-read unchanged files. No subagents for ordinary exploration -
   but use the Agent tool where a skill's own instructions call for it, and for the QA agent.
 - **New rules:** a rule that would help the project is proposed to the user one at a time and added only with their
