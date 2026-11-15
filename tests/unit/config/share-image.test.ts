@@ -39,4 +39,9 @@ describe('the site address', () => {
   it('is an https address of an origin only, with no trailing slash', () => {
     expect(SITE_URL).toMatch(/^https:\/\/[^/]+$/);
   });
+
+  it('is a real address, not the placeholder: .invalid never resolves', () => {
+    expect(new URL(SITE_URL).hostname).not.toMatch(/\.invalid$|domain-to-fill/);
+    expect(new URL(SITE_URL).hostname).toMatch(/^[a-z0-9-]+(\.[a-z0-9-]+)+$/);
+  });
 });
