@@ -51,7 +51,8 @@ for (const { path, label } of PAGES) {
     }) => {
       await page.goto(path);
       const phones = page.locator('footer a[href^="tel:+972"]');
-      expect(await phones.count()).toBeGreaterThan(0);
+      await expect(phones).toHaveCount(1);
+      await expect(phones).toHaveAttribute('href', 'tel:+972534369490');
       const icons = page.locator('footer svg.icon, #contact svg.icon');
       const count = await icons.count();
       expect(count).toBeGreaterThan(0);
@@ -71,7 +72,12 @@ test.describe('contact section', () => {
       await expect(link).toHaveAttribute('target', '_blank');
       expect((await link.getAttribute('rel')) ?? '').toContain('noreferrer');
     }
-    expect(await contact.locator('a[href^="tel:+972"]').count()).toBeGreaterThan(0);
+    // the one number the business keeps: dialled, and the WhatsApp link goes to it
+    await expect(contact.locator('a[href^="tel:+972"]')).toHaveCount(1);
+    await expect(contact.locator('a[href^="tel:+972"]')).toHaveAttribute('href', 'tel:+972534369490');
+    expect((await contact.locator('a[href^="https://wa.me/"]').getAttribute('href')) ?? '').toContain(
+      'wa.me/972534369490',
+    );
     expect(await contact.locator('a[href^="mailto:"]').count()).toBe(1);
   });
 });

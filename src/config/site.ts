@@ -19,13 +19,10 @@ export const SITE = {
    */
   shareImage: { src: '/brand/share.jpg', width: 1200, height: 630 },
   /**
-   * The phone numbers (given by the user, 2026-10-31; both are on WhatsApp, the user, 2026-11-03). The first marked
-   * `whatsapp` receives the booking messages.
+   * The phone numbers. The user gave two on 2026-10-31 (both on WhatsApp, 2026-11-03) and on 2026-11-15 kept only this one:
+   * it is shown, dialled, and receives the booking messages (the first marked `whatsapp`).
    */
-  phones: [
-    { display: '054-549-9445', whatsapp: true },
-    { display: '053-436-9490', whatsapp: true },
-  ],
+  phones: [{ display: '053-436-9490', whatsapp: true }],
   /** The booking email (given by the user, 2026-10-31). */
   email: 'Mnm783@gmail.com',
   /**

@@ -49,8 +49,8 @@ The request card works: choosing an apartment or the number of guests changes th
   from the logo's own words, to confirm with the owner. The third is a placeholder, shown dashed, until the owner gives
   a true one (H1).
 - Booking stays a WhatsApp or email request with a ready message; nothing is sent from the home page itself.
-- Business phones and email are the ones the user gave (`src/config/site.ts`). Booking messages go to 054-549-9445; the
-  second number (053-436-9490) is listed for calls until the user says whether it also has WhatsApp.
+- The business phone and email are the ones the user gave (`src/config/site.ts`). **Changed 2026-11-15:** the business keeps one
+  number, 053-436-9490 (the user); it is the one shown, dialled, and given the booking messages. The earlier draft listed two.
 
 ## The five layouts
 
@@ -87,7 +87,7 @@ The request card works: choosing an apartment or the number of guests changes th
 3. **The apartments (layout 3's lower part):** each apartment as a large row, photo (3:2) beside its name, summary,
    capacity and a "details and booking" button, the rows alternating sides.
 4. The three points (the third still a placeholder).
-5. Contact: the full logo, the slogan, WhatsApp, the two phones, the email.
+5. Contact: the full logo, the slogan, WhatsApp, the phone (one number since 2026-11-15), the email.
 
 **Not taken:** layout 3's three-photo mosaic hero and layout 2's sideways rail of apartments.
 
