@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Finish the current feature branch - secret check, full verify, conventional commit, push, PR link to dev, then hand off for merge + /compact. Use at the end of EVERY feature.
+description: Finish the current feature branch - secret check, full verify, conventional commit, push, PR link to dev, then hand off for the merge (a "מוזג" button; compact only above 40% context). Use at the end of EVERY feature.
 ---
 
 # /ship
@@ -95,19 +95,21 @@ git push -u origin $(git branch --show-current)
 git log --oneline -1
 ```
 
-Then reply in Hebrew with exactly:
+Then reply in Hebrew with exactly, in this order (the PR link is last, so the user never scrolls up to find it):
 
 1. What shipped (1-3 lines) and the test count; the files changed and what changed in each, the new files, and the
    current Git state.
-2. The PR link: `<repo>/compare/dev...<branch>?expand=1` (base is **dev**, never main), and the text to paste into it:
-   what changed and why; the main files and components; the tests run; database or configuration changes (or "none");
-   the security implications (or "none"). Squash merge is preferred; the PR title is the conventional commit.
-3. The stage report (`CLAUDE.md`, "Working style"): the open stage, what was done, what is left, the percent.
-4. **Remaining risks, requirements not yet implemented, and settings that need manual intervention** (or "none"), never
+2. The stage report (`CLAUDE.md`, "Working style"): the open stage, what was done, what is left, the percent.
+3. **Remaining risks, requirements not yet implemented, and settings that need manual intervention** (or "none"), never
    a claim that the system is fully secure (`docs/standards.md`, section 7).
-5. The hand-off checklist for the user:
-   - Open the PR and merge it into `dev`.
-   - Say "מוזג" so the merge can be verified.
-   - Run `/compact` (or open a new session) - required before the next feature starts.
+4. The text to paste into the PR: what changed and why; the main files and components; the tests run; database or
+   configuration changes (or "none"); the security implications (or "none"). Squash merge is preferred; the PR title is the
+   conventional commit.
+5. The hand-off, last: open the PR and merge it into `dev`, then press the "מוזג" button (or type it) so the merge can be
+   verified. The button is offered with `wrap_up` (`actions: [{label: "מוזג"}]`); it only sends the word.
+6. The PR link, as the very last line: `<repo>/compare/dev...<branch>?expand=1` (base is **dev**, never main).
 
-Do not start any new work until the user confirms the merge and the context was compacted.
+Do not start any new work until the user confirms the merge. After "מוזג": verify the merge (fetch, `dev` tip, the branch
+contained in `dev`, an empty diff, `main` untouched, a clean tree), read the context with `get_usage`
+(`context.percentUsed`): above 40% tell the user to run `/compact` (it is a user command), at or below 40% add one short
+line with the percent and no compact. Then always finish with "מה הלאה": the stage report and the menu, without being asked.
