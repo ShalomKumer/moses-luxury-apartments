@@ -38,23 +38,25 @@ function pictureFile(picture) {
 
 // A closed `<details>` ends at its first `</details>`: a nested one would leave the rest counted, which only makes the check stricter.
 const CLOSED_DETAILS = /<details\b(?![^>]*\sopen\b)[^>]*>[\s\S]*?<\/details>/gi;
+// A closed `<dialog>` (the photo viewer) is hidden in the same way, until a script opens it.
+const CLOSED_DIALOG = /<dialog\b(?![^>]*\sopen\b)[^>]*>[\s\S]*?<\/dialog>/gi;
 const LAZY_IMG = /<img\b[^>]*\sloading\s*=\s*["']lazy["'][^>]*>/i;
 
 /**
- * The page without the lazy images folded inside a closed `<details>`: a browser does not render them, so it never fetches
- * them until the visitor opens it. An image that is not lazy is fetched at once even when folded, so it stays counted.
+ * The page without the lazy images folded inside a closed `<details>` or a closed `<dialog>`: a browser does not render them,
+ * so it never fetches them until the visitor opens it. An image that is not lazy is fetched at once even when hidden, so it
+ * stays counted.
  */
 function withoutFoldedImages(html) {
   const unlessLazy = (tag) => (LAZY_IMG.test(tag) ? '' : tag);
-  return html.replace(CLOSED_DETAILS, (block) =>
-    block.replace(PICTURE, unlessLazy).replace(/<img\b[^>]*>/gi, unlessLazy),
-  );
+  const dropLazy = (block) => block.replace(PICTURE, unlessLazy).replace(/<img\b[^>]*>/gi, unlessLazy);
+  return html.replace(CLOSED_DETAILS, dropLazy).replace(CLOSED_DIALOG, dropLazy);
 }
 
 /**
  * The files a page names, split into scripts, stylesheets and images. A picture with a `srcset` is counted at the file a
  * phone loads (`pickCandidate`); a `<picture>` is counted at its narrow-screen source (`pictureFile`), once, not also as its `<img>`.
- * A lazy image folded inside a closed `<details>` is not counted (`withoutFoldedImages`).
+ * A lazy image folded inside a closed `<details>` or `<dialog>` is not counted (`withoutFoldedImages`).
  */
 function references(html) {
   const links = attributeValues(html, /<link\b[^>]*>/gi, 'href');
