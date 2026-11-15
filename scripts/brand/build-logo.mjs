@@ -18,11 +18,12 @@ const INK_THRESHOLD = 215;
 const MARGIN = 14;
 
 /**
- * The roof and the two names end this fraction of the way down the lockup (the owner's file of 2026-11-08: they end at
- * 372 of 819 rows, then come the gold lines, the heart and the slogans). Measured, not found: the line below the names is
- * thin gold text that a threshold cannot tell from the names.
+ * The roof and the two names end this fraction of the way down the lockup, cut in the middle of the empty band between the
+ * names and the gold lines (the owner's file of 2026-11-15: the names end at row 515 of 960, the gold lines start at row 548,
+ * so the cut is at 528). Measured, not found: the line below the names is thin gold text that a threshold cannot tell from
+ * the names. A new logo file needs this measured again (the first one, of 2026-11-08, was 0.456).
  */
-const NAME_PART = 0.456;
+const NAME_PART = 0.55;
 
 /** The widths of the files, in pixels: a phone at three times the density shows the header logo about 130 px wide, the contact logo 224 px. */
 const WIDTHS = { name: 520, full: 720 };
@@ -64,6 +65,17 @@ const nameInk = inkBounds(data, info.width, info.height, {
   threshold: INK_THRESHOLD,
   region: { left: lockup.left, top: lockup.top, width: lockup.width, height: nameRows },
 });
+// The cut must fall on empty paper. If a row of ink is there, NAME_PART does not fit this file: stop, never cut through the gold lines.
+const cutRow = inkBounds(data, info.width, info.height, {
+  threshold: INK_THRESHOLD,
+  region: { left: lockup.left, top: lockup.top + nameRows, width: lockup.width, height: 1 },
+});
+if (cutRow) {
+  console.error(
+    `NAME_PART (${NAME_PART}) cuts through the drawing of this file, at row ${nameRows} of ${lockup.height}: measure where the names end and the gold lines start, and set it in the middle of that gap.`,
+  );
+  process.exit(1);
+}
 const crops = {
   full: padRect(lockup, MARGIN, info.width, info.height),
   name: padRect(nameInk ?? lockup, MARGIN, info.width, info.height),
