@@ -5,13 +5,13 @@
  */
 export const SITE = {
   /**
-   * The owner's logo, cut from the file the user sent on 2026-11-08 (docs/design/brand/logo-combined-original.png) by
-   * with `npm run brand:build`: the whole lockup for the contact area, and the roof with both names for the top of the page.
+   * The owner's logo, cut from the file the user sent on 2026-11-15 (docs/design/brand/logo-new-original.jpg) with
+   * `npm run brand:build`: the whole lockup for the contact area, and the roof with both names for the top of the page.
    * The sizes are those of the files (tests/unit/config/logo-files.test.ts fails when they differ).
    */
   logo: {
-    full: { src: '/brand/logo-full.webp', width: 720, height: 666 },
-    name: { src: '/brand/logo-name.webp', width: 520, height: 252 },
+    full: { src: '/brand/logo-full.webp', width: 720, height: 561 },
+    name: { src: '/brand/logo-name.webp', width: 520, height: 245 },
   },
   /**
    * The preview image a chat app or a social network shows when a page is shared (E2): the owner's logo alone, never a photo of

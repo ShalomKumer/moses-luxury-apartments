@@ -1,6 +1,6 @@
 # Brand: what the logo dictates
 
-The owner's logo (sent by the user on 2026-10-31, kept as `docs/design/brand/logo-original.jpg`; the logo in use since 2026-11-10 is the file the user sent on 2026-11-08, `docs/design/brand/logo-combined-original.png`) sets the style of the
+The owner's logo (sent by the user on 2026-10-31, kept as `docs/design/brand/logo-original.jpg`; the logo in use since 2026-11-15 is the file the user sent that day, `docs/design/brand/logo-new-original.jpg`; the one of 2026-11-08, `logo-combined-original.png`, was in use from 2026-11-10 and is kept beside it) sets the style of the
 whole site: the user's rule, "from now on the logo dictates the UI/UX style". Palette and type below are read from it.
 Status: **adopted for colours; the three fonts are downloaded, cut and self-hosted (the user's yes, 2026-11-02).**
 
@@ -62,7 +62,15 @@ font at the same size, so the swap does not move the text.
 
 ## The logo file
 
-- The user's file (2026-11-08, `moses_combined_logo.png`) is a 1055 x 1491 PNG of the lockup on a large white page, no
+- **The file in use (2026-11-15, `docs/design/brand/logo-new-original.jpg`)** is a 1426 x 1103 JPEG (a lockup of 1239 x 960 px on white): the
+  same roof (a richer gold), names, Hebrew gold lines, heart rule and Hebrew slogan, **without the English lines and the English
+  slogan** of the earlier file (the English page shows its own slogan as text beside the logo) and with a thin gold rule under the
+  slogan. `npm run brand:build` cut `logo-full.webp` (720 x 561, 38 KB) and `logo-name.webp` (520 x 245, 15 KB) from it, with the
+  names ending at 55% of the drawing's height (`NAME_PART`, measured on this file: it falls in the empty band between the names and the
+  gold lines, and must be measured again for any other file); `npm run brand:share` rebuilt `public/brand/share.jpg`. The palette
+  tokens above are unchanged: the new roof gold is brighter than the one measured, and a change of tokens would reopen the contrast
+  tests. The earlier file's description follows, kept as history.
+- The user's earlier file (2026-11-08, `moses_combined_logo.png`) is a 1055 x 1491 PNG of the lockup on a large white page, no
   transparency: the same roof, the same two names and the same Hebrew lines as the first file, with two English lines added under
   them ("Luxury Apartments in the Heart of the Old City of Safed") and the slogan in English under the Hebrew one ("A Luxury
   Experience, Tranquility and Breathtaking Views"). Two files are cut from it by `npm run brand:build -- <file>`
