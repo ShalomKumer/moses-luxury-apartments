@@ -31,7 +31,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   │                           #   get-messages, messages/{he,en,types}.ts (every text of the site, same keys)
 │   ├── config/
 │   │   ├── site.ts                 # brand, business details, phones, email, logo, sharing image (L11)
-│   │   ├── site-url.ts             # the live site's address, the one place it is written (astro.config `site`, E2-E4); a placeholder until the domain
+│   │   ├── site-url.ts             # the live site's address, the one place it is written (astro.config `site`, E2-E4): https://www.mosesluxuryapartments.com
 │   │   └── availability.ts         # limits of the kept availability service (not wired)
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
