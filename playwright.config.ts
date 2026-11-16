@@ -10,8 +10,12 @@ export default defineConfig({
   testMatch: '**/*.spec.ts',
   outputDir: 'test-results',
   fullyParallel: true,
+  // No retry on purpose: a test that fails once and passes the second time would hide a real, occasional fault.
   retries: 0,
-  reporter: [['dot']],
+  // The JSON report (test-results/report.json, not committed) lists every test with its duration and error, so a run that failed under load
+  // can be read afterwards. A trace of each test would say more but made the run 60% slower (4.6 -> 7.4 minutes, measured 2026-11-15).
+  // tests/unit/e2e/playwright-config.test.ts pins both choices.
+  reporter: [['dot'], ['json', { outputFile: 'test-results/report.json' }]],
   use: { baseURL: ORIGIN, browserName: 'chromium' },
   webServer: {
     command: `node tests/e2e/server/start.mjs ${PORT}`,
