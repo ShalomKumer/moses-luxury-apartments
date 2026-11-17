@@ -11,7 +11,7 @@ Decided with the user on 2026-10-31; **changed the same day**: no availability a
 | How a guest books           | A WhatsApp link (`wa.me`) and an email link (`mailto:`), each with a pre-filled message; the guest writes the dates in it | The site collects no personal data; the conversation happens where the owner already works.      |
 | Payment                     | None on the site; between the guest and the owner                                            | No PCI scope, no webhooks, no invoices from the site. The cancellation policy is still published (`compliance.md`, H4).      |
 | Stack                       | Astro (static pages, TypeScript)                                                             | Fast pages that work without JavaScript, MIT licence.                                                                       |
-| Host                        | **Proposed:** Cloudflare Pages                                                               | Free tier, HTTPS and HSTS, a headers file, rate-limiting rules. To confirm with the user.                                    |
+| Host                        | **Proposed:** Cloudflare Workers (static assets)                                                               | Free tier, HTTPS and HSTS, a headers file, rate-limiting rules. To confirm with the user. The adapter builds for Workers; the launch steps are `docs/launch.md`.                                    |
 
 ## Languages (2026-10-31)
 

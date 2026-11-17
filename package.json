@@ -25,7 +25,8 @@
     "secrets:check": "node scripts/secret-scan/check-secrets.mjs --history",
     "audit:prod": "npm audit --audit-level=high",
     "verify": "npm run format:check && npm run lint && npm run check && npm run test && npm run build && node scripts/check-build-output.mjs && npm run test:e2e && npm run budget:check && npm run photos:check && npm run secrets:check && npm run licenses:check && npm run audit:prod",
-    "launch:check": "node scripts/check-launch-ready.mjs"
+    "launch:check": "node scripts/check-launch-ready.mjs",
+    "launch:live": "node scripts/launch/check-live.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",

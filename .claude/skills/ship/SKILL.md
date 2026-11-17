@@ -65,7 +65,7 @@ usually while the machine is busy): that is a known fault of the test run, not a
 alone (`npx playwright test --last-failed --workers=2`), run the steps after the browser tests one by one (`budget:check`,
 `photos:check`, `secrets:check`, `licenses:check`, `audit:prod`), and say plainly in the hand-off: how many failed, that they
 are timeouts, that they passed alone, and that there was no single green run of the whole chain. Any other kind of failure, or
-a test that fails alone too, is a real red: fix it. `test-results/report.json` lists every test of the last run with its duration and error.
+a test that fails alone too, is a real red: fix it. `test-results/report.json` lists every test of the last run with its start, duration and error: several tests that began in the same second and all hung for a long time are a stall of the machine, not a fault of those tests (say so in the hand-off).
 
 ## 4a. Final Git check
 

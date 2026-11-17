@@ -35,6 +35,9 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
   file, place and risk, never the value. Inside `verify`. `secret-scan:allow` on a line marks a reviewed false positive.
 - `npm run licenses:check`: fails on a package whose licence is not on the allow-list (iron rule C4).
 - `npm run launch:check`: fails while any placeholder or leftover sample text is left (expected until launch).
+- `npm run launch:live -- [https://www.host] [--preview <address>]`: by hand, after a deployment: asks the live site if HTTP and the bare domain
+  are redirected, the headers are those of `public/_headers`, robots and the sitemap answer, and a preview address is `noindex`
+  (`docs/launch.md`; not in `verify`, it needs the network).
 
 ## Git flow (non-negotiable; the full standard is `docs/standards.md`, section 3)
 
@@ -221,4 +224,5 @@ One page at a time, each in full before the next (the user's method from the bot
 - `docs/compliance.md`: the iron rules merged with the client's checklist; status, how met, how checked, where scheduled.
 - `docs/new-apartment-prompt.md`: the prompt to fill in and send to add an apartment (name, photo folder, texts, main and secondary photos); its standing rule: every real apartment lists Wi-Fi, and a jacuzzi when it has one (the user, 2026-11-03).
 - `docs/owner-requests.md`: the plain-Hebrew document for the owner (what is still missing from him, with a place for each answer, the lawyer's and accountant's list, what to send for each new apartment); a Word copy for sending is made from it and kept in the git-ignored `צימרים/`. A change to what the owner must give updates it in the same change.
+- `docs/launch.md`: the launch runbook (domain, host, redirects, HTTPS, the checks, the rollback); `docs/screen-reader-check.md`: the screen-reader pass before launch.
 - `docs/roadmap.md`: the stages, "Where we stopped", "Committed next", and the owner's and lawyer's list before launch.

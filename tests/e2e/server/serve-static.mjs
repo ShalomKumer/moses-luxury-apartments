@@ -3,7 +3,7 @@
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, resolve, sep } from 'node:path';
-import { headersFor, parseHeadersFile } from './headers-file.mjs';
+import { headersFor, parseHeadersFile } from '../../../scripts/headers/headers-file.mjs';
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -59,7 +59,7 @@ export function createStaticServer({ root, headersText }) {
       return;
     }
     const file = pathname.includes('\0') ? null : await resolveFile(base, pathname);
-    const headers = headersFor(rules, pathname);
+    const headers = headersFor(rules, pathname, request.headers.host);
     if (!file) {
       const missing = join(base, '404.html');
       const body = await readFile(missing).catch(() => Buffer.from('Not found'));

@@ -77,6 +77,9 @@ Every exported function carries a one-line comment saying what it does.
 │   │                               #   npm run brand:build -- <the owner's logo file>, writes public/brand/); build-share-image (entry:
 │   │                               #   npm run brand:share, the 1200 x 630 sharing card from the logo, public/brand/share.jpg, E2)
 │   ├── budget/                     # the performance budget: limits, page-weight + pick-candidate (pure; a srcset counts at what a phone loads), check-budget (entry)
+│   ├── headers/                    # headers-file (pure): reads a `_headers` file and says which headers a request gets, by path and by host; used by the test server and by launch/
+│   ├── launch/                     # the live site (S2, S18, E3, E4): live-checks (pure: the answers in, the findings out), read-arguments (pure: the command line), live-requests (pure: which address each check asks), check-live (entry:
+│   │                               #   npm run launch:live -- [https://www.host] [--preview <address>], run by hand after a deployment, never in verify)
 │   ├── fonts/                      # the web fonts (C1): charset (Hebrew + Latin), fonts (the three), subset-fonts (entry:
 │   │                               #   npm run fonts:build -- <folder of the full .ttf files>, writes public/fonts/)
 │   └── photos/                     # the photo pipeline (C3, L8): limits, plan-variants, encode (sharp), output-path,
@@ -85,7 +88,7 @@ Every exported function carries a one-line comment saying what it does.
 ├── tests/
 │   ├── unit/                       # domain/ and server/, scripts/, e2e/ (the test server)
 │   ├── e2e/                        # browser tests (Playwright + axe) over dist/client, run by `npm run test:e2e`:
-│   │   ├── server/                 #   a read-only static server that sends the real `_headers` (headers-file, serve-static, start)
+│   │   ├── server/                 #   a read-only static server that sends the real `_headers` (serve-static, start; the parser is `scripts/headers/`)
 │   │   ├── helpers/                #   built-pages, run-axe, page-problems, focus-obscured (2.4.11)
 │   │   └── *.spec.ts               #   pages (every page x 2 widths), gallery (keyboard), gallery-frame (the viewer keeps its size), back-to-top, language-offer, logo, checkers (the checks fail on bad pages)
 │   └── policy/                     # rules as tests: layers, no-third-party + no raw HTML, headers, contrast,
