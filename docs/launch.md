@@ -15,11 +15,24 @@ section "What this guide could not test" lists what the first deployment must co
 ## Before pressing go
 
 - `npm run launch:check` is green (the owner's business details, the photographers' names, the lawyer's texts, the accessibility coordinator, the
-  check-in and check-out times). It is red until they arrive; **do not connect the domain while it is red**, or the site goes public with
-  placeholders and drafts.
+  check-in and check-out times). It is red until they arrive. The runbook's rule was not to connect the domain while it is red; **the user overrode it on 2026-11-17** (see "Launch decision"), so the site goes public with
+  placeholders and drafts, and this list is what is left.
 - The screen-reader pass (`docs/screen-reader-check.md`) is done and its findings are fixed.
 - The release PR from `dev` to `main` is merged by the user. Production is the `main` branch; every other branch is a preview.
 - Improvements still wanted are merged into `dev` first. After the launch they go the same way: `dev`, a PR, a release PR to `main`.
+
+## Launch decision (2026-11-17)
+
+The runbook said: do not connect the domain while `npm run launch:check` is red. **The user decided to launch now, open to search engines, as the site is**, so that the client sees it on the
+real address and corrects it there (the owner's details and texts, the lawyer's texts, the photographers, the screen-reader pass, the improvements list and `feature/directions` all follow the launch).
+Claude stated what a visitor and a search engine will see, and the user chose to go on. What is live, and not yet right:
+
+- the business details are dashed boxes that start with "To fill:" (the legal name, the business number, the address, one more point on the home page), in Hebrew and English;
+- the privacy policy, the terms, the cancellation policy and the accessibility statement are marked as drafts, with their own places to fill (L1, L2, L11 stay open);
+- most photos have no confirmed creator (C3): a photo whose rights holder objects is taken down at once, and the owner is asked in `docs/owner-requests.md`;
+- the screen-reader pass (A5) is not done, and `feature/directions` (E5, structured data) is not built.
+
+Each of these is a row in `docs/compliance.md` that stays open and is scheduled in `docs/roadmap.md`. `launch:check` stays red and is **not** part of `verify`, so nothing breaks; it is the list of what is left.
 
 ## Steps
 
@@ -53,6 +66,9 @@ curl -sI https://ahuzot-moses.<account>.workers.dev/ | grep -i x-robots-tag
 It must print `x-robots-tag: noindex` (the rule at the end of `public/_headers`; the test `tests/policy/headers.test.ts` pins how it is written, it cannot prove the host honours it). An alternative to the
 manual deploy is Workers Builds (a git connection, build command `npx astro build`, deploy command `npx wrangler deploy`, production branch `main`).
 
+**Before step 4, deploy production from `main`.** The first deployment above was built from `dev` and is only a preview. Once the user has merged the release PR (`dev` into `main`), run
+`git checkout main && git pull --ff-only`, then `npm run verify`, `npx astro build` and `npx wrangler deploy` again, so the version the domain serves is `main`.
+
 ### 4. Connect the domain
 
 In the Cloudflare dashboard: the Worker, Settings, Domains and routes, Add, **Custom domain**: `www.mosesluxuryapartments.com`. Cloudflare creates the
@@ -80,6 +96,11 @@ domain goes to `www` keeping the path and the query, the home page answers with 
 `robots.txt` names the sitemap on a `Sitemap:` line and does not shut out every crawler, the sitemap lists the home page, and the preview address answers 200 and is `noindex`.
 A relative `Location` is read against the address that was asked, as a browser does. Every line must be `ok`. It proves only these checks: it is not a security audit,
 and the HTTPS settings of the dashboard (the mode, the minimum TLS version) are not among them.
+
+**Also by hand, once the domain answers:** a proxied zone can add things to a page that the build never had. Compare the live home page with the preview address: search the body for
+`cdn-cgi`, `email-protection`, `cloudflareinsights` and `rocket-loader`, and look at the response headers for a `Set-Cookie` (for example `__cf_bm`). Email Address Obfuscation or a similar
+setting could rewrite the booking links or add a script or a cookie (iron rules 2 and 6); whatever shows up is switched off in the dashboard, and the date is written here. If `live-indexable`
+fails in `launch:live`, the `noindex` rule reached the live domain and the site is invisible to Google: stop and fix `public/_headers`.
 
 ### 8. Search Console
 
