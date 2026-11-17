@@ -9,7 +9,7 @@ Every exported function carries a one-line comment saying what it does.
 ```
 /
 ├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
-├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, fonts:build, brand:build, budget:check, secrets:check, licenses:check, launch:check
+├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, fonts:build, brand:build, budget:check, secrets:check, licenses:check, audit:prod, launch:check
 ├── scripts/secret-scan/            # the secret scan (S19): patterns, scan-text, forbidden-files, list-sources,
 │                                   #   parse-history + scan-history, report, reviewed-findings, check-secrets (entry)
 ├── .prettierrc.json, eslint.config.mjs   # formatting (code only) and lint (with the a11y template rules), both in verify
@@ -70,6 +70,8 @@ Every exported function carries a one-line comment saying what it does.
 │   └── pages/        index, cabins/[id], [legal], 404, and the same three under en/; sitemap.xml.ts, robots.txt.ts     # ROUTES: thin files over components/pages
 │
 ├── scripts/
+│   ├── audit/                      # the dependency audit gate (S14): audit-gate (pure: what fails in `npm audit --json`), reviewed-advisories
+│   │                               #   (accepted advisories, each with a reason and a date), check-audit (entry: npm run audit:prod)
 │   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
 │   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7); canonical, hreflang, sharing tags, sitemap, robots, 404 noindex (E2-E4, E6)
 │   ├── check-launch-ready.mjs      # no placeholder or leftover sample text left (L11, C3)

@@ -92,17 +92,33 @@ Add the domain as a property (a DNS `TXT` record verifies it), then submit `http
 - **The domain must come down:** remove the custom domain from the Worker; the preview address stays up and stays `noindex`.
 - Try the rollback once before the launch, on the preview address (S18).
 
+## The first deployment (2026-11-17)
+
+Done by the user with Claude, to the host's preview address only; the domain is **not** connected.
+
+- Worker `ahuzot-moses`, preview address `https://ahuzot-moses.ahuzot-moses.workers.dev` (the account's `workers.dev` name is `ahuzot-moses`). Built from `dev` after `npm run verify`
+  (every step green; one browser test stalled once at the end of a run and passed alone; `audit:prod` was red for an advisory with no fix, since handled by the reviewed list, S14).
+- `npx wrangler deploy` uploaded 456 files in about three minutes; later deployments upload only what changed.
+- A new `workers.dev` name may not resolve on the local DNS resolver for a while. Ask a public resolver for the address (`nslookup <host> 1.1.1.1`) and pin it
+  (`curl --resolve <host>:443:<ip> https://<host>/`) until it does; `npm run launch:live` uses the local resolver and fails with `ENOTFOUND` or a timeout until then.
+
+### Accounts and ownership (decide before launch)
+
+- The Cloudflare account is **the user's own**; the domain `mosesluxuryapartments.com` was bought there (2026-11-17, USD 11.17 a year, renewing at the same price,
+  auto-renewal on) with **the client as registrant**: the registrant's email must confirm the registration (the client did so on 2026-11-17), or the registrar may suspend the domain.
+- So the user controls DNS, the Worker and the renewal payment, and the client is the registrant of record. Before the launch, decide with the client: move the account to the
+  client, or add him as an administrator of this one. The runbook's first rule (accounts belong to the client's business) is **not yet met**; note the decision here.
+
 ## What this guide could not test
 
-The first deployment must confirm these, and this file is corrected with what is found:
+What the first deployment settled, and what it did not:
 
-1. **The `noindex` rule for the preview addresses** (`https://:version.:subdomain.workers.dev/*` in `public/_headers`). It is the form the host documents for
-   `workers.dev` (placeholders, each one label of the address; a pattern may hold only one `*`, so the first draft with two was replaced after a review). Step 3's `curl` is
-   the proof that it works. If it is not sent, write the exact preview address in `public/_headers` (and keep the tests) or switch off the preview addresses in the dashboard.
-   There is no rule for `pages.dev`: the site is not deployed to Pages.
-2. **The generated Worker config.** The build writes `dist/client/wrangler.json` with the name `ahuzot-moses`, and a `SESSION` KV binding that the adapter adds
-   by default and the site never uses. Watch what `wrangler deploy` creates in the account; if it makes an unused KV namespace, remove the binding.
-3. **The preview addresses of other branches** (version and preview URLs under `workers.dev`) are covered by the same rule. Confirm with one `curl`.
-4. **Redirect rules and HTTPS settings** are dashboard settings, not code: they are not in git and `launch:live` is what checks them. Write down the date of each change here.
+1. **The `noindex` rule for the preview addresses: confirmed 2026-11-17.** The home page, `/en/` and the 404 page of the preview address answer `x-robots-tag: noindex`; the home page also
+   sends the headers of `public/_headers` (HSTS, the content security policy, `x-frame-options`, the referrer and permissions policies), and `robots.txt` answers. The pattern is
+   `https://:version.:subdomain.workers.dev/*` (placeholders, each one label of the address; a pattern may hold only one `*`). There is no rule for `pages.dev`: the site is not deployed to Pages.
+2. **The generated Worker config: checked.** The build writes `dist/client/wrangler.json` with the name `ahuzot-moses` and a `SESSION` KV binding that the adapter adds by default and
+   the site never uses. `wrangler deploy` printed the binding but `wrangler kv namespace list` shows **no namespace**: nothing was created and nothing is charged. The unused binding stays.
+3. **The preview addresses of other branches** (version and preview URLs under `workers.dev`) are covered by the same rule but **not tested**: only the one Worker version was deployed. Confirm with one `curl` the first time a version address is opened.
+4. **Redirect rules and HTTPS settings** are dashboard settings, not code: they are not in git, and `launch:live` is what checks them. **Not done yet**, because the domain is not connected. Write down the date of each change here.
 
 Iron rules: S2 (HTTPS and HSTS), S18 (environments, rollback), E3 and E4 (canonical address, sitemap, robots).
