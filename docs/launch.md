@@ -130,6 +130,25 @@ Done by the user with Claude, to the host's preview address only; the domain is 
 - So the user controls DNS, the Worker and the renewal payment, and the client is the registrant of record. Before the launch, decide with the client: move the account to the
   client, or add him as an administrator of this one. The runbook's first rule (accounts belong to the client's business) is **not yet met**; note the decision here.
 
+## Dashboard settings log
+
+Settings that live in the Cloudflare dashboard and not in git. One line per change, with its date; add to it whenever one changes.
+
+**2026-11-17, the go-live** (done by the user in the dashboard, with Claude):
+
+- Production deployed from `main` (`04d1466`, release PR #54): Worker version `774ea829`, after `npm run verify` was green on `main`.
+- Workers and Pages, `ahuzot-moses`, Domains: custom domain **`www.mosesluxuryapartments.com`** added for Production (status Active). The `workers.dev` addresses stay on and stay `noindex`.
+- DNS: an `A` record for `@` (`192.0.2.1`, Proxied; a placeholder address that only has to exist so that a request reaches Cloudflare); `www` is the Worker's own record.
+- Redirect Rules, rule **`bare to www`**: Request URL `https://mosesluxuryapartments.com/*`, Target URL `https://www.mosesluxuryapartments.com/${1}`, status 301, **Preserve query string** on.
+- SSL/TLS: encryption mode **Full (strict)**; Edge Certificates: **Always Use HTTPS** on, **Minimum TLS Version 1.2**; **HSTS left off** in the dashboard (the site sends it from `public/_headers`; a second one would be sent twice).
+
+**Checked the same day:** `npm run launch:live -- --preview https://ahuzot-moses.ahuzot-moses.workers.dev` passed 11 checks (HTTP to HTTPS 301, the home page, every header of `public/_headers`, `live-indexable`, `robots.txt`, the sitemap). Two checks failed
+only because the local DNS resolver did not yet know the new names (`bare-to-www`: ENOTFOUND; `preview-noindex`: timeout); both were checked by hand with `curl --resolve` against an address from `nslookup <host> 1.1.1.1`:
+the bare domain answers 301 to `www` and keeps the path and the query string (`/cabins/x?b=2&c=3`), and the preview address answers `x-robots-tag: noindex`. The live home page carries no `cdn-cgi`, `email-protection`,
+`cloudflareinsights` or `rocket-loader`, and no `Set-Cookie`. `http://` on the bare domain makes two hops (HTTPS on the bare domain, then `www`); both are 301.
+
+**Not done yet:** Search Console (step 8), the `wrangler rollback` trial (S18), the screen-reader pass (A5), and the decision on whose Cloudflare account this is.
+
 ## What this guide could not test
 
 What the first deployment settled, and what it did not:
@@ -140,6 +159,6 @@ What the first deployment settled, and what it did not:
 2. **The generated Worker config: checked.** The build writes `dist/client/wrangler.json` with the name `ahuzot-moses` and a `SESSION` KV binding that the adapter adds by default and
    the site never uses. `wrangler deploy` printed the binding but `wrangler kv namespace list` shows **no namespace**: nothing was created and nothing is charged. The unused binding stays.
 3. **The preview addresses of other branches** (version and preview URLs under `workers.dev`) are covered by the same rule but **not tested**: only the one Worker version was deployed. Confirm with one `curl` the first time a version address is opened.
-4. **Redirect rules and HTTPS settings** are dashboard settings, not code: they are not in git, and `launch:live` is what checks them. **Not done yet**, because the domain is not connected. Write down the date of each change here.
+4. **Redirect rules and HTTPS settings** are dashboard settings, not code: they are not in git, and `launch:live` is what checks them. **Done on 2026-11-17** (see "Dashboard settings log"); write down the date of each later change there.
 
 Iron rules: S2 (HTTPS and HSTS), S18 (environments, rollback), E3 and E4 (canonical address, sitemap, robots).
