@@ -1,5 +1,7 @@
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { headersFor, parseHeadersFile } from '../../scripts/headers/headers-file.mjs';
+import { SITE_URL } from '../../src/config/site-url';
 import { listFiles, readText, ROOT } from './helpers/source-files';
 
 /** Reads the headers file's rules for "/*" as a map of lower-case header name to value. */
@@ -53,5 +55,44 @@ describe('security headers (S2, S10)', () => {
     const corsAnywhere = listFiles('src', ['.ts']).filter((file) => setsCors.test(readText(file)));
     expect(corsAnywhere).toEqual([]);
     expect(headers.has('access-control-allow-origin')).toBe(false);
+  });
+});
+
+describe("the host's own addresses stay out of search engines (S18)", () => {
+  /** Every rule of the headers file: its pattern and the lower-case names of its headers. */
+  const rules = readText(join(ROOT, 'public/_headers'))
+    .split(/\r?\n/)
+    .reduce<{ pattern: string; names: string[] }[]>((found, line) => {
+      if (!line.trim() || line.trim().startsWith('#')) return found;
+      if (!line.startsWith(' ')) found.push({ pattern: line.trim(), names: [] });
+      else found.at(-1)?.names.push(line.trim().split(':')[0].toLowerCase());
+      return found;
+    }, []);
+  const noindexed = rules.filter((rule) => rule.names.includes('x-robots-tag')).map((rule) => rule.pattern);
+
+  it('marks the workers.dev addresses of the host noindex, in the form the host documents', () => {
+    expect(noindexed).toEqual(['https://:version.:subdomain.workers.dev/*']);
+  });
+
+  it('writes no pattern with more than one splat, which the host does not accept', () => {
+    const splats = rules.filter((rule) => rule.pattern.split('*').length > 2).map((rule) => rule.pattern);
+    expect(splats).toEqual([]);
+  });
+
+  it('never marks the whole site, so the live domain stays open to search engines', () => {
+    expect(siteHeaders().has('x-robots-tag')).toBe(false);
+  });
+
+  it('gives noindex to a preview address and never to the live domain or the test server, by the real file', () => {
+    const real = parseHeadersFile(readText(join(ROOT, 'public/_headers')));
+    const liveHost = new URL(SITE_URL).host;
+    expect(headersFor(real, '/', 'ahuzot-moses.some-account.workers.dev')).toHaveProperty('X-Robots-Tag', 'noindex');
+    expect(headersFor(real, '/en/', 'abc12345-ahuzot-moses.some-account.workers.dev')).toHaveProperty(
+      'X-Robots-Tag',
+      'noindex',
+    );
+    expect(headersFor(real, '/', liveHost)).not.toHaveProperty('X-Robots-Tag');
+    expect(headersFor(real, '/', liveHost.replace(/^www[.]/, ''))).not.toHaveProperty('X-Robots-Tag');
+    expect(headersFor(real, '/', '127.0.0.1:4322')).not.toHaveProperty('X-Robots-Tag');
   });
 });
