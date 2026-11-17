@@ -1,0 +1,24 @@
+---
+/**
+ * The name of the guest, for the message only: one optional line. What is typed goes into the message that opens in
+ * WhatsApp or the mail app and nowhere else: it is not stored, not sent to the site and not kept in the browser (L3, L5).
+ * The browser is asked not to remember it either (`autocomplete="off"`).
+ */
+import { MAX_NAME_LENGTH } from '@domain/booking/guest-name';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  /** Makes the field id unique on the page. */
+  idPrefix: string;
+}
+
+const { locale, idPrefix } = Astro.props;
+const t = getMessages(locale).home.request;
+---
+
+<div class="field request__name">
+  <label for={`${idPrefix}-name`}>{t.name}</label>
+  <input id={`${idPrefix}-name`} type="text" autocomplete="off" maxlength={MAX_NAME_LENGTH} data-request-name />
+</div>

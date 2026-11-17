@@ -1,0 +1,123 @@
+# Code structure
+
+Set on 2026-10-31, updated the same day after availability was removed from the site (`docs/architecture.md`). Modular and
+component-based: one responsibility per file, small functions, UI, business logic and API calls in separate layers.
+Every exported function carries a one-line comment saying what it does.
+
+## Folder tree (as it is now)
+
+```
+/
+├── astro.config.mjs                # static pages (Cloudflare adapter); no env variables today
+├── package.json                    # scripts: dev, build, test, format, lint, verify, test:e2e, photos:add, photos:check, fonts:build, brand:build, budget:check, secrets:check, licenses:check, audit:prod, launch:check
+├── scripts/secret-scan/            # the secret scan (S19): patterns, scan-text, forbidden-files, list-sources,
+│                                   #   parse-history + scan-history, report, reviewed-findings, check-secrets (entry)
+├── .prettierrc.json, eslint.config.mjs   # formatting (code only) and lint (with the a11y template rules), both in verify
+├── playwright.config.ts            # the browser tests: desktop 1280 px and phone 375 px, the test server
+├── tsconfig.json                   # strict; path aliases per layer (@domain, @server, ...)
+├── vitest.config.ts
+├── .env.example                    # empty today (no variables)
+│
+├── public/
+│   ├── _headers                    # security headers: CSP, HSTS, nosniff, frame (S2, S10)
+│   ├── brand/                      # the owner's logo, cropped (docs/design/brand.md), and share.jpg, the sharing image (E2)
+│   └── photos/<cabin-id>/          # cabin photos; source and rights in src/content/photos.md (C3)
+│                                   #   (robots.txt and sitemap.xml are not here: they are built from src/pages, E4)
+│
+├── src/
+│   ├── content.config.ts           # collection schemas; photo alt is required (A2)
+│   ├── content/                    # data, no logic: cabins/<id>.md (both languages in one file), legal/{he,en}/<page>.md, photos.md
+│   ├── i18n/                       # PURE: locales (he, en, direction), paths (the address of a page in a language), pick,
+│   │   │                           #   get-messages, messages/{he,en,types}.ts (every text of the site, same keys)
+│   ├── config/
+│   │   ├── site.ts                 # brand, business details, phones, email, logo, sharing image (L11)
+│   │   ├── site-url.ts             # the live site's address, the one place it is written (astro.config `site`, E2-E4): https://www.mosesluxuryapartments.com
+│   │   └── availability.ts         # limits of the kept availability service (not wired)
+│   │
+│   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
+│   │   ├── dates/                  # date-key, date-range, format-date, month, calendar-month (the weeks of a month, what can be chosen), range-selection (first click, second click), day-navigation (the keys), flex-days
+│   │   ├── scroll/                 # back-to-top (how far the page must be scrolled before the button shows)
+│   │   ├── language/               # suggest-language (which language to offer from the browser's list), external-entry (did the visitor arrive from outside the site)
+│   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded), highlights (the badges: kinds, order, the words each needs in the text, the label with a count)
+│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, tel-link, stay-dates, guests, party (couples, children and the total within the apartment's guests), guest-name (the name made safe for the message)
+│   │   ├── gallery/                # gallery-shape (how many photos the grid shows), swipe (what a finger's movement across the viewer means)
+│   │   ├── photos/                 # photo-sources (the src, srcset, smallest and largest file of a photo from its widths)
+│   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
+│   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
+│   │
+│   ├── markdown/                   # BUILD TIME: Markdown page plugins for Sätteri (Astro's processor): fill-markers-plugin
+│   │                               #   (a part to fill becomes a labelled box), page-structure-plugin (focusable headings, tables in
+│   │                               #   a named scroll region); imports domain/ only (and Sätteri's types)
+│   │
+│   ├── server/                     # KEPT, UNWIRED: calendar source, fetch, cache, service (for a future admin view)
+│   │
+│   │   ├── seo/                    # absolute-url (a page's path + the site address), share-meta (the Open Graph and Twitter tags), sitemap-xml, robots-txt (E2-E4, E6)
+│   ├── components/                 # UI ONLY: markup, styles, DOM events; logic comes from domain/
+│   │   ├── seo/      SeoHead (canonical, hreflang, sharing tags, noindex), language-links.ts (the absolute hreflang list), site-pages.ts (every page's path), seo-documents.ts (sitemap and robots text)
+│   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter, BackToTop + back-to-top.ts (the corner button that returns to the top), LanguageOffer + language-offer.ts (the thin "also in English / בעברית" bar)
+│   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
+│   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, CabinHighlights + highlight-icons.ts (the badges and their icons), JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments (the home page's folded rows)
+│   │   │             #   (the rows are shared by the home page and the apartment pages)
+│   │   ├── legal/    LegalHead, LegalToc (sticky beside the text, folded <details> on a phone), DraftNotice,
+│   │   │             #   CoordinatorCard (the accessibility coordinator, from config/site.ts)
+│   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
+│   │   ├── booking/  BookingRequest + request-controller.ts (the home page's request with an apartment choice, and
+│   │   │             #   the apartment page's with the apartment fixed), BookingLinks + booking-links.ts,
+│   │   │             #   DateRangePicker + FlexChips + calendar-render.ts + picker-controller.ts (the one date picker: a calendar that only fills the message), BookingGuests + GuestCounter (couples, children, total), BookingName
+│   │   └── ui/       Prose, UpdatedDate, HeartRule, Icon (+ icons/: the path data of the three icons and their licences)
+│   │
+│   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css
+│   └── pages/        index, cabins/[id], [legal], 404, and the same three under en/; sitemap.xml.ts, robots.txt.ts     # ROUTES: thin files over components/pages
+│
+├── scripts/
+│   ├── audit/                      # the dependency audit gate (S14): audit-gate (pure: what fails in `npm audit --json`), reviewed-advisories
+│   │                               #   (accepted advisories, each with a reason and a date), check-audit (entry: npm run audit:prod)
+│   ├── check-licenses.mjs          # licence allow-list over every installed package (C4)
+│   ├── check-build-output.mjs      # no source maps, no secret, no foreign script in dist/ (S4, S13, L7); canonical, hreflang, sharing tags, sitemap, robots, 404 noindex (E2-E4, E6)
+│   ├── check-launch-ready.mjs      # no placeholder or leftover sample text left (L11, C3)
+│   ├── brand/                      # the logo files (C3): ink-bounds (pure: where the drawing is on the page), build-logo (entry:
+│   │                               #   npm run brand:build -- <the owner's logo file>, writes public/brand/); build-share-image (entry:
+│   │                               #   npm run brand:share, the 1200 x 630 sharing card from the logo, public/brand/share.jpg, E2)
+│   ├── budget/                     # the performance budget: limits, page-weight + pick-candidate (pure; a srcset counts at what a phone loads), check-budget (entry)
+│   ├── headers/                    # headers-file (pure): reads a `_headers` file and says which headers a request gets, by path and by host; used by the test server and by launch/
+│   ├── launch/                     # the live site (S2, S18, E3, E4): live-checks (pure: the answers in, the findings out), read-arguments (pure: the command line), live-requests (pure: which address each check asks), check-live (entry:
+│   │                               #   npm run launch:live -- [https://www.host] [--preview <address>], run by hand after a deployment, never in verify)
+│   ├── fonts/                      # the web fonts (C1): charset (Hebrew + Latin), fonts (the three), subset-fonts (entry:
+│   │                               #   npm run fonts:build -- <folder of the full .ttf files>, writes public/fonts/)
+│   └── photos/                     # the photo pipeline (C3, L8): limits, plan-variants, encode (sharp), output-path,
+│                                   #   add-photo (entry); webp-chunks + photo-rules + check-photos (the check)
+│
+├── tests/
+│   ├── unit/                       # domain/ and server/, scripts/, e2e/ (the test server)
+│   ├── e2e/                        # browser tests (Playwright + axe) over dist/client, run by `npm run test:e2e`:
+│   │   ├── server/                 #   a read-only static server that sends the real `_headers` (serve-static, start; the parser is `scripts/headers/`)
+│   │   ├── helpers/                #   built-pages, run-axe, page-problems, focus-obscured (2.4.11)
+│   │   └── *.spec.ts               #   pages (every page x 2 widths), gallery (keyboard), gallery-frame (the viewer keeps its size), back-to-top, language-offer, logo, checkers (the checks fail on bad pages)
+│   └── policy/                     # rules as tests: layers, no-third-party + no raw HTML, headers, contrast,
+│                                   #   no-public-availability
+└── docs/                           # architecture, structure, compliance, roadmap, design/, archive/
+```
+
+## Layer rules
+
+Who may import whom. `tests/policy/layers.test.ts` reads every import and fails on a breach.
+
+| Layer          | May import                                                | Never                                            |
+| -------------- | --------------------------------------------------------- | ------------------------------------------------ |
+| `domain/`      | `domain/`, `config/`                                      | `server/`, `components/`, any I/O                |
+| `server/`      | `domain/`, `config/`                                      | `components/`, `pages/`                          |
+| `markdown/`    | `domain/`, packages (Sätteri's types)                     | `components/`, `pages/`, `server/`, `i18n/`      |
+| `components/`  | `domain/`, `config/`, `i18n/`, `components/`              | `server/`, the availability code                 |
+| `pages/`       | `components/`, `config/`, `i18n/`, content                | `server/`, the availability code, API routes     |
+| `i18n/`        | itself only                                               | every other layer                                |
+
+`fetch` appears only in `server/` (and in a future `api-client/`). A browser-to-API layer (`api-client/`) comes back
+only with a feature that needs one; its rule then is: it imports `domain/` only.
+
+## File rules
+
+- One responsibility per file; a file that needs "and" to describe it is split.
+- Functions small and single-purpose; a function over ~30 lines is a sign to split it.
+- Each exported function has a one-line comment (`/** ... */`) saying what it does, not how.
+- English names; kebab-case for `.ts` files, PascalCase for `.astro` components.
+- Pure functions in `domain/` and services in `server/` have unit tests in `tests/unit/`.

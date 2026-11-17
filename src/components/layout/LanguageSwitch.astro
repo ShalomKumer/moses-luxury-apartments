@@ -1,0 +1,48 @@
+---
+/**
+ * A link to the same page in the other language, written in that language and marked with its `lang` and `hreflang`.
+ * It is a plain link: no cookie, no stored choice and no redirect by the browser's language (L3, L4).
+ */
+import { getMessages } from '@i18n/get-messages';
+import { otherLocale, type Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+
+interface Props {
+  locale: Locale;
+  /** The page's own address without a language. */
+  path: string;
+}
+
+const { locale, path } = Astro.props;
+const target = otherLocale(locale);
+const { language } = getMessages(target);
+---
+
+<a
+  class="language-switch"
+  href={localizedPath(path, target)}
+  lang={language.code}
+  hreflang={language.code}
+  data-lang-switch
+>
+  {language.name}
+</a>
+
+<style>
+  .language-switch {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target-size);
+    padding-inline: var(--space-4);
+    border: 2px solid var(--color-text);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .language-switch:hover {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+</style>

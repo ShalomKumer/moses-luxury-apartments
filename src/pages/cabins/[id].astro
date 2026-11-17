@@ -1,0 +1,18 @@
+---
+/** One Hebrew page per cabin file, at "/cabins/<id>". */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import CabinPage from '@components/pages/CabinPage.astro';
+
+export async function getStaticPaths() {
+  const cabins = await getCollection('cabins');
+  return cabins.map((cabin) => ({ params: { id: cabin.id }, props: { cabin } }));
+}
+
+interface Props {
+  cabin: CollectionEntry<'cabins'>;
+}
+
+const { cabin } = Astro.props;
+---
+
+<CabinPage locale="he" cabin={cabin} />

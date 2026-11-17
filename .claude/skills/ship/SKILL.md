@@ -1,0 +1,122 @@
+---
+name: ship
+description: Finish the current feature branch - secret check, full verify, conventional commit, push, PR link to dev, then hand off for the merge (a "מוזג" button; compact only above 40% context). Use at the end of EVERY feature.
+---
+
+# /ship
+
+Run every step in order. Stop and report on the first failure - a red step is never skipped.
+
+## 1. Right branch
+
+```bash
+git branch --show-current
+```
+
+Must be a `feature/*`, `fix/*`, or `chore/*` branch. On `dev` or `main`: stop - nothing is ever committed there
+directly.
+
+## 2. Nothing sensitive staged
+
+```bash
+git status --porcelain
+git diff --stat
+```
+
+Stop if any of these appear: `.env`, `.env.*` (except `.env.example`), `.dev.vars*`, `node_modules/`, `dist/`,
+`.wrangler/`, `graphify-out/`, or any file that looks like a key or credential dump. Then run the secret scan, which
+reads the project's files, `dist/` and every commit of every branch (row S19; it is also part of `npm run verify`):
+
+```bash
+npm run secrets:check
+```
+
+If it finds a secret, report the **file, the location, the risk level and the fix, without printing the full key**; it
+is revoked and rotated even after it is removed from the code (a deleted file stays in history). A reviewed false
+positive gets `secret-scan:allow` on its line; a finding inside history is listed in
+`scripts/secret-scan/reviewed-findings.mjs` only with the user's yes. The scan knows common formats only: say so, never
+claim "no secrets".
+
+## 3. Review
+
+Run `/code-review` and `/security-review` against this branch's diff (`dev...HEAD` plus any uncommitted changes) -
+every time, no exceptions. Fix what they find, or tell the user why a finding doesn't apply, before moving on.
+
+## 3b. Iron rules
+
+Open `docs/compliance.md` and go through the rows the plan named under "Iron rules touched", plus any row the diff
+touched without the plan saying so (a new cookie or storage key, an external host in a script, link, font or image, a
+new stored field, a new form, a new `<img>` or photo, text shown to other visitors). For each: is it still true, and is
+the row's status and "how it is met" still accurate? Update the row in this same PR when the answer changed, and tell
+the user in the hand-off what moved. If the diff changes `package.json` or the lockfile, `npm run licenses:check`
+(inside `npm run verify`) must pass; a licence it refuses is decided by the user, never added silently.
+
+## 4. Verify
+
+```bash
+npm run verify
+```
+
+Read the tail of the output. If anything is red: fix it, then rerun - do not commit until it is fully green. Report the
+test count to the user.
+
+**If the only red is browser tests that hit the 30 s limit** ("Test timeout of 30000ms exceeded", a different set each run,
+usually while the machine is busy): that is a known fault of the test run, not a failure of the change. Run the failed ones
+alone (`npx playwright test --last-failed --workers=2`), run the steps after the browser tests one by one (`budget:check`,
+`photos:check`, `secrets:check`, `licenses:check`, `audit:prod`), and say plainly in the hand-off: how many failed, that they
+are timeouts, that they passed alone, and that there was no single green run of the whole chain. Any other kind of failure, or
+a test that fails alone too, is a real red: fix it. `test-results/report.json` lists every test of the last run with its start, duration and error: several tests that began in the same second and all hung for a long time are a stall of the machine, not a fault of those tests (say so in the hand-off).
+
+## 4a. Final Git check
+
+```bash
+git status
+git diff --stat
+```
+
+Confirm that exactly the files of this feature changed and nothing unrelated is staged (changes that belong to other work
+stay out of the commit, untouched). Look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) in the changed files.
+
+## 4b. Refresh the graph
+
+```bash
+graphify update .
+```
+
+Code only, no LLM, no cost (`graphify-out/` is git-ignored). If the command is not on the PATH use
+`~/.local/bin/graphify`. Tell the user in the hand-off whether the graph was refreshed; if it could not be, say so.
+
+## 5. Commit
+
+- Stage only the files that belong to this feature.
+- One commit per logical unit, one clear change each (never features, fixes and unrelated docs mixed). Conventional
+  commit in English: `<type>(<scope>): <description>`, types `feat fix refactor docs style test chore perf build ci`.
+  Subject at most 72 characters; the body explains the _why_ when it is not obvious. Never commit code that is not
+  verified: `npm run verify` is green first.
+- End the message with the attribution line required by the session.
+
+## 6. Push and hand off
+
+```bash
+git push -u origin $(git branch --show-current)
+git log --oneline -1
+```
+
+Then reply in Hebrew with exactly, in this order (the PR link is last, so the user never scrolls up to find it):
+
+1. What shipped (1-3 lines) and the test count; the files changed and what changed in each, the new files, and the
+   current Git state.
+2. The stage report (`CLAUDE.md`, "Working style"): the open stage, what was done, what is left, the percent.
+3. **Remaining risks, requirements not yet implemented, and settings that need manual intervention** (or "none"), never
+   a claim that the system is fully secure (`docs/standards.md`, section 7).
+4. The text to paste into the PR: what changed and why; the main files and components; the tests run; database or
+   configuration changes (or "none"); the security implications (or "none"). Squash merge is preferred; the PR title is the
+   conventional commit.
+5. The hand-off, last: open the PR and merge it into `dev`, then press the "מוזג" button (or type it) so the merge can be
+   verified. The button is offered with `wrap_up` (`actions: [{label: "מוזג"}]`); it only sends the word.
+6. The PR link, as the very last line: `<repo>/compare/dev...<branch>?expand=1` (base is **dev**, never main).
+
+Do not start any new work until the user confirms the merge. After "מוזג": verify the merge (fetch, `dev` tip, the branch
+contained in `dev`, an empty diff, `main` untouched, a clean tree), read the context with `get_usage`
+(`context.percentUsed`): above 40% tell the user to run `/compact` (it is a user command), at or below 40% add one short
+line with the percent and no compact. Then always finish with "מה הלאה": the stage report and the menu, without being asked.

@@ -1,0 +1,147 @@
+---
+/**
+ * One apartment in one language, the approved layout (docs/design/apartment.md): its photos, the details beside a
+ * booking request that stays in view, and the other apartments. It shows no availability.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BookingRequest from '@components/booking/BookingRequest.astro';
+import ApartmentRows from '@components/cabin/ApartmentRows.astro';
+import CabinFacts from '@components/cabin/CabinFacts.astro';
+import CabinGallery from '@components/cabin/CabinGallery.astro';
+import JumpToRequest from '@components/cabin/JumpToRequest.astro';
+import { toPagePhoto } from '@components/cabin/cabin-photo';
+import ContactDetails from '@components/contact/ContactDetails.astro';
+import BaseLayout from '@components/layout/BaseLayout.astro';
+import HeartRule from '@components/ui/HeartRule.astro';
+import Prose from '@components/ui/Prose.astro';
+import { nextApartments } from '@domain/apartments/next-apartments';
+import { splitParagraphs } from '@domain/text/paragraphs';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+import { pick } from '@i18n/pick';
+
+interface Props {
+  cabin: CollectionEntry<'cabins'>;
+  locale: Locale;
+}
+
+const REQUEST_ID = 'request';
+/** How many other apartments the page recommends: the page weighs the same however many apartments the site has. */
+const OTHERS_SHOWN = 3;
+
+const { cabin, locale } = Astro.props;
+const t = getMessages(locale);
+const { maxGuests, bedrooms, bathrooms, highlights } = cabin.data;
+const name = pick(cabin.data.name, locale);
+const summary = pick(cabin.data.summary, locale);
+const paragraphs = splitParagraphs(pick(cabin.data.description, locale));
+const features = cabin.data.features.map((feature) => pick(feature, locale));
+const photos = cabin.data.photos.map((photo) => toPagePhoto(photo, locale));
+const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.data.order);
+const others = nextApartments(cabins, cabin.id, OTHERS_SHOWN);
+---
+
+<BaseLayout locale={locale} path={`/cabins/${cabin.id}`} title={name} description={summary}>
+  <div class="container section cabin">
+    <nav aria-label={t.nav.breadcrumb} class="cabin__back">
+      <a href={`${localizedPath('/', locale)}#cabins`}>{t.nav.allCabins}</a>
+    </nav>
+    <h1>{name}</h1>
+    <p class="cabin__summary">{summary}</p>
+    <CabinGallery locale={locale} name={name} photos={photos} />
+    <div class="cabin__columns">
+      <div class="cabin__details">
+        <section aria-labelledby="about-title">
+          <h2 id="about-title">{t.cabin.about}</h2>
+          <Prose>
+            {paragraphs.map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </Prose>
+        </section>
+        <CabinFacts
+          locale={locale}
+          maxGuests={maxGuests}
+          bedrooms={bedrooms}
+          bathrooms={bathrooms}
+          highlights={highlights}
+          features={features}
+        />
+        <JumpToRequest locale={locale} targetId={REQUEST_ID} />
+      </div>
+      <div class="cabin__aside">
+        <BookingRequest locale={locale} cabins={[cabin]} fixed id={REQUEST_ID} />
+      </div>
+    </div>
+  </div>
+
+  {others.length > 0 && (
+    <section class="section cabin__more" aria-labelledby="more-title">
+      <div class="container">
+        <h2 id="more-title">{t.cabin.more}</h2>
+        <HeartRule />
+        <ApartmentRows cabins={others} locale={locale} />
+        <p class="cabin__all">
+          <a class="button button--secondary" href={`${localizedPath('/', locale)}#cabins`}>
+            {t.nav.allCabins}
+          </a>
+        </p>
+      </div>
+    </section>
+  )}
+  <ContactDetails locale={locale} />
+</BaseLayout>
+
+<style>
+  .cabin__back {
+    margin-bottom: var(--space-4);
+  }
+
+  /* a very long name or word wraps inside the page instead of pushing it sideways */
+  .cabin h1,
+  .cabin__summary {
+    overflow-wrap: anywhere;
+  }
+
+  .cabin__summary {
+    margin-block-end: var(--space-6);
+    font-size: var(--text-lg);
+    color: var(--color-text-muted);
+  }
+
+  .cabin__columns {
+    display: grid;
+    gap: var(--space-8);
+    margin-top: var(--space-8);
+  }
+
+  .cabin__details {
+    display: grid;
+    gap: var(--space-6);
+    align-content: start;
+  }
+
+  .cabin__aside {
+    align-self: start;
+  }
+
+  .cabin__all {
+    margin: var(--space-8) 0 0;
+    text-align: center;
+  }
+
+  @media (min-width: 62rem) {
+    .cabin__columns {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    }
+  }
+
+  /* the card stays in view while the details scroll, but only on a screen tall enough to hold all of it */
+  @media (min-width: 62rem) and (min-height: 48rem) {
+    .cabin__aside {
+      position: sticky;
+      inset-block-start: var(--space-4);
+    }
+  }
+</style>

@@ -1,0 +1,191 @@
+// The apartment page (docs/design/apartment.md), in a real browser: the request names the apartment, the gallery takes
+// its shape from the photo count, "all photos" opens the viewer, the phone's jump button reaches the request, the card
+// stays in view on a wide screen, and nothing sticky hides a focused element. The tests read the Artist's Estate (ten
+// photos, up to fourteen guests); the other photo counts (one, two, three, four) are covered by the unit tests of
+// galleryShape, since every real apartment has ten photos. Update the numbers if its content changes.
+import { expect, test, type Page } from '@playwright/test';
+import { obscuredFocus } from './helpers/focus-obscured';
+import { dayFromNow, openPicker, pickStay } from './helpers/date-picker';
+import { axeViolations } from './helpers/run-axe';
+
+const PAGES = [
+  { base: '/cabins', label: 'Hebrew', position: /1 מתוך 10/ },
+  { base: '/en/cabins', label: 'English', position: /1 of 10/ },
+];
+
+/** The message the WhatsApp link carries, decoded. */
+async function whatsappText(page: Page): Promise<string> {
+  const href = await page.locator('[data-request-bar] [data-booking-whatsapp]').getAttribute('href');
+  return new URL(href ?? '').searchParams.get('text') ?? '';
+}
+
+/** How many of the gallery's photos the grid draws (not hidden). */
+const shownPhotos = (page: Page) => page.locator('.gallery__item:visible').count();
+
+for (const { base, label, position } of PAGES) {
+  test.describe(`apartment page, ${label}`, () => {
+    test('the request names the apartment, has no apartment choice and carries the same message in the preview', async ({
+      page,
+    }) => {
+      await page.goto(`${base}/artist-estate/`);
+      await expect(page.locator('[data-request-unit]')).toHaveCount(0);
+      const name = (await page.locator('h1').textContent())?.trim() ?? '';
+      const text = await whatsappText(page);
+      expect(text).toContain(name);
+      expect(await page.locator('[data-request-message]').textContent()).toBe(text);
+    });
+
+    test('takes no more guests than the apartment', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const guests = page.locator('[data-request-guests]');
+      await guests.fill('14');
+      expect(await guests.inputValue()).toBe('14');
+      await guests.fill('15');
+      expect(await guests.inputValue()).toBe('14');
+      await guests.fill('2');
+      expect(await whatsappText(page)).toContain('2');
+    });
+
+    test('two days chosen in the calendar write the dates and the nights, with no note', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      await pickStay(page, 10, 13);
+      expect(await whatsappText(page)).toMatch(/\d{2}\.\d{2}\.\d{4}.*\d{2}\.\d{2}\.\d{4}/);
+      await expect(page.locator('[data-request-problem]')).toBeHidden();
+    });
+
+    test('a day that has passed cannot be chosen, and the page with the calendar open has no axe violations', async ({
+      page,
+    }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const before = await whatsappText(page);
+      await openPicker(page);
+      const yesterday = page.locator(`[data-picker-months] [data-date="${dayFromNow(-1)}"]`);
+      if ((await yesterday.count()) > 0) await expect(yesterday).toBeDisabled();
+      expect(await whatsappText(page)).toBe(before);
+      expect(await axeViolations(page)).toEqual([]);
+    });
+
+    test('ten photos: the grid shows five (one large, four small) on a wide screen, the first alone on a phone', async ({
+      page,
+      viewport,
+    }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const wide = (viewport?.width ?? 0) >= 768;
+      expect(await shownPhotos(page)).toBe(wide ? 5 : 1);
+      await expect(page.locator('[data-gallery-all]')).toContainText('10');
+      if (wide) {
+        const widths = await page
+          .locator('.gallery__item:visible')
+          .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().width));
+        expect(widths[0]).toBeGreaterThan(widths[1] * 1.5);
+      }
+    });
+
+    test('"all photos" opens the viewer at the first photo and gives focus back to the button on Escape', async ({
+      page,
+    }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const all = page.locator('[data-gallery-all]');
+      await all.focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator('[data-gallery-dialog]')).toBeVisible();
+      await expect(page.locator('[data-gallery-caption]')).toHaveText(position);
+      await page.keyboard.press('Escape');
+      await expect(page.locator('[data-gallery-dialog]')).toBeHidden();
+      await expect(all).toBeFocused();
+    });
+
+    test('the jump button shows on a phone only, and leads to the request', async ({ page, viewport }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const jump = page.locator('.jump a');
+      if ((viewport?.width ?? 0) >= 992) {
+        await expect(jump).toBeHidden();
+        return;
+      }
+      await expect(jump).toBeVisible();
+      await jump.click();
+      await expect(page.locator('#request')).toBeInViewport();
+      await page.keyboard.press('Tab');
+      expect(await page.evaluate(() => document.getElementById('request')?.contains(document.activeElement))).toBe(
+        true,
+      );
+    });
+
+    test('the card stays in view while the details scroll, on a wide and tall screen', async ({ page, viewport }) => {
+      test.skip((viewport?.width ?? 0) < 992, 'the card sits below the details on a phone');
+      await page.setViewportSize({ width: viewport?.width ?? 1280, height: 900 });
+      await page.goto(`${base}/artist-estate/`);
+      // give the details extra length, so the card always has room to travel whatever the description holds
+      await page.locator('.cabin__details').evaluate((node) => {
+        const filler = document.createElement('div');
+        filler.style.height = '1600px';
+        node.append(filler);
+      });
+      const columnsTop = await page
+        .locator('.cabin__columns')
+        .evaluate((node) => node.getBoundingClientRect().top + scrollY);
+      await page.evaluate((y) => window.scrollTo(0, y + 500), columnsTop);
+      const top = await page.locator('#request').evaluate((node) => node.getBoundingClientRect().top);
+      expect(top).toBeGreaterThanOrEqual(0);
+      expect(top).toBeLessThan(80);
+    });
+
+    test('lists the next three apartments and not this one', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
+      await expect(page.locator('.cabin__more a[href*="/cabins/artist-estate"]')).toHaveCount(0);
+      const links = page.locator('.cabin__more .row a.button');
+      for (const [index, id] of ['atzulat-hakikar-b', 'atzulat-hakikar-a', 'tarpat-18'].entries()) {
+        await expect(links.nth(index)).toHaveAttribute('href', new RegExp(`${base}/${id}/?$`));
+      }
+    });
+
+    test('the list wraps to the start, so the last apartment is not left without others', async ({ page }) => {
+      await page.goto(`${base}/tet-zayin-8/`);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
+      await expect(page.locator('.cabin__more a[href*="/cabins/tet-zayin-8"]')).toHaveCount(0);
+      await expect(page.locator('.cabin__more .row a.button').first()).toHaveAttribute(
+        'href',
+        new RegExp(`${base}/artist-estate/?$`),
+      );
+    });
+
+    test('a button leads to the list of all the apartments on the home page', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const all = page.locator('.cabin__all a');
+      await expect(all).toHaveCount(1);
+      await expect(all).toHaveAttribute('href', new RegExp(`${base === '/cabins' ? '/' : '/en/'}#cabins$`));
+      await all.click();
+      await expect(page.locator('#cabins')).toBeVisible();
+      expect(await page.locator('#cabins .row').count()).toBeGreaterThan(3);
+    });
+
+    test('on a phone a row loads the smallest file of its photo', async ({ page, viewport }) => {
+      test.skip((viewport?.width ?? 0) > 480, 'only a phone is given the smallest file');
+      await page.goto(`${base}/artist-estate/`);
+      const photo = page.locator('.cabin__more .row__photo[srcset]').first();
+      await photo.scrollIntoViewIfNeeded();
+      await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.currentSrc)).toMatch(/-640\.webp$/);
+    });
+
+    test('no focused element is hidden behind a stuck bar or card', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      expect(await obscuredFocus(page)).toEqual([]);
+    });
+
+    test('a very long name wraps and the page never scrolls sideways', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      await page.locator('h1').evaluate((node) => {
+        node.textContent = `${'Moses '.repeat(40)}${'x'.repeat(60)}`;
+      });
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+    });
+
+    test('has one h1 and no axe violations', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      await expect(page.locator('h1')).toHaveCount(1);
+      expect(await axeViolations(page)).toEqual([]);
+    });
+  });
+}

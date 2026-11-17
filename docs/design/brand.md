@@ -1,0 +1,88 @@
+# Brand: what the logo dictates
+
+The owner's logo (sent by the user on 2026-10-31, kept as `docs/design/brand/logo-original.jpg`; the logo in use since 2026-11-15 is the file the user sent that day, `docs/design/brand/logo-new-original.jpg`; the one of 2026-11-08, `logo-combined-original.png`, was in use from 2026-11-10 and is kept beside it) sets the style of the
+whole site: the user's rule, "from now on the logo dictates the UI/UX style". Palette and type below are read from it.
+Status: **adopted for colours; the three fonts are downloaded, cut and self-hosted (the user's yes, 2026-11-02).**
+
+## What the logo says
+
+- Name: **דירת מוזס**, with **Moses Luxury Apartments** under it.
+- Two lines in gold: **דירות יוקרה / בלב העיר העתיקה צפת**.
+- Slogan, in handwriting: **חוויה של יוקרה, שלווה ונוף עוצר נשימה**.
+- A gold roof with a four-pane window above the name, and a thin gold rule with a small heart.
+- Black ink on white paper. The names are a brush script; the gold lines are a bold rounded sans.
+
+**Decided for now (the user, 2026-11-02): the name stays as in the logo,** "דירת מוזס", and each unit is a "דירה"; the
+explorations use it. Before that: the project and the first brief said "אחוזות מוזס" and "צימרים" (cabins); the logo says
+"דירת מוזס" and "דירות יוקרה" (apartments) in the old city of Safed. `src/config/site.ts` now uses the logo's name and
+lines, and the design exploration uses "דירות". The cabin files, the legal drafts and the page texts still say "צימר"
+until they are renamed (mechanical, in the stage that builds the pages).
+
+## Palette (measured from the file's pixels)
+
+| Token (in `src/styles/tokens.css`) | Value | From | Used for |
+| ---------------------------------- | ----- | ---- | -------- |
+| `text`, `on-accent` | `#201f20` | the ink (median of the dark pixels) | text, the text on a gold button, the focus ring |
+| `accent` | `#c9972c` | the roof | button fill, rules, ornaments, the bar above a card |
+| `accent-hover` | `#d9ae4c` | the roof's lighter end | a hovered button |
+| `link` | `#86601f` | the subtitle's gold, darkened | links and any gold text (5.7:1 on white) |
+| `bg` / `surface` | `#faf8f3` / `#ffffff` | the paper | the page / cards and forms |
+| `border` | `#8c867a` | a warm grey | the edge of a field (3.6:1) |
+
+- **Gold is a fill and an ornament, never small text.** The logo's own subtitle gold is 4.0:1 on white and the roof gold
+  is 2.7:1, so gold text uses the darker `link` bronze. A gold button carries ink text (6.2:1).
+- Every pair is pinned in `tests/policy/contrast.test.ts` (4.5:1 text, 3:1 edges); the test passes with the new tokens.
+- The focus ring is ink with a white halo, so it shows on a gold button and over a dark photo.
+- Free / taken / unknown keep a green / red / grey that are not the brand's, on purpose: they mean something, and each is also
+  told by text and pattern.
+- **Light only.** The logo is black ink on white; on a dark surface it would vanish. The site has no dark theme unless the
+  user asks and a reversed logo is supplied.
+
+## Type (proposed; not in the code yet)
+
+| Role | Face | Licence | Why |
+| ---- | ---- | ------- | --- |
+| Headings | Frank Ruhl Libre (500, 700) | SIL OFL | a refined Hebrew serif: quiet luxury, no imitation of the brush script |
+| Body and UI | Heebo (400, 600, 700) | SIL OFL | legible at small sizes, the same weight as the gold lines of the logo |
+| Slogan only | Gveret Levin | SIL OFL | handwriting, to echo the logo's script; used for one line, never for reading text |
+
+Self-hosted with each licence text beside the file (C1); no font CDN (L7). The design exploration loads them from
+Google Fonts because an exploration is not the site. **Built 2026-11-02** (`feature/build-home`): from github.com/google/fonts, cut to
+Hebrew and Latin by `npm run fonts:build` into `public/fonts/<font>/<font>.woff2` (about 27 KB each) with `OFL.txt` beside
+it; `src/styles/fonts.css` declares them with `font-display: swap` and `font-size-adjust: from-font` keeps the fallback
+font at the same size, so the swap does not move the text.
+
+## Shapes and details
+
+- Corners 10 px on controls, 14 px on cards, 22 px on a large photo.
+- The thin rule with a small heart, drawn in our own SVG after the logo's, under the heading of a section.
+- A 4 px gold bar on top of the search card and the results box.
+- The roof (a gold chevron with a small four-pane window) is the logo's mark; the favicon should be built from it once
+  the owner sends the original vector file.
+
+## The logo file
+
+- **The file in use (2026-11-15, `docs/design/brand/logo-new-original.jpg`)** is a 1426 x 1103 JPEG (a lockup of 1239 x 960 px on white): the
+  same roof (a richer gold), names, Hebrew gold lines, heart rule and Hebrew slogan, **without the English lines and the English
+  slogan** of the earlier file (the English page shows its own slogan as text beside the logo) and with a thin gold rule under the
+  slogan. `npm run brand:build` cut `logo-full.webp` (720 x 561, 38 KB) and `logo-name.webp` (520 x 245, 15 KB) from it, with the
+  names ending at 55% of the drawing's height (`NAME_PART`, measured on this file: it falls in the empty band between the names and the
+  gold lines, and must be measured again for any other file); `npm run brand:share` rebuilt `public/brand/share.jpg`. The palette
+  tokens above are unchanged: the new roof gold is brighter than the one measured, and a change of tokens would reopen the contrast
+  tests. The earlier file's description follows, kept as history.
+- The user's earlier file (2026-11-08, `moses_combined_logo.png`) is a 1055 x 1491 PNG of the lockup on a large white page, no
+  transparency: the same roof, the same two names and the same Hebrew lines as the first file, with two English lines added under
+  them ("Luxury Apartments in the Heart of the Old City of Safed") and the slogan in English under the Hebrew one ("A Luxury
+  Experience, Tranquility and Breathtaking Views"). Two files are cut from it by `npm run brand:build -- <file>`
+  (`scripts/brand/`: it finds the drawing on the page, adds a thin margin and turns the paper's near-white, 250 to 254 in places, into pure white, so no faint box shows around the logo) into WebP, quality 92, in `public/brand/`:
+  `logo-full.webp` (the whole lockup, 720 px wide, for the contact area; both languages) and `logo-name.webp` (the roof and both
+  names, 520 px wide, for the top of every page: the small English lines would not be legible at 60 px high, so the header
+  keeps what it showed before). The sizes written in `src/config/site.ts` are checked against the files by a test.
+- The page shows each with `mix-blend-mode: multiply`, so its white drops out on any light surface.
+- **Ask the owner for the original** (SVG, PDF or a transparent PNG at a high resolution). A raster logo blurs on a
+  high-density phone and cannot be put on a photo. Row C3 records the file and the rights question.
+- Rights: the logo is the owner's own mark, sent by the owner's representative. The user said on 2026-11-03 that the
+  file in the repo is the original and that the owner's client made it, so the owner holds the rights; the written
+  confirmation is still to come with the handover. The original vector file is still welcome (see above).
+
+Iron rules touched: C1, C3, C6, A1, A3, L7, H1.

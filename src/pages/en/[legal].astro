@@ -1,0 +1,18 @@
+---
+/** The English legal and accessibility pages: /en/privacy, /en/terms, /en/cancellation, /en/accessibility. */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import LegalPage from '@components/pages/LegalPage.astro';
+
+export async function getStaticPaths() {
+  const pages = (await getCollection('legal')).filter((page) => page.id.startsWith('en/'));
+  return pages.map((entry) => ({ params: { legal: entry.id.split('/')[1] }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'legal'>;
+}
+
+const { entry } = Astro.props;
+---
+
+<LegalPage locale="en" entry={entry} />

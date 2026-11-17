@@ -1,0 +1,54 @@
+---
+/** The page shell: the language and direction of the page, skip link, header, main and footer, and the language alternates. */
+import '../../styles/global.css';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import { directionOf, type Locale } from '@i18n/locales';
+import SeoHead from '../seo/SeoHead.astro';
+import BackToTop from './BackToTop.astro';
+import LanguageOffer from './LanguageOffer.astro';
+import SiteFooter from './SiteFooter.astro';
+import SiteHeader from './SiteHeader.astro';
+import SkipLink from './SkipLink.astro';
+
+interface Props {
+  locale: Locale;
+  /** The page's own address without a language ("/", "/cabins/tarpat-18", "/privacy"); the alternates are built from it. */
+  path: string;
+  title: string;
+  description?: string;
+  /** True for a page that is not to be found by a search engine (the 404 page); it then has no canonical or sharing tags. */
+  noindex?: boolean;
+}
+
+const { locale, path, title, description, noindex = false } = Astro.props;
+const t = getMessages(locale);
+const fullTitle = title === t.brand.name ? title : fillTemplate(t.common.pageTitle, { title, site: t.brand.name });
+const pageDescription = description ?? t.brand.description;
+---
+
+<!doctype html>
+<html lang={locale} dir={directionOf(locale)}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={pageDescription} />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/heebo/heebo.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/frank-ruhl-libre/frank-ruhl-libre.woff2" as="font" type="font/woff2" crossorigin />
+    <SeoHead locale={locale} path={path} title={fullTitle} description={pageDescription} noindex={noindex} />
+    <title>{fullTitle}</title>
+  </head>
+  <body>
+    <div id="top" tabindex="-1"></div>
+    <SkipLink locale={locale} />
+    <LanguageOffer locale={locale} path={path} />
+    <SiteHeader locale={locale} path={path} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter locale={locale} path={path} />
+    <BackToTop locale={locale} />
+  </body>
+</html>

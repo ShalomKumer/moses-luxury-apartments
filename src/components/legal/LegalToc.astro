@@ -1,0 +1,132 @@
+---
+/**
+ * The table of contents of a legal page ("On this page"). On a desktop it stays in view beside the text; on a phone it is
+ * a folded native <details> above the text. Both are in the page and CSS shows one, so no script is needed.
+ */
+import type { TocEntry } from '@domain/text/table-of-contents';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  entries: TocEntry[];
+}
+
+const { locale, entries } = Astro.props;
+const label = getMessages(locale).legal.toc;
+---
+
+<div class="toc">
+  <details class="toc__fold">
+    <summary>{label}</summary>
+    <nav aria-label={label}>
+      <ol role="list">
+        {entries.map((entry) => (
+          <li>
+            <a href={`#${entry.slug}`}>{entry.text}</a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </details>
+  <nav class="toc__side" aria-labelledby="toc-title">
+    <p id="toc-title" class="toc__title">
+      {label}
+    </p>
+    <ol role="list">
+      {entries.map((entry) => (
+        <li>
+          <a href={`#${entry.slug}`}>{entry.text}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+</div>
+
+<style>
+  .toc ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: toc;
+  }
+
+  .toc li {
+    counter-increment: toc;
+  }
+
+  .toc li::before {
+    content: counter(toc) '. ';
+    color: var(--color-text-muted);
+  }
+
+  .toc a {
+    display: inline-block;
+    padding-block: var(--space-2);
+  }
+
+  .toc__fold {
+    margin-block-end: var(--space-6);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .toc__fold summary {
+    display: flex;
+    gap: var(--space-2);
+    align-items: center;
+    min-block-size: var(--target-size);
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .toc__fold summary::after {
+    content: '';
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    margin-inline-start: auto;
+    border-block-end: 2px solid currentcolor;
+    border-inline-end: 2px solid currentcolor;
+    transform: rotate(45deg);
+    transition: transform 0.15s;
+  }
+
+  .toc__fold[open] summary::after {
+    transform: rotate(-135deg);
+  }
+
+  .toc__side {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc__fold summary::after {
+      transition: none;
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .toc {
+      position: sticky;
+      inset-block-start: var(--space-4);
+      align-self: start;
+    }
+
+    .toc__fold {
+      display: none;
+    }
+
+    .toc__side {
+      display: block;
+      padding-inline-start: var(--space-4);
+      border-inline-start: 3px solid var(--color-accent);
+    }
+
+    .toc__title {
+      margin-block: 0 var(--space-2);
+      font-weight: 700;
+    }
+  }
+</style>

@@ -1,0 +1,49 @@
+---
+/**
+ * Home: a full-width photo with the booking-request bar, the apartments as large rows, three points, and how to reach
+ * the owner, in one language (docs/design/home.md).
+ */
+import { getCollection } from 'astro:content';
+import ContactDetails from '@components/contact/ContactDetails.astro';
+import BookingRequest from '@components/booking/BookingRequest.astro';
+import ApartmentRows from '@components/cabin/ApartmentRows.astro';
+import MoreApartments from '@components/cabin/MoreApartments.astro';
+import { toPagePhoto } from '@components/cabin/cabin-photo';
+import HomeHero from '@components/home/HomeHero.astro';
+import HomePoints from '@components/home/HomePoints.astro';
+import BaseLayout from '@components/layout/BaseLayout.astro';
+import HeartRule from '@components/ui/HeartRule.astro';
+import { splitList } from '@domain/apartments/split-list';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+/** How many apartments the list shows before the fold; the rest open with "show more" (their photos load only then). */
+const ROWS_SHOWN = 5;
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getMessages(locale);
+const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.data.order);
+const { shown, rest } = splitList(cabins, ROWS_SHOWN);
+---
+
+<BaseLayout locale={locale} path="/" title={t.brand.name}>
+  <HomeHero locale={locale} photo={toPagePhoto(cabins[0].data.photos[0], locale)}>
+    <BookingRequest locale={locale} cabins={cabins} />
+  </HomeHero>
+
+  <section id="cabins" class="section" aria-labelledby="cabins-title">
+    <div class="container">
+      <h2 id="cabins-title">{t.home.cabinsHeading}</h2>
+      <HeartRule />
+      <ApartmentRows cabins={shown} locale={locale} />
+      <MoreApartments cabins={rest} locale={locale} start={shown.length} />
+    </div>
+  </section>
+
+  <HomePoints locale={locale} />
+  <ContactDetails locale={locale} />
+</BaseLayout>

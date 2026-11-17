@@ -1,0 +1,83 @@
+// The booking and contact links in a real browser: WhatsApp and Gmail open in a new tab with the ready message, a plain
+// (the mail-app link was removed 2026-11-10), phone numbers dial with `tel:`, and the icons beside the words are decoration.
+import { expect, test } from '@playwright/test';
+
+const PAGES = [
+  { path: '/', label: 'Hebrew home' },
+  { path: '/en/', label: 'English home' },
+  { path: '/cabins/artist-estate/', label: 'Hebrew apartment' },
+  { path: '/en/cabins/artist-estate/', label: 'English apartment' },
+];
+
+for (const { path, label } of PAGES) {
+  test.describe(`booking links, ${label}`, () => {
+    test('WhatsApp and Gmail open in a new tab and cannot reach back into the site', async ({ page }) => {
+      await page.goto(path);
+      for (const selector of ['[data-booking-whatsapp]', '[data-booking-gmail]']) {
+        const link = page.locator(`[data-request-bar] ${selector}`);
+        await expect(link).toHaveAttribute('target', '_blank');
+        const rel = (await link.getAttribute('rel')) ?? '';
+        expect(rel).toContain('noopener');
+        expect(rel).toContain('noreferrer');
+      }
+    });
+
+    test('the Gmail link carries the same message as the preview', async ({ page }) => {
+      await page.goto(path);
+      const preview = (await page.locator('[data-request-message]').textContent()) ?? '';
+      const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
+      expect(gmail.origin + gmail.pathname).toBe('https://mail.google.com/mail/');
+      expect(gmail.searchParams.get('view')).toBe('cm');
+      expect(gmail.searchParams.get('to')).toMatch(/^[^@\s]+@[^@\s]+$/);
+      expect(gmail.searchParams.get('body')).toBe(preview);
+      expect(gmail.searchParams.get('su')).toBeTruthy();
+      // the booking bar has no other mail link: the plain mailto: of the mail app and the notice were removed (2026-11-10)
+      await expect(page.locator('[data-request-bar] a[href^="mailto:"]')).toHaveCount(0);
+      await expect(page.locator('[data-request-bar] [data-booking-email]')).toHaveCount(0);
+      await expect(page.locator('[data-request-bar] .booking-notice')).toHaveCount(0);
+    });
+
+    test('the Gmail link follows the choices, like the WhatsApp link', async ({ page }) => {
+      await page.goto(path);
+      await page.locator('[data-request-guests]').fill('2');
+      const preview = (await page.locator('[data-request-message]').textContent()) ?? '';
+      const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
+      expect(gmail.searchParams.get('body')).toBe(preview);
+      expect(preview).toContain('2');
+    });
+
+    test('the footer phones dial with an international tel link and every icon is hidden from a screen reader', async ({
+      page,
+    }) => {
+      await page.goto(path);
+      const phones = page.locator('footer a[href^="tel:+972"]');
+      await expect(phones).toHaveCount(1);
+      await expect(phones).toHaveAttribute('href', 'tel:+972534369490');
+      const icons = page.locator('footer svg.icon, #contact svg.icon');
+      const count = await icons.count();
+      expect(count).toBeGreaterThan(0);
+      for (let index = 0; index < count; index += 1) {
+        await expect(icons.nth(index)).toHaveAttribute('aria-hidden', 'true');
+      }
+    });
+  });
+}
+
+test.describe('contact section', () => {
+  test('opens WhatsApp and Gmail in a new tab, and the phones are tel links', async ({ page }) => {
+    await page.goto('/');
+    const contact = page.locator('#contact');
+    for (const selector of ['a[href^="https://wa.me/"]', 'a[href^="https://mail.google.com/"]']) {
+      const link = contact.locator(selector);
+      await expect(link).toHaveAttribute('target', '_blank');
+      expect((await link.getAttribute('rel')) ?? '').toContain('noreferrer');
+    }
+    // the one number the business keeps: dialled, and the WhatsApp link goes to it
+    await expect(contact.locator('a[href^="tel:+972"]')).toHaveCount(1);
+    await expect(contact.locator('a[href^="tel:+972"]')).toHaveAttribute('href', 'tel:+972534369490');
+    expect((await contact.locator('a[href^="https://wa.me/"]').getAttribute('href')) ?? '').toContain(
+      'wa.me/972534369490',
+    );
+    expect(await contact.locator('a[href^="mailto:"]').count()).toBe(1);
+  });
+});

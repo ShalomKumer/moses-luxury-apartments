@@ -1,0 +1,73 @@
+---
+/**
+ * The booking buttons: WhatsApp and Gmail, each opening the ready message in a new tab. They work without JavaScript.
+ */
+import Icon from '@components/ui/Icon.astro';
+import { SITE, WHATSAPP_PHONE } from '@config/site';
+import { buildBookingSubject, type BookingTexts } from '@domain/booking/booking-message';
+import { gmailComposeLink } from '@domain/booking/gmail-link';
+import { toInternationalDigits } from '@domain/booking/phone-number';
+import { whatsappLink } from '@domain/booking/whatsapp-link';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  /** The name the buttons announce to a screen reader: the apartment, or the brand when none is chosen. */
+  name: string;
+  /** The apartment's name in the subject line; null when none is chosen. */
+  cabinName: string | null;
+  /** The message the links carry before any script runs. */
+  message: string;
+}
+
+const { locale, name, cabinName, message } = Astro.props;
+const t = getMessages(locale).booking;
+const texts: BookingTexts = t.message;
+const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
+const subject = buildBookingSubject(texts, cabinName);
+---
+
+<div class="booking-links">
+  <div class="booking-links__buttons">
+    {phoneDigits && (
+      <a
+        class="button"
+        data-booking-whatsapp
+        href={whatsappLink(phoneDigits, message)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Icon name="whatsapp" />
+        {t.whatsapp}
+        <span class="visually-hidden"> - {fillTemplate(t.newTabHint, { name })}</span>
+      </a>
+    )}
+    <a
+      class="button button--secondary"
+      data-booking-gmail
+      href={gmailComposeLink(SITE.email, subject, message)}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Icon name="mail" />
+      {t.gmail}
+      <span class="visually-hidden"> - {fillTemplate(t.newTabHint, { name })}</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .booking-links,
+  .booking-links__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .booking-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+</style>

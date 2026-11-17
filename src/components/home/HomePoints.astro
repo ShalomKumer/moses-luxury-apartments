@@ -1,0 +1,93 @@
+---
+/**
+ * The three points under the apartments. The first two are written from what the site really does; the third is a
+ * placeholder, shown dashed, until the owner gives a true one (H1). `npm run launch:check` fails while it is left.
+ */
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const points = getMessages(locale).home.points;
+
+/** The icons are drawn here, for this project (C2): a pin, a speech bubble, a dashed circle for the empty one. */
+const items = [
+  {
+    text: points.place,
+    todo: false,
+    icon: 'M12 21s-6-5.6-6-10.5a6 6 0 0 1 12 0C18 15.4 12 21 12 21zM12 8.3a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4z',
+  },
+  { text: points.direct, todo: false, icon: 'M4 5h16v11H9l-5 4z' },
+  { text: points.third, todo: true, icon: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16z' },
+];
+---
+
+<div class="points">
+  <div class="container">
+    <ul role="list" class="points__list">
+      {items.map((item) => (
+        <li class:list={['point', { 'point--todo': item.todo }]}>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-dasharray={item.todo ? '3 3' : undefined}
+            aria-hidden="true"
+          >
+            <path d={item.icon}></path>
+          </svg>
+          <h2>{item.text.title}</h2>
+          <p>{item.text.body}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .points {
+    background: var(--color-bg);
+    border-block: 1px solid var(--color-border);
+    padding-block: var(--space-8);
+  }
+
+  .points__list {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .point svg {
+    width: 1.875rem;
+    height: 1.875rem;
+    margin-block-end: var(--space-2);
+    color: var(--color-link);
+  }
+
+  .point h2 {
+    font-size: var(--text-lg);
+    margin-block-end: var(--space-1);
+  }
+
+  .point p {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .point--todo {
+    padding: var(--space-4);
+    border: 2px dashed var(--color-border);
+    border-radius: calc(var(--radius) * 1.5);
+  }
+
+  @media (min-width: 48rem) {
+    .points__list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

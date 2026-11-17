@@ -1,0 +1,111 @@
+---
+/**
+ * A thin bar fixed to the bottom of the screen that offers the other language ("This site is also available in English"),
+ * written in that language. It is hidden in the page and shown by the script (language-offer.ts) only to a visitor who
+ * arrived from outside the site and whose browser prefers the other language. It is never a redirect and stores nothing:
+ * a plain link the visitor chooses to follow, and a button that closes it (L3, L4, S9, WCAG 3.2.2). Its styles are global
+ * and short on purpose: the home page is close to its code budget, and a scoped style adds an attribute to every element.
+ */
+import { getMessages } from '@i18n/get-messages';
+import { directionOf, otherLocale, type Locale } from '@i18n/locales';
+import { localizedPath } from '@i18n/paths';
+
+interface Props {
+  locale: Locale;
+  /** The page's own address without a language: the link leads to the same page in the other language. */
+  path: string;
+}
+
+const { locale, path } = Astro.props;
+const target = otherLocale(locale);
+const { language, languageOffer } = getMessages(target);
+---
+
+<aside
+  class="language-offer"
+  hidden
+  data-language-offer
+  data-page-locale={locale}
+  data-offer-locale={target}
+  aria-label={languageOffer.label}
+  lang={target}
+  dir={directionOf(target)}
+>
+  <div class="container language-offer__inner">
+    <p>{languageOffer.message}</p>
+    <a href={localizedPath(path, target)} hreflang={target}>
+      {language.switchHint}
+    </a>
+    <button type="button" data-language-offer-close aria-label={languageOffer.close}>
+      &times;
+    </button>
+  </div>
+</aside>
+
+<script>
+  import { initLanguageOffer } from './language-offer';
+
+  document.querySelectorAll<HTMLElement>('[data-language-offer]').forEach(initLanguageOffer);
+</script>
+
+<!--
+  Fixed to the bottom of the screen, above a phone's request bar (--bottom-bar): shown after the page is drawn, it moves
+  nothing. While it is open the script sets --offer-bar to its height: the back-to-top button rises above it, a focused
+  element is never left under it (2.4.11), and the page has room at its end for the footer's last links.
+-->
+<style is:global>
+  .language-offer {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: var(--bottom-bar, 0px);
+    z-index: 6;
+    padding-block-end: env(safe-area-inset-bottom, 0px);
+    background: var(--color-notice-bg);
+    color: var(--color-notice-text);
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .language-offer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    column-gap: var(--space-4);
+  }
+
+  .language-offer p {
+    margin: 0;
+    padding-block: var(--space-2);
+  }
+
+  .language-offer a,
+  .language-offer button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--target-size);
+    min-height: var(--target-size);
+    color: inherit;
+  }
+
+  .language-offer a {
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  .language-offer button {
+    padding: 0;
+    background: none;
+    border: 0;
+    font-size: 1.75rem;
+    cursor: pointer;
+  }
+
+  :root:has(.language-offer:not([hidden])) {
+    scroll-padding-block-end: calc(var(--offer-bar, 0px) + var(--bottom-bar, 0px) + 4.5rem);
+  }
+
+  :root:has(.language-offer:not([hidden])) body {
+    padding-block-end: calc(var(--offer-bar, 0px) + var(--bottom-bar, 0px));
+  }
+</style>
