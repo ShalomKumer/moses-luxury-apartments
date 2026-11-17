@@ -19,7 +19,7 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 ## Commands
 
 - `npm run verify`: Prettier check + ESLint + type check + tests + build + build-output check + browser tests + performance
-  budget + photo check + secret scan + licence allow-list + `npm audit`. Must be green before every commit.
+  budget + photo check + secret scan + licence allow-list + dependency audit gate. Must be green before every commit.
 - `npm test`: unit and policy tests (the fast loop).
 - `npm run test:e2e`: the browser tests (Playwright + axe, WCAG 2.2 AA) over every page of `dist/client`, at 1280 px and
   375 px, plus the photo viewer by keyboard; run `npm run build` first. Once per machine: `npx playwright install chromium
@@ -34,6 +34,8 @@ or later (Astro 7). UI: Hebrew RTL, mobile first. See `docs/architecture.md`.
 - `npm run secrets:check`: the secret scan (iron rule S19) over the files, `dist/` and the whole git history; prints
   file, place and risk, never the value. Inside `verify`. `secret-scan:allow` on a line marks a reviewed false positive.
 - `npm run licenses:check`: fails on a package whose licence is not on the allow-list (iron rule C4).
+- `npm run audit:prod`: the dependency audit (iron rule S14): fails on a high or critical advisory that is not in
+  `scripts/audit/reviewed-advisories.mjs` (each entry has a reason and a date; the user decides a new one). Inside `verify`; needs the network.
 - `npm run launch:check`: fails while any placeholder or leftover sample text is left (expected until launch).
 - `npm run launch:live -- [https://www.host] [--preview <address>]`: by hand, after a deployment: asks the live site if HTTP and the bare domain
   are redirected, the headers are those of `public/_headers`, robots and the sitemap answer, and a preview address is `noindex`
