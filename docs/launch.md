@@ -147,7 +147,15 @@ only because the local DNS resolver did not yet know the new names (`bare-to-www
 the bare domain answers 301 to `www` and keeps the path and the query string (`/cabins/x?b=2&c=3`), and the preview address answers `x-robots-tag: noindex`. The live home page carries no `cdn-cgi`, `email-protection`,
 `cloudflareinsights` or `rocket-loader`, and no `Set-Cookie`. `http://` on the bare domain makes two hops (HTTPS on the bare domain, then `www`); both are 301.
 
-**Not done yet:** Search Console (step 8), the `wrangler rollback` trial (S18), the screen-reader pass (A5), and the decision on whose Cloudflare account this is.
+**2026-11-18:**
+
+- **Search Console (step 8):** a *Domain* property for `mosesluxuryapartments.com` (it covers `www`, the bare domain, `http` and `https`), verified with the DNS `TXT` record `google-site-verification=...`
+  (**keep that record**: removing it loses the verification). The sitemap `https://www.mosesluxuryapartments.com/sitemap.xml` was submitted, in its full form (a Domain property refuses a bare `sitemap.xml`), and Search Console shows it as successful.
+- **Web Analytics switched off.** Cloudflare was injecting its Web Analytics script (`static.cloudflareinsights.com/beacon.min.js`) into every page of the zone, in the browser's page but not in the HTML a plain `curl` or `fetch` returns, so the by-hand check of step 7 has to be done in a
+  browser. Our content security policy blocked it (a console error on every load, and nothing was sent), but a third-party script on the site touches iron rules 2 and 6. Set in the dashboard under Observability, Analytics, **Web analytics**, **Manage site** for `mosesluxuryapartments.com`:
+  Real User Measurements (RUM) from "Enable, excluding visitor data in the EU" to **Disable**. Checked afterwards in a browser: the script is gone from `/`, `/en/` and `/en/cabins/artist-estate/`, and no new policy error appears.
+
+**Not done yet:** the `wrangler rollback` trial (S18), the screen-reader pass (A5), and the decision on whose Cloudflare account this is.
 
 ## What this guide could not test
 
