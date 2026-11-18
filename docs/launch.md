@@ -111,7 +111,15 @@ Add the domain as a property (a DNS `TXT` record verifies it), then submit `http
 - **A bad deployment:** `npx wrangler rollback` (or the dashboard: the Worker, Deployments, the previous version, Rollback). It activates the previous version on
   every route at once. Then fix on a branch.
 - **The domain must come down:** remove the custom domain from the Worker; the preview address stays up and stays `noindex`.
-- Try the rollback once before the launch, on the preview address (S18).
+- **The rollback was tried on 2026-11-18** (S18). The custom domain and the `workers.dev` addresses are **the same Worker**, so a rollback changes what the live domain serves too: there is no way to try it on the
+  preview address alone (that would need a second Worker). The steps that worked, from the repository root:
+  1. `npx wrangler deployments list --name ahuzot-moses` shows the deployments and their version ids (the newest is the active one).
+  2. `npx wrangler rollback <version-id> --name ahuzot-moses --message "<why>" -y` deploys that version to 100% of traffic (about ten seconds).
+  3. Roll forward the same way, with the id of the version you want, or deploy again from `main` (`git checkout main`, `npx astro build`, `npx wrangler deploy`).
+  4. Check `npm run launch:live`.
+
+  The trial went back to the first version and forward to the current one; both were reported as deployed to 100% of traffic, the site answered 200 throughout the checks, and `launch:live` passed after it. The two builds
+  serve byte-identical home pages, so a visitor could not have told them apart: the trial proves the mechanism and its speed, not what a visitor saw during it.
 
 ## The first deployment (2026-11-17)
 
