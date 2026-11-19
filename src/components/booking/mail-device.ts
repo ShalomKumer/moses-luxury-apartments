@@ -1,8 +1,10 @@
+import { isPhoneOrTablet } from '@domain/booking/phone-or-tablet';
+
 /**
- * Whether the visitor's main way of pointing is a finger (a phone or a tablet): there a `mailto:` link opens the mail app
- * with a new message, while Gmail's address only opens its website. A computer with a mouse or a trackpad has no
- * mail app set up as often as it has a browser signed in to Gmail, so it gets Gmail's compose window instead.
+ * Whether the email button should open the mail app (`mailto:`): on a phone or a tablet, where it opens a new message. A
+ * computer gets Gmail's compose window instead, by its operating system and not by its screen: a computer with a touch
+ * screen reports a finger as its way of pointing, and a `mailto:` link there does nothing when no mail app is set up.
  */
 export function prefersMailApp(): boolean {
-  return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  return isPhoneOrTablet({ userAgent: navigator.userAgent, maxTouchPoints: navigator.maxTouchPoints });
 }
