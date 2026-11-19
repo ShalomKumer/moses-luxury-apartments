@@ -1,6 +1,6 @@
 ---
 /**
- * One counter of the booking request: a label, a "-" button, the number and a "+" button. The number is a text field
+ * One counter of the booking request: a label centred over a row of a "-" button (left), the number and a "+" button (right), without a ring around the signs. The number is a text field
  * for digits, so it can be typed as well as stepped (the user's wish, 2026-11-10); the buttons stay reachable at a
  * limit (the page marks them `aria-disabled`, it never disables them, so focus is not lost). It only draws the
  * counter: the request's script keeps the numbers within the apartment's guests.
@@ -43,10 +43,19 @@ const { id, label, lessLabel, moreLabel, kind } = Astro.props;
 </div>
 
 <style>
+  /* the label sits at the middle, over the number, in both languages (the user, 2026-11-19) */
+  .counter > label {
+    display: block;
+    text-align: center;
+  }
+
+  /* the minus is always on the left and the plus on the right, in Hebrew too, as the signs read; the row is left to right
+     and the buttons come in that order in the page, so the Tab key follows what the eye sees */
   .counter__row {
     display: flex;
     align-items: center;
     gap: var(--space-1);
+    direction: ltr;
   }
 
   .counter__button {
@@ -54,12 +63,13 @@ const { id, label, lessLabel, moreLabel, kind } = Astro.props;
     width: var(--target-size);
     height: var(--target-size);
     padding: 0;
-    background: var(--color-surface);
-    border: 2px solid var(--color-text);
-    border-radius: 50%;
+    background: transparent;
+    border: 0;
+    border-radius: var(--radius);
     color: var(--color-text);
     font: inherit;
-    font-size: var(--text-lg);
+    font-size: var(--text-xl);
+    font-weight: 700;
     line-height: 1;
     cursor: pointer;
   }
@@ -70,7 +80,6 @@ const { id, label, lessLabel, moreLabel, kind } = Astro.props;
 
   /* at a limit the button looks off but stays focusable and tells a screen reader (aria-disabled), so focus is never lost */
   .counter__button[aria-disabled='true'] {
-    border-color: var(--color-border);
     color: var(--color-text-muted);
     cursor: default;
   }

@@ -12,7 +12,8 @@ const LOCALES = [
     apartment: '/cabins/nobility-1/',
     big: '/cabins/artist-estate/',
     twoCouples: '2 זוגות',
-    oneChild: 'ילד אחד',
+    oneChild: 'יחיד אחד',
+    counterLabels: ['זוגות', 'יחידים'],
     guests: (text: string) => `מספר אורחים: ${text}`,
     nameLine: (name: string) => `שם: ${name}`,
   },
@@ -22,7 +23,8 @@ const LOCALES = [
     apartment: '/en/cabins/nobility-1/',
     big: '/en/cabins/artist-estate/',
     twoCouples: '2 couples',
-    oneChild: '1 child',
+    oneChild: '1 individual',
+    counterLabels: ['Couples', 'Individuals'],
     guests: (text: string) => `Number of guests: ${text}`,
     nameLine: (name: string) => `Name: ${name}`,
   },
@@ -35,7 +37,7 @@ const less = (page: Page, kind: 'couples' | 'children') => page.locator(`[data-c
 const total = (page: Page) => page.locator('[data-request-guests]');
 const message = bookingMessage;
 
-for (const { label, home, apartment, big, twoCouples, oneChild, guests, nameLine } of LOCALES) {
+for (const { label, home, apartment, big, twoCouples, oneChild, counterLabels, guests, nameLine } of LOCALES) {
   test.describe(`the party and the name, ${label}`, () => {
     test('the buttons step the couples and the children, and the total follows: two people a couple, one a child', async ({
       page,
@@ -191,6 +193,67 @@ for (const { label, home, apartment, big, twoCouples, oneChild, guests, nameLine
       await less(page, 'couples').focus();
       await page.keyboard.press('Enter');
       await expect(couples(page)).toHaveValue('0');
+    });
+
+    test('the counters are named "couples" and "individuals", the label centred over its number', async ({ page }) => {
+      await page.goto(apartment);
+      const labels = await page.locator('[data-counter] label').allTextContents();
+      expect(labels.map((text) => text.trim())).toEqual(counterLabels);
+      for (const counter of await page.locator('[data-counter]').all()) {
+        const [label, input] = await Promise.all([
+          counter.locator('label').evaluate((node) => {
+            const box = node.getBoundingClientRect();
+            return { centre: box.left + box.width / 2, align: getComputedStyle(node).textAlign, width: box.width };
+          }),
+          counter.locator('[data-counter-input]').evaluate((node) => {
+            const box = node.getBoundingClientRect();
+            return { centre: box.left + box.width / 2 };
+          }),
+        ]);
+        // the text sits at the middle of the counter, over the number, not at the start of the line
+        expect(label.align).toBe('center');
+        expect(Math.abs(label.centre - input.centre)).toBeLessThanOrEqual(2);
+      }
+    });
+
+    test('the minus is on the left and the plus on the right, in both languages, bare of a circle', async ({
+      page,
+    }) => {
+      await page.goto(apartment);
+      for (const counter of await page.locator('[data-counter]').all()) {
+        const [minus, plus, number] = await Promise.all(
+          ['[data-counter-less]', '[data-counter-more]', '[data-counter-input]'].map((selector) =>
+            counter.locator(selector).evaluate((node) => {
+              const box = node.getBoundingClientRect();
+              const style = getComputedStyle(node);
+              return {
+                left: box.left,
+                width: box.width,
+                height: box.height,
+                radius: style.borderRadius,
+                border: style.borderTopWidth,
+              };
+            }),
+          ),
+        );
+        expect(minus.left).toBeLessThan(number.left);
+        expect(plus.left).toBeGreaterThan(number.left);
+        // no ring around the sign, and still a target of at least 44 px (A3)
+        expect(minus.border).toBe('0px');
+        expect(plus.border).toBe('0px');
+        expect(minus.radius).not.toBe('50%');
+        expect(Math.min(minus.width, minus.height, plus.width, plus.height)).toBeGreaterThanOrEqual(44);
+      }
+    });
+
+    test('keyboard order follows the picture: minus, number, plus', async ({ page }) => {
+      await page.goto(apartment);
+      const counter = page.locator('[data-counter="couples"]');
+      await counter.locator('[data-counter-less]').focus();
+      await page.keyboard.press('Tab');
+      await expect(counter.locator('[data-counter-input]')).toBeFocused();
+      await page.keyboard.press('Tab');
+      await expect(counter.locator('[data-counter-more]')).toBeFocused();
     });
 
     test('every field has a visible label, the buttons have names, and the open note passes axe', async ({ page }) => {

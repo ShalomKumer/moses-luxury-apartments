@@ -8,8 +8,8 @@
  * any of them opens the viewer. The viewer is a frame of one fixed size: the photo fits inside a dark stage (a tall photo
  * and a wide one take the same room), the arrows stay at the sides of the stage and under it is only a counter, "3 / 12",
  * so no control moves from photo to photo; the photo's description stays in a visually hidden line that a screen reader
- * announces (A2). A tap outside the photo and the controls closes the viewer (`gallery-controller.ts`). Every label is in
- * the page's language.
+ * announces (A2). A tap anywhere but on an arrow or the close button closes the viewer, the photo included
+ * (`gallery-controller.ts`). Every label is in the page's language.
  */
 import type { PagePhoto } from '@components/cabin/cabin-photo';
 import Icon from '@components/ui/Icon.astro';
@@ -73,7 +73,7 @@ const shape = galleryShape(photos.length);
   </ul>
   {shape.hasViewerControls && (
     <button type="button" class="button button--secondary gallery__all" data-gallery-all>
-      {fillTemplate(t.all, { count: photos.length })}
+      {t.all}
     </button>
   )}
 
@@ -251,8 +251,8 @@ const shape = galleryShape(photos.length);
   }
 
   /*
-   * The viewer is one frame of a fixed size, so nothing in it moves from photo to photo: a wide window on a desktop, the whole
-   * screen on a phone. It is a grid only while open (a closed dialog stays hidden). Inside, the photo fits a dark stage
+   * The viewer is one frame of a fixed size, so nothing in it moves from photo to photo: a wide window on a desktop, a window
+   * of about 70% of the screen high on a phone, with the page showing round it. It is a grid only while open (a closed dialog stays hidden). Inside, the photo fits a dark stage
    * (object-fit: contain), so a tall photo and a wide one take the same room; the arrows sit at the sides of the stage, the
    * close button in the corner, and under the stage is one line with the counter.
    */
@@ -285,18 +285,17 @@ const shape = galleryShape(photos.length);
     }
   }
 
-  /* a phone: the whole screen */
+  /* a phone: a window of about 70% of the screen high (not lower than 22 rem where the screen allows), the page dimmed round it */
   @media (max-width: 47.99rem) {
     .gallery__dialog {
-      width: 100vw;
-      height: 100vh;
-      border-radius: 0;
+      width: 92vw;
+      height: max(70vh, min(22rem, 90vh));
       padding-inline: var(--space-2);
     }
 
     @supports (height: 100dvh) {
       .gallery__dialog {
-        height: 100dvh;
+        height: max(70dvh, min(22rem, 90dvh));
       }
     }
   }
