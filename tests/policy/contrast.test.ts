@@ -41,6 +41,10 @@ const TEXT_PAIRS: [string, string][] = [
   ['selected-text', 'selected-bg'],
   // the date picker: a day between the two ends of the stay is shaded with the notice colour
   ['text', 'notice-bg'],
+  // the band of the other apartments under an apartment's details: the heading, the line under a card and the closing line
+  ['text', 'band'],
+  ['text-muted', 'band'],
+  ['link', 'band'],
 ];
 
 /** Edges of controls and the focus ring: 3:1. */
@@ -55,6 +59,8 @@ const EDGE_PAIRS: [string, string][] = [
   ['focus', 'notice-bg'],
   // the photo viewer's arrows and close button: a white face on the dark stage
   ['surface', 'scrim'],
+  // the band's edge against the page, and a card's edge on the band
+  ['border', 'band'],
 ];
 
 /** Mixes a foreground over a background at a strength (0 to 1), as the browser blends a translucent plate. */

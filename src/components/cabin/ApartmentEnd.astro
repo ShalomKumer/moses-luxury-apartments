@@ -1,0 +1,67 @@
+---
+/**
+ * The closing line of an apartment's page: the details and the booking request are over. A heart rule, the line "that is
+ * everything about {name}" and a quiet link back up to the request, so a visitor who scrolled this far can still book. It
+ * marks the end of the apartment before the band of the other apartments begins (`CabinPage`).
+ */
+import HeartRule from '@components/ui/HeartRule.astro';
+import { fillTemplate } from '@domain/text/fill-template';
+import { getMessages } from '@i18n/get-messages';
+import type { Locale } from '@i18n/locales';
+
+interface Props {
+  locale: Locale;
+  /** The apartment's name. */
+  name: string;
+  /** The id of the booking request to link back to. */
+  targetId: string;
+}
+
+const { locale, name, targetId } = Astro.props;
+const t = getMessages(locale).cabin;
+---
+
+<div class="end">
+  <HeartRule />
+  <p class="end__line">{fillTemplate(t.end, { name })}</p>
+  <a class="end__up" href={`#${targetId}`}>
+    <span aria-hidden="true">↑</span>
+    {t.jumpToRequest}
+  </a>
+</div>
+
+<style>
+  .end {
+    display: grid;
+    gap: var(--space-2);
+    justify-items: center;
+    margin-block-start: var(--space-12);
+    text-align: center;
+  }
+
+  .end :global(.heart-rule) {
+    width: 100%;
+  }
+
+  .end__line {
+    margin: 0;
+    color: var(--color-text-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .end__up {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--target-size);
+    padding-inline: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .end__up:hover {
+    border-color: var(--color-text);
+  }
+</style>
