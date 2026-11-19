@@ -52,8 +52,9 @@ Every real apartment lists **Wi-Fi** in its features (he: "אינטרנט אלח
   pages toward the 1 MB ceiling (`scripts/budget/limits.mjs`). The apartment's own page still counts its own grid photos at the 960 file; if the budget check fails for
   that page, add `--page-kb=120` to a photo's `photos:add` (it lowers the ceiling of the 640, 960 and 1280 files only; the viewer's 1920 file keeps the standard one). A detailed photo of the page's own grid (stone, murals, foliage) that still passes it needs `--phone-kb=100` instead: it lowers only the 640 and 960 files, the ones a phone loads, so the 1280 file keeps its quality (Ahuzat HaMaayan, 2026-11-04).
 - **The home page shows the first five apartments and folds the rest** (`ROWS_SHOWN` in `HomePage.astro`; their photos load only when it is opened), so from the sixth apartment on the home page no longer grows with each one; the apartment pages are unchanged.
-- **The rest.** They are reached by "all photos" (the viewer) and, without JavaScript, by links named by their alt text. About ten photos
-  in all keeps the page under its 1 MB ceiling on a phone; more is possible when the weight check still passes.
+- **The rest.** They are reached by "all photos" (the viewer) and, without JavaScript, by links named by their alt text. There is no limit
+  on how many (the user, 2026-11-18: the source folders hold 14 to 40 photos); only the five of the grid weigh anything on a page, so more is possible
+  while the weight check still passes. A phone's page shows the main photo and three small ones.
 
 - **A photo made or edited by AI is not used** (the user, 2026-11-03). I look for the marks in the file (a Content Credentials record, a
   tool name) and for a picture that looks like an edited copy of another (a new sky, lights added, things removed); such a photo stays out

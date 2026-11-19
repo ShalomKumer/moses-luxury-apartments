@@ -35,12 +35,12 @@ Every exported function carries a one-line comment saying what it does.
 │   │   └── availability.ts         # limits of the kept availability service (not wired)
 │   │
 │   ├── domain/                     # BUSINESS LOGIC: pure functions, no I/O, no DOM
-│   │   ├── dates/                  # date-key, date-range, format-date, month, calendar-month (the weeks of a month, what can be chosen), range-selection (first click, second click), day-navigation (the keys), flex-days
+│   │   ├── dates/                  # date-key, date-range, format-date, month, calendar-month (the weeks of a month, what can be chosen), range-selection (first click, second click), day-navigation (the keys)
 │   │   ├── scroll/                 # back-to-top (how far the page must be scrolled before the button shows)
 │   │   ├── language/               # suggest-language (which language to offer from the browser's list), external-entry (did the visitor arrive from outside the site)
 │   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded), highlights (the badges: kinds, order, the words each needs in the text, the label with a count)
 │   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, tel-link, stay-dates, guests, party (couples, children and the total within the apartment's guests), guest-name (the name made safe for the message)
-│   │   ├── gallery/                # gallery-shape (how many photos the grid shows), swipe (what a finger's movement across the viewer means)
+│   │   ├── gallery/                # gallery-shape (how many photos the grid shows), swipe (what a finger's movement across the viewer means), photo-area (where a photo is inside its box, for a tap outside it)
 │   │   ├── photos/                 # photo-sources (the src, srcset, smallest and largest file of a photo from its widths)
 │   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
 │   │   └── availability/           # KEPT, UNWIRED: iCal parsing (dates only), freshness, "unknown, never free"
@@ -56,14 +56,14 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── seo/      SeoHead (canonical, hreflang, sharing tags, noindex), language-links.ts (the absolute hreflang list), site-pages.ts (every page's path), seo-documents.ts (sitemap and robots text)
 │   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter, BackToTop + back-to-top.ts (the corner button that returns to the top), LanguageOffer + language-offer.ts (the thin "also in English / בעברית" bar)
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
-│   │   ├── cabin/    CabinGallery + gallery-controller.ts, cabin-photo.ts (content photo -> page photo), CabinFacts, CabinHighlights + highlight-icons.ts (the badges and their icons), JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments (the home page's folded rows)
+│   │   ├── cabin/    CabinGallery + gallery-controller.ts (the viewer), ApartmentCard + ApartmentCards (the compact cards of the band under an apartment), ApartmentEnd (its closing line), cabin-photo.ts (content photo -> page photo), CabinFacts, CabinHighlights + highlight-icons.ts (the badges and their icons), JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments (the home page's folded rows)
 │   │   │             #   (the rows are shared by the home page and the apartment pages)
 │   │   ├── legal/    LegalHead, LegalToc (sticky beside the text, folded <details> on a phone), DraftNotice,
 │   │   │             #   CoordinatorCard (the accessibility coordinator, from config/site.ts)
 │   │   ├── contact/  ContactDetails       # WhatsApp, phones, email (no map embed: L7)
 │   │   ├── booking/  BookingRequest + request-controller.ts (the home page's request with an apartment choice, and
 │   │   │             #   the apartment page's with the apartment fixed), BookingLinks + booking-links.ts,
-│   │   │             #   DateRangePicker + FlexChips + calendar-render.ts + picker-controller.ts (the one date picker: a calendar that only fills the message), BookingGuests + GuestCounter (couples, children, total), BookingName
+│   │   │             #   DateRangePicker + calendar-render.ts + picker-controller.ts (the one date picker: a calendar that only fills the message), BookingGuests + GuestCounter (couples, children, total), BookingName
 │   │   └── ui/       Prose, UpdatedDate, HeartRule, Icon (+ icons/: the path data of the three icons and their licences)
 │   │
 │   ├── styles/       tokens.css (the logo's palette), fonts.css (@font-face), global.css
