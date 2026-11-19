@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { PAGE_LIMITS } from '../../../scripts/budget/limits.mjs';
+import { APARTMENT_CODE_LIMIT, PAGE_LIMITS, limitsFor } from '../../../scripts/budget/limits.mjs';
 import { pageWeight } from '../../../scripts/budget/page-weight.mjs';
 
 const ROOT = 'dist/client';
@@ -186,6 +186,16 @@ describe('check-budget, run in a throw-away folder', () => {
     return folder;
   }
   const check = (folder: string) => spawnSync('node', [entry], { cwd: folder, encoding: 'utf8' });
+
+  it('gives an apartment page a higher code ceiling than the other pages, and the same JS and total ceilings', () => {
+    for (const page of ['cabins/artist-estate/index.html', 'en/cabins/tarpat-18/index.html']) {
+      expect(limitsFor(page)).toEqual({ ...PAGE_LIMITS, code: APARTMENT_CODE_LIMIT });
+    }
+    for (const page of ['index.html', 'en/index.html', 'privacy/index.html', '404.html']) {
+      expect(limitsFor(page)).toEqual(PAGE_LIMITS);
+    }
+    expect(APARTMENT_CODE_LIMIT).toBeGreaterThan(PAGE_LIMITS.code);
+  });
 
   it('passes a light page and prints the weights', () => {
     const result = check(build(1000, 1000));
