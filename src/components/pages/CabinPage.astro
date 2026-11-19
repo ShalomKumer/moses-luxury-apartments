@@ -2,11 +2,14 @@
 /**
  * One apartment in one language, the approved layout (docs/design/apartment.md): its photos, the details beside a
  * booking request that stays in view, and under it, in a tinted band of its own, the other apartments as the home page's
- * large rows (the user's choice of 2026-11-19, option A of `explorations/launch-fixes-options.html`). It shows no availability.
+ * large rows (the user's choice of 2026-11-19, option A of `explorations/launch-fixes-options.html`): the next three, and the
+ * rest folded under a button that opens them on this page instead of leading to the home page (the user, 2026-11-19).
+ * It shows no availability.
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BookingRequest from '@components/booking/BookingRequest.astro';
 import ApartmentRows from '@components/cabin/ApartmentRows.astro';
+import MoreApartments from '@components/cabin/MoreApartments.astro';
 import CabinFacts from '@components/cabin/CabinFacts.astro';
 import CabinGallery from '@components/cabin/CabinGallery.astro';
 import JumpToRequest from '@components/cabin/JumpToRequest.astro';
@@ -28,7 +31,7 @@ interface Props {
 }
 
 const REQUEST_ID = 'request';
-/** How many other apartments the page recommends: the page weighs the same however many apartments the site has. */
+/** How many other apartments show at once; the rest of them are folded under a button (their photos load only when it opens). */
 const OTHERS_SHOWN = 3;
 
 const { cabin, locale } = Astro.props;
@@ -40,13 +43,15 @@ const paragraphs = splitParagraphs(pick(cabin.data.description, locale));
 const features = cabin.data.features.map((feature) => pick(feature, locale));
 const photos = cabin.data.photos.map((photo) => toPagePhoto(photo, locale));
 const cabins = (await getCollection('cabins')).sort((a, b) => a.data.order - b.data.order);
-const others = nextApartments(cabins, cabin.id, OTHERS_SHOWN);
+const ordered = nextApartments(cabins, cabin.id, cabins.length);
+const others = ordered.slice(0, OTHERS_SHOWN);
+const folded = ordered.slice(OTHERS_SHOWN);
 ---
 
 <BaseLayout locale={locale} path={`/cabins/${cabin.id}`} title={name} description={summary}>
   <div class="container section cabin">
     <nav aria-label={t.nav.breadcrumb} class="cabin__back">
-      <a href={`${localizedPath('/', locale)}#cabins`}>{t.nav.allCabins}</a>
+      <a href={`${localizedPath('/', locale)}#all-cabins`}>{t.nav.allCabins}</a>
     </nav>
     <h1>{name}</h1>
     <p class="cabin__summary">{summary}</p>
@@ -83,11 +88,7 @@ const others = nextApartments(cabins, cabin.id, OTHERS_SHOWN);
         <h2 id="more-title">{t.cabin.more}</h2>
         <HeartRule />
         <ApartmentRows cabins={others} locale={locale} />
-        <p class="cabin__all">
-          <a class="button button--secondary" href={`${localizedPath('/', locale)}#cabins`}>
-            {t.nav.allCabins}
-          </a>
-        </p>
+        <MoreApartments cabins={folded} locale={locale} start={others.length} label={t.nav.allCabins} />
       </div>
     </section>
   )}
@@ -132,11 +133,7 @@ const others = nextApartments(cabins, cabin.id, OTHERS_SHOWN);
     margin-block-start: var(--space-8);
     background: var(--color-band);
     border-block: 1px solid var(--color-border);
-  }
-
-  .cabin__all {
-    margin: var(--space-8) 0 0;
-    text-align: center;
+    --more-ground: var(--color-band); /* the focus ring of the fold's button leaves a gap in the colour of the band */
   }
 
   @media (min-width: 62rem) {

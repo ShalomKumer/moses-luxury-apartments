@@ -196,6 +196,20 @@ for (const { path, label, show, hide } of FOLD) {
       await expect.poll(() => requested.some((url) => folded.some((prefix) => url.startsWith(prefix)))).toBe(true);
     });
 
+    test('arrives with every apartment open when the address asks for all of them (#all-cabins)', async ({ page }) => {
+      await page.goto(`${path}#all-cabins`);
+      test.skip((await page.locator('.more').count()) === 0, 'no fold until there are more apartments than are shown');
+      const total = await page.locator('#cabins .row').count();
+      await expect(page.locator('.more')).toHaveAttribute('open', '');
+      await expect(page.locator('#cabins .row:visible')).toHaveCount(total);
+      await expect(page.locator('.more__hide')).toBeVisible();
+      await expect(page.locator('#cabins-title')).toBeInViewport();
+      // the plain "#cabins" address keeps the fold closed, as before
+      await page.goto('about:blank');
+      await page.goto(`${path}#cabins`);
+      await expect(page.locator('.more')).not.toHaveAttribute('open', '');
+    });
+
     test('opens and closes by keyboard, and the control then says to hide them', async ({ page }) => {
       await page.goto(path);
       test.skip((await page.locator('.more').count()) === 0, 'no fold until there are more apartments than are shown');

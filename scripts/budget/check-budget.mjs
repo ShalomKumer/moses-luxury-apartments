@@ -1,7 +1,7 @@
 // Fails when a built page is heavier than its budget (rule 3 of CLAUDE.md). Run after "npm run build"; inside verify.
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { PAGE_LIMITS } from './limits.mjs';
+import { APARTMENT_CODE_LIMIT, PAGE_LIMITS, limitsFor } from './limits.mjs';
 import { pageWeight } from './page-weight.mjs';
 
 const ROOT = 'dist/client';
@@ -28,7 +28,7 @@ if (!existsSync(ROOT)) {
 const kb = (bytes) => `${(bytes / 1000).toFixed(1)} KB`;
 const problems = [];
 console.log(
-  `Page weight (limits: JS ${kb(PAGE_LIMITS.js)}, code ${kb(PAGE_LIMITS.code)}, total ${kb(PAGE_LIMITS.total)})`,
+  `Page weight (limits: JS ${kb(PAGE_LIMITS.js)}, code ${kb(PAGE_LIMITS.code)}, apartment pages' code ${kb(APARTMENT_CODE_LIMIT)}, total ${kb(PAGE_LIMITS.total)})`,
 );
 for (const page of pages(ROOT)) {
   const weight = pageWeight(readFileSync(page, 'utf8'), page, ROOT, sizeOf);
@@ -37,7 +37,7 @@ for (const page of pages(ROOT)) {
     `  ${name.padEnd(28)} JS ${kb(weight.js).padStart(8)}  code ${kb(weight.code).padStart(8)}  total ${kb(weight.total).padStart(9)}`,
   );
   for (const reference of weight.missing) problems.push(`${name}: names ${reference}, which is not in the build`);
-  for (const [key, limit] of Object.entries(PAGE_LIMITS)) {
+  for (const [key, limit] of Object.entries(limitsFor(name))) {
     if (weight[key] > limit) problems.push(`${name}: ${key} is ${kb(weight[key])}, over the ${kb(limit)} budget`);
   }
 }

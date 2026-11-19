@@ -1,6 +1,6 @@
 ---
 /**
- * The apartments of the home page that sit folded below the first few: a native `<details>`, so it opens with a click, Enter
+ * The apartments that sit folded below the first few, on the home page and on an apartment's page (the rest of the others): a native `<details>`, so it opens with a click, Enter
  * or Space, works without JavaScript and is found by the browser's search. Their photos are lazy, so a browser fetches none
  * until the visitor opens it and the page keeps its weight however many apartments there are (the page-weight check reads
  * it that way, `scripts/budget`). The control is a quiet pill between two hairlines, not a button: it says how many are
@@ -18,11 +18,13 @@ interface Props {
   locale: Locale;
   /** How many apartments are shown above the fold, so the rows keep alternating sides. */
   start: number;
+  /** What the closed control says, instead of "show N more" (the apartment page's own button says "All apartments"). */
+  label?: string;
 }
 
-const { cabins, locale, start } = Astro.props;
+const { cabins, locale, start, label: closedLabel } = Astro.props;
 const t = getMessages(locale).home.moreApartments;
-const label = cabins.length === 1 ? t.one : fillTemplate(t.many, { count: cabins.length });
+const label = closedLabel ?? (cabins.length === 1 ? t.one : fillTemplate(t.many, { count: cabins.length }));
 ---
 
 {cabins.length > 0 && (
@@ -39,6 +41,11 @@ const label = cabins.length === 1 ? t.one : fillTemplate(t.many, { count: cabins
     </div>
   </details>
 )}
+
+<script>
+  import { openFoldsOnRequest } from './open-folds';
+  openFoldsOnRequest();
+</script>
 
 <style>
   .more {
@@ -76,7 +83,7 @@ const label = cabins.length === 1 ? t.one : fillTemplate(t.many, { count: cabins
   .more__summary:focus-visible .more__label {
     outline: 3px solid var(--color-focus);
     outline-offset: 2px;
-    box-shadow: 0 0 0 6px var(--color-surface);
+    box-shadow: 0 0 0 6px var(--more-ground, var(--color-surface));
   }
 
   .more__label {

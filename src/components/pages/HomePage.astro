@@ -35,6 +35,8 @@ const { shown, rest } = splitList(cabins, ROWS_SHOWN);
     <BookingRequest locale={locale} cabins={cabins} />
   </HomeHero>
 
+  <!-- an empty anchor at the start of the list: "#all-cabins" lands here and opens the fold (open-folds.ts) -->
+  <div id="all-cabins"></div>
   <section id="cabins" class="section" aria-labelledby="cabins-title">
     <div class="container">
       <h2 id="cabins-title">{t.home.cabinsHeading}</h2>

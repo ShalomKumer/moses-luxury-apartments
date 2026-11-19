@@ -144,6 +144,16 @@ Not drawn here, because the page has none: loading, empty and error states of da
   own work, and a drag or a swipe never closes it. `domain/gallery/photo-area.ts` was removed with the rule that needed it.
 - **The button (4)** says "All photos", with no number.
 
+**Changed 2026-11-19, later (the user's follow-up, `fix/apartment-more-fold`):**
+- **The rest of the apartments open on the page.** Under the three rows of the band the "All apartments" button is the home page's fold (`MoreApartments`): one
+  click opens every other apartment here (no second "show more", no trip to the home page); it then reads "Hide the other apartments". The rows are in the page, their
+  photos lazy, so the phone weight stays under the 1 MB ceiling and no photo is made smaller. The old link button to the home page's list is gone.
+- **The "All apartments" link at the top** (the breadcrumb) leads to `/#all-cabins`: the home page then arrives with every apartment already open and stands at the
+  start of the list (an empty anchor `#all-cabins` before the section; `open-folds.ts` opens the fold; without JavaScript the list arrives closed). The header's
+  "Apartments" and the 404 page's button keep `#cabins` (fold closed, as before).
+- **Code ceiling:** an apartment page carries about 110 KB of markup as served (about 12 KB compressed), over the 100 KB ceiling, so apartment pages have their own
+  ceiling of 125 KB (`scripts/budget/limits.mjs`, `limitsFor`); every other page keeps 100 KB. The user's decision.
+
 **Rules for the build (stage 4):**
 - The request card is the home page's card without the apartment choice; its message names the apartment, and its
   guests run up to the apartment's `maxGuests` (`buildBookingMessage` takes the name, as `home.md` says).
