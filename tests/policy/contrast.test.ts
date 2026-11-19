@@ -41,7 +41,7 @@ const TEXT_PAIRS: [string, string][] = [
   ['selected-text', 'selected-bg'],
   // the date picker: a day between the two ends of the stay is shaded with the notice colour
   ['text', 'notice-bg'],
-  // the band of the other apartments under an apartment's details: the heading, the line under a card and the closing line
+  // the band of the other apartments under an apartment's details: the heading, the rows' text and their links
   ['text', 'band'],
   ['text-muted', 'band'],
   ['link', 'band'],
@@ -53,6 +53,9 @@ const EDGE_PAIRS: [string, string][] = [
   ['border', 'surface'],
   ['focus', 'bg'],
   ['focus', 'surface'],
+  // the other apartments' rows on their band: the edge of a chip or a button and the focus ring
+  ['border', 'band'],
+  ['focus', 'band'],
   ['unknown-text', 'surface'],
   ['selected-bg', 'surface'],
   // the date picker's focus ring on a shaded day
