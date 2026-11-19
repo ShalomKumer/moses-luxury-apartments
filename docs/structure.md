@@ -56,7 +56,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── seo/      SeoHead (canonical, hreflang, sharing tags, noindex), language-links.ts (the absolute hreflang list), site-pages.ts (every page's path), seo-documents.ts (sitemap and robots text)
 │   │   ├── layout/   BaseLayout, SkipLink, SiteHeader (logo), SiteFooter, BackToTop + back-to-top.ts (the corner button that returns to the top), LanguageOffer + language-offer.ts (the thin "also in English / בעברית" bar)
 │   │   ├── home/     HomeHero, HomePoints   # the home page's own parts
-│   │   ├── cabin/    CabinGallery + gallery-controller.ts (the viewer), cabin-photo.ts (content photo -> page photo), CabinFacts, CabinHighlights + highlight-icons.ts (the badges and their icons), JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments (the home page's folded rows)
+│   │   ├── cabin/    CabinGallery + gallery-controller.ts (the viewer), cabin-photo.ts (content photo -> page photo), CabinFacts, CabinHighlights + highlight-icons.ts (the badges and their icons), JumpToRequest, ApartmentRow, ApartmentRows, MoreApartments + open-folds.ts (the folded rows of the home page and of an apartment's page; `#all-cabins` opens them)
 │   │   │             #   (the rows are shared by the home page and the apartment pages)
 │   │   ├── legal/    LegalHead, LegalToc (sticky beside the text, folded <details> on a phone), DraftNotice,
 │   │   │             #   CoordinatorCard (the accessibility coordinator, from config/site.ts)
