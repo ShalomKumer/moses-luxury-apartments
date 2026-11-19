@@ -49,6 +49,25 @@ for (const { path, label } of PAGES) {
       await expect(page.locator('[data-request-bar] .booking-notice')).toHaveCount(0);
     });
 
+    test('a computer with a touch screen still gets the Gmail tab, since a mailto link there may do nothing', async ({
+      browser,
+    }, testInfo) => {
+      test.skip(testInfo.project.name === 'phone', 'the desktop project stands for the computer');
+      const context = await browser.newContext({
+        viewport: { width: 1280, height: 800 },
+        hasTouch: true,
+        userAgent:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+      });
+      const page = await context.newPage();
+      await page.goto(path);
+      // the way of pointing is a finger, as on a Windows touch laptop in tablet mode
+      expect(await page.evaluate(() => matchMedia('(hover: none) and (pointer: coarse)').matches)).toBe(true);
+      expect((await emailLink(page)).kind).toBe('gmail');
+      await expect(page.locator('[data-request-bar] [data-booking-email]')).toHaveAttribute('target', '_blank');
+      await context.close();
+    });
+
     test('the email link follows the choices, like the WhatsApp link', async ({ page }) => {
       await page.goto(path);
       await page.locator('[data-request-guests]').fill('2');
