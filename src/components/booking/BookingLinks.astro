@@ -1,11 +1,13 @@
 ---
 /**
- * The booking buttons: WhatsApp and Gmail, each opening the ready message in a new tab. They work without JavaScript.
+ * The booking buttons: WhatsApp (a new tab) and email, each carrying the ready message. The email button opens a new message in
+ * the mail app (`mailto:`), and on a computer with a mouse the script turns it into Gmail's compose window in a new tab
+ * (`booking-links.ts`). They work without JavaScript.
  */
 import Icon from '@components/ui/Icon.astro';
 import { SITE, WHATSAPP_PHONE } from '@config/site';
 import { buildBookingSubject, type BookingTexts } from '@domain/booking/booking-message';
-import { gmailComposeLink } from '@domain/booking/gmail-link';
+import { mailtoLink } from '@domain/booking/mailto-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
 import { fillTemplate } from '@domain/text/fill-template';
@@ -44,16 +46,13 @@ const subject = buildBookingSubject(texts, cabinName);
         <span class="visually-hidden"> - {fillTemplate(t.newTabHint, { name })}</span>
       </a>
     )}
-    <a
-      class="button button--secondary"
-      data-booking-gmail
-      href={gmailComposeLink(SITE.email, subject, message)}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <a class="button button--secondary" data-booking-email href={mailtoLink(SITE.email, subject, message)}>
       <Icon name="mail" />
-      {t.gmail}
-      <span class="visually-hidden"> - {fillTemplate(t.newTabHint, { name })}</span>
+      {t.email}
+      <span class="visually-hidden" data-new-tab-hint hidden>
+        {' '}
+        - {fillTemplate(t.newTabHint, { name })}
+      </span>
     </a>
   </div>
 </div>

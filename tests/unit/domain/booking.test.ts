@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildBookingMessage, buildBookingSubject } from '@domain/booking/booking-message';
 import { gmailComposeLink } from '@domain/booking/gmail-link';
+import { mailtoLink } from '@domain/booking/mailto-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
 import { telLink } from '@domain/booking/tel-link';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
@@ -88,6 +89,15 @@ describe('links', () => {
     );
   });
 
+  it('builds a mailto link that keeps ampersands and Hebrew, with new lines as CRLF', () => {
+    expect(mailtoLink('a@b.co', 'x y', 'z&w\nא')).toBe('mailto:a@b.co?subject=x%20y&body=z%26w%0D%0A%D7%90');
+  });
+
+  it('does not double a CRLF that is already there, and builds a mailto link with an empty subject and body', () => {
+    expect(mailtoLink('a@b.co', '', 'a\r\nb')).toBe('mailto:a@b.co?subject=&body=a%0D%0Ab');
+    expect(mailtoLink('a@b.co', '', '')).toBe('mailto:a@b.co?subject=&body=');
+  });
+
   it('builds a Gmail link with an empty subject and body', () => {
     expect(gmailComposeLink('a@b.co', '', '')).toBe('https://mail.google.com/mail/?view=cm&fs=1&to=a%40b.co&su=&body=');
   });
@@ -143,31 +153,5 @@ describe('booking message with a name and a party', () => {
     expect(buildBookingMessage(en.booking.message, null, null, noDates, { name: '{cabin} {count}' })).toContain(
       'Name: {cabin} {count}',
     );
-  });
-});
-
-describe('booking message with flexible dates', () => {
-  const dates = { from: '10.11.2026', to: '13.11.2026', nights: 3 };
-
-  it('writes a flexibility line after the dates, with the singular for one day', () => {
-    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: 2 })).toBe(
-      'שלום, אשמח לבדוק זמינות והזמנה.\nתאריכים: 10.11.2026 עד 13.11.2026 (3 לילות)\nגמישות בתאריכים: ±2 ימים',
-    );
-    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: 1 })).toContain('±יום אחד');
-    expect(buildBookingMessage(en.booking.message, null, null, dates, { flexDays: 7 })).toContain(
-      'Flexible dates: ±7 days',
-    );
-    expect(buildBookingMessage(en.booking.message, null, null, dates, { flexDays: 1 })).toContain(
-      'Flexible dates: ±1 day',
-    );
-  });
-
-  it('writes no line for exact dates, for no dates, or for an odd value', () => {
-    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: 0 })).not.toContain('גמישות');
-    expect(buildBookingMessage(he.booking.message, null, null, dates)).not.toContain('גמישות');
-    expect(
-      buildBookingMessage(he.booking.message, null, null, { from: null, to: null, nights: null }, { flexDays: 3 }),
-    ).not.toContain('גמישות');
-    expect(buildBookingMessage(he.booking.message, null, null, dates, { flexDays: -1 })).not.toContain('גמישות');
   });
 });

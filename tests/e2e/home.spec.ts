@@ -1,7 +1,8 @@
 // The home page's booking-request bar and layout, in a real browser (docs/design/home.md): the message follows the
 // choices, a bad date shows a note and stays out of the message, the guests follow the apartment, the fonts load
 // from our own host, the rows alternate by the text direction, and the rows beyond the first five sit folded (once there are more than five).
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+import { bookingMessage, emailLink } from './helpers/booking-message';
 import { clickDay, dayFromNow, openPicker, pickStay } from './helpers/date-picker';
 import { axeViolations } from './helpers/run-axe';
 
@@ -10,24 +11,19 @@ const PAGES = [
   { path: '/en/', label: 'English', rtl: false },
 ];
 
-/** The message the WhatsApp link carries, decoded. */
-async function whatsappText(page: Page): Promise<string> {
-  const href = await page.locator('[data-request-bar] [data-booking-whatsapp]').getAttribute('href');
-  return new URL(href ?? '').searchParams.get('text') ?? '';
-}
+const whatsappText = bookingMessage;
 
 for (const { path, label, rtl } of PAGES) {
   test.describe(`home page bar, ${label}`, () => {
-    test('the preview and both links carry the same message, with no dates and no apartment at first', async ({
+    test('both links carry the same message, with no dates and no apartment at first, and no preview is shown', async ({
       page,
     }) => {
       await page.goto(path);
-      const preview = (await page.locator('[data-request-message]').textContent()) ?? '';
-      expect(await whatsappText(page)).toBe(preview);
-      const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
-      expect(gmail.searchParams.get('body')).toBe(preview);
+      const message = await whatsappText(page);
+      expect((await emailLink(page)).body).toBe(message);
       // the apartment line, the name line (empty, to fill in the app) and the dates line
-      expect(preview.split('\n')).toHaveLength(3);
+      expect(message.split('\n')).toHaveLength(3);
+      await expect(page.locator('[data-request-message]')).toHaveCount(0);
     });
 
     test('choosing an apartment and guests writes both into the message', async ({ page }) => {
@@ -39,7 +35,6 @@ for (const { path, label, rtl } of PAGES) {
       const text = await whatsappText(page);
       expect(text).toContain(name);
       expect(text).toContain('2');
-      expect(await page.locator('[data-request-message]').textContent()).toBe(text);
     });
 
     test('takes no more guests than the chosen apartment, and lowers a number that is too high', async ({ page }) => {

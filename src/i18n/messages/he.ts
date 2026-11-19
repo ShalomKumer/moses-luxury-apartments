@@ -26,7 +26,6 @@ export const he = {
     lastUpdated: 'עודכן לאחרונה',
     phone: 'טלפון',
     email: 'מייל',
-    gmail: 'Gmail',
     pageTitle: '{title} | {site}',
   },
   nav: {
@@ -57,10 +56,6 @@ export const he = {
         inStay: 'בתוך השהייה',
         nightsOne: 'לילה אחד',
         nights: '{count} לילות',
-        flexLabel: 'כמה אתם גמישים בתאריכים?',
-        flexExact: 'תאריכים מדויקים',
-        flexOne: '±1 יום',
-        flexMany: '±{count} ימים',
         clear: 'ניקוי',
         done: 'סיום',
         close: 'סגירה',
@@ -75,7 +70,6 @@ export const he = {
       totalHint: 'מחושב לבד, אפשר לשנות',
       capNote: 'הדירה מתאימה עד {count} אורחים.',
       name: 'שם (לא חובה)',
-      previewLabel: 'ההודעה שתיפתח, ואתם משלימים בה את התאריכים:',
       problems: {
         'check-in-past': 'תאריך הכניסה כבר עבר.',
         'check-out-not-after': 'תאריך היציאה צריך להיות אחרי תאריך הכניסה.',
@@ -106,7 +100,8 @@ export const he = {
     guestsUpTo: 'עד {count} אורחים',
     details: 'לפרטים והזמנה',
     about: 'על הדירה',
-    more: 'דירות נוספות',
+    more: 'אולי יעניין אתכם גם',
+    end: 'כאן מסתיימים פרטי {name}',
     jumpToRequest: 'לבקשת הזמנה',
   },
   facts: {
@@ -154,7 +149,7 @@ export const he = {
   },
   booking: {
     whatsapp: 'שליחת בקשה בוואטסאפ',
-    gmail: 'שליחת בקשה ב-Gmail',
+    email: 'שליחת בקשה באימייל',
     newTabHint: '{name} (נפתח בכרטיסייה חדשה)',
     message: {
       intro: 'שלום, אשמח לבדוק זמינות והזמנה ב{cabin}.',
@@ -172,8 +167,6 @@ export const he = {
       childMany: '{count} ילדים',
       name: 'שם: {name}',
       namePlaceholder: 'שם: ',
-      flexOne: 'גמישות בתאריכים: ±יום אחד',
-      flexMany: 'גמישות בתאריכים: ±{count} ימים',
       subject: 'בקשת הזמנה - {cabin}',
     },
   },

@@ -10,7 +10,6 @@ import {
   viewMonthFor,
 } from '@domain/dates/calendar-month';
 import { isNavigationKey, navigate } from '@domain/dates/day-navigation';
-import { FLEX_OPTIONS, parseFlex } from '@domain/dates/flex-days';
 import { EMPTY_RANGE, isBetween, pickDay, rangeNights } from '@domain/dates/range-selection';
 
 describe('calendar months', () => {
@@ -165,23 +164,6 @@ describe('moving between days by keyboard', () => {
     expect(isNavigationKey('PageUp')).toBe(true);
     expect(isNavigationKey('Enter')).toBe(false);
     expect(isNavigationKey('')).toBe(false);
-  });
-});
-
-describe('flexible dates', () => {
-  it('offers the options of the screenshot: exact, 1, 2, 3 and 7 days', () => {
-    expect([...FLEX_OPTIONS]).toEqual([0, 1, 2, 3, 7]);
-  });
-
-  it('reads an option back from the page, and anything else as exact dates', () => {
-    expect(parseFlex('2')).toBe(2);
-    expect(parseFlex('7')).toBe(7);
-    expect(parseFlex('0')).toBe(0);
-    expect(parseFlex('')).toBe(0);
-    expect(parseFlex('4')).toBe(0);
-    expect(parseFlex('-1')).toBe(0);
-    expect(parseFlex('abc')).toBe(0);
-    expect(parseFlex('2 ')).toBe(2);
   });
 });
 

@@ -3,7 +3,6 @@
 import { getCollection } from 'astro:content';
 import Icon from '@components/ui/Icon.astro';
 import { SITE } from '@config/site';
-import { gmailComposeLink } from '@domain/booking/gmail-link';
 import { telLink } from '@domain/booking/tel-link';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
@@ -48,11 +47,6 @@ const legalPages = (await getCollection('legal'))
         <span class="visually-hidden">{t.common.email}: </span>
         <a href={`mailto:${SITE.email}`}>
           <bdi dir="ltr">{SITE.email}</bdi>
-        </a>
-        {' · '}
-        <a href={gmailComposeLink(SITE.email, '', '')} target="_blank" rel="noopener noreferrer">
-          {t.common.gmail}
-          <span class="visually-hidden"> {t.contact.newTabHint}</span>
         </a>
       </p>
     </section>
