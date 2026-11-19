@@ -26,6 +26,16 @@ export default defineConfig({
   projects: [
     { name: 'desktop', use: { viewport: { width: 1280, height: 800 } } },
     // 375 px is the narrowest phone the standards name (docs/standards.md, section 8).
-    { name: 'phone', use: { viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true } },
+    {
+      name: 'phone',
+      use: {
+        viewport: { width: 375, height: 812 },
+        isMobile: true,
+        hasTouch: true,
+        // a phone says so in its user agent, which is how the email button tells it from a computer (mail-device.ts)
+        userAgent:
+          'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36',
+      },
+    },
   ],
 });

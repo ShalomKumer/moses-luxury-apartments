@@ -39,7 +39,7 @@ Every exported function carries a one-line comment saying what it does.
 │   │   ├── scroll/                 # back-to-top (how far the page must be scrolled before the button shows)
 │   │   ├── language/               # suggest-language (which language to offer from the browser's list), external-entry (did the visitor arrive from outside the site)
 │   │   ├── apartments/             # next-apartments (the next few apartments after one, wrapping to the start), split-list (the home page: shown and folded), highlights (the badges: kinds, order, the words each needs in the text, the label with a count)
-│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, tel-link, stay-dates, guests, party (couples, children and the total within the apartment's guests), guest-name (the name made safe for the message)
+│   │   ├── booking/                # booking-message, phone-number, whatsapp-link, mailto-link, gmail-link, phone-or-tablet (phone or tablet by the browser's operating system: the email button's choice of the mail app or Gmail), tel-link, stay-dates, guests, party (couples, children and the total within the apartment's guests), guest-name (the name made safe for the message)
 │   │   ├── gallery/                # gallery-shape (how many photos the grid shows), swipe (what a finger's movement across the viewer means)
 │   │   ├── photos/                 # photo-sources (the src, srcset, smallest and largest file of a photo from its widths)
 │   │   ├── text/                   # fill-template, paragraphs, fill-markers (a part still to fill), table-of-contents
