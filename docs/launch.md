@@ -165,6 +165,13 @@ the bare domain answers 301 to `www` and keeps the path and the query string (`/
   browser. Our content security policy blocked it (a console error on every load, and nothing was sent), but a third-party script on the site touches iron rules 2 and 6. Set in the dashboard under Observability, Analytics, **Web analytics**, **Manage site** for `mosesluxuryapartments.com`:
   Real User Measurements (RUM) from "Enable, excluding visitor data in the EU" to **Disable**. Checked afterwards in a browser: the script is gone from `/`, `/en/` and `/en/cabins/artist-estate/`, and no new policy error appears.
 
+**2026-11-19, the second release** (release PR #62, `dev` into `main`; `main` at `8da0cd5`; it carries PRs #55 to #61: the counters and the photo viewer, the apartment page's band and fold, the budget ceiling for apartment pages):
+
+- `npm run verify` on `main`: 527 unit and 1,237 browser tests green; the last step (`audit:prod`) failed once with "the audit report could not be read" (a network blip, nothing checked) and passed on its own at once.
+- `npx astro build` and `npx wrangler deploy`: Worker version **`99f3665e-cece-4ce7-93c7-28853e5ffcff`** (46 files changed, 411 already there). The version the domain served before was `774ea829-d053-4b70-a7a7-5eee5becffa7` (the main build of the first release), so `npx wrangler rollback 774ea829-d053-4b70-a7a7-5eee5becffa7 --name ahuzot-moses --message "<why>" -y` goes back.
+- `npm run launch:live -- https://www.mosesluxuryapartments.com --preview https://ahuzot-moses.ahuzot-moses.workers.dev`: 13 checks passed; `preview-noindex` timed out (the local resolver, as on the first day) and was checked by hand with `curl --resolve` against an address from `nslookup <host> 1.1.1.1`: 200 and `x-robots-tag: noindex`. The live apartment page carries the new link `/#all-cabins` and the fold; no `Set-Cookie` on the home page.
+- No dashboard setting changed.
+
 **Not done yet:** the `wrangler rollback` trial (S18), the screen-reader pass (A5), and the decision on whose Cloudflare account this is.
 
 ## What this guide could not test
