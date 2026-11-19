@@ -1,7 +1,9 @@
 ---
 /**
  * The top of the home page: a photo across the full width, the logo's two lines over it on a dark plate, and the
- * booking-request bar (the slot) at its bottom. Text over the photo always sits on the plate (A1).
+ * booking-request bar (the slot) at its bottom. Text over the photo always sits on the plate (A1). On a phone the photo
+ * has its own area (about 60% of the screen), the two lines sit on its bottom edge and the request card starts under it,
+ * rising over the photo's edge by a thin strip only, so nearly all of the main photo can be seen.
  */
 import type { PagePhoto } from '@components/cabin/cabin-photo';
 import { getMessages } from '@i18n/get-messages';
@@ -30,9 +32,11 @@ const t = getMessages(locale);
     decoding="async"
   />
   <div class="hero__inner">
-    <div class="container hero__content">
+    <div class="container hero__text">
       <h1 id="hero-title">{t.brand.tagline}</h1>
       <p class="hero__slogan">{t.brand.slogan}</p>
+    </div>
+    <div class="container hero__request">
       <slot />
     </div>
   </div>
@@ -60,6 +64,8 @@ const t = getMessages(locale);
   /* The plate fades in from the photo and is solid under the text and the bar, whatever the photo shows. */
   .hero__inner {
     position: relative;
+    display: grid;
+    gap: var(--space-3);
     padding-block: 3.5rem var(--space-6);
     background: linear-gradient(
       to bottom,
@@ -68,7 +74,7 @@ const t = getMessages(locale);
     );
   }
 
-  .hero__content {
+  .hero__text {
     display: grid;
     gap: var(--space-3);
   }
@@ -106,6 +112,71 @@ const t = getMessages(locale);
   @media (min-width: 48rem) {
     .hero {
       min-height: 50rem;
+    }
+  }
+
+  /*
+   * A phone: the photo is a block of its own, 60% of the screen high (never under 20rem, never over 34rem), the plate with the
+   * two lines is laid over its bottom edge, and the request card follows under it and rises 1.5rem over the edge. The plate is
+   * the same colour and strength as before, so the text on it keeps its contrast (A1).
+   */
+  @media (max-width: 47.99rem) {
+    .hero {
+      --hero-photo: clamp(20rem, 60vh, 34rem);
+
+      display: block;
+      min-height: 0;
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    @supports (height: 1svh) {
+      .hero {
+        --hero-photo: clamp(20rem, 60svh, 34rem);
+      }
+    }
+
+    .hero__photo {
+      position: static;
+      display: block;
+      height: var(--hero-photo);
+    }
+
+    .hero__inner {
+      display: flow-root;
+      position: relative;
+      padding-block: 0 var(--space-6);
+      background: none;
+    }
+
+    .hero__text {
+      position: absolute;
+      inset-inline: 0;
+      bottom: 100%;
+      z-index: 0;
+      isolation: isolate;
+      padding-block: 3.5rem 3rem;
+      color: var(--color-on-scrim);
+    }
+
+    /* the plate runs the whole width of the screen, whatever the width of the text column */
+    .hero__text::before {
+      content: '';
+      position: absolute;
+      inset-block: 0;
+      inset-inline: -100vmax;
+      z-index: -1;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        color-mix(in srgb, var(--color-scrim) var(--scrim-strength), transparent) 3rem
+      );
+    }
+
+    .hero__request {
+      position: relative;
+      z-index: 1;
+      margin-block-start: -1.5rem;
     }
   }
 </style>
