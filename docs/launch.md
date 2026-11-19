@@ -135,8 +135,10 @@ Done by the user with Claude, to the host's preview address only; the domain is 
 
 - The Cloudflare account is **the user's own**; the domain `mosesluxuryapartments.com` was bought there (2026-11-17, USD 11.17 a year, renewing at the same price,
   auto-renewal on) with **the client as registrant**: the registrant's email must confirm the registration (the client did so on 2026-11-17), or the registrar may suspend the domain.
-- So the user controls DNS, the Worker and the renewal payment, and the client is the registrant of record. Before the launch, decide with the client: move the account to the
-  client, or add him as an administrator of this one. The runbook's first rule (accounts belong to the client's business) is **not yet met**; note the decision here.
+- So the user controls DNS, the Worker and the renewal payment, and the client is the registrant of record.
+- **Decision (the user, 2026-11-18): the Cloudflare account stays the user's own.** The client is only the registrant of the domain; he is neither moved in as the account's owner nor added as
+  an administrator for now. The runbook's first rule (accounts belong to the client's business) is therefore **knowingly not met**: if the client ever asks for the account, the steps are to
+  add him as a Super Administrator (Manage Account, Members) or to transfer the domain and the Worker, and this decision is reopened then.
 
 ## Dashboard settings log
 

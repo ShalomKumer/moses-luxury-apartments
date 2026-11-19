@@ -1,3 +1,4 @@
+import { containedArea, isInsideArea } from '@domain/gallery/photo-area';
 import { swipeDirection } from '@domain/gallery/swipe';
 import { fillTemplate } from '@domain/text/fill-template';
 
@@ -8,7 +9,10 @@ interface GalleryParts {
   /** The dark stage the photo fits inside; a finger's movement across it is a swipe. */
   stage: HTMLElement;
   image: HTMLImageElement;
+  /** The line a screen reader announces: the photo's description and its position. Hidden from the eyes. */
   caption: HTMLElement;
+  /** The counter the eyes see, "3 / 12". */
+  counter: HTMLElement;
   /** How the position is spoken, in the page's language: "{n} of {total}". */
   positionTemplate: string;
 }
@@ -19,9 +23,18 @@ function findParts(root: HTMLElement): GalleryParts | null {
   const stage = root.querySelector<HTMLElement>('[data-gallery-stage]');
   const image = root.querySelector<HTMLImageElement>('[data-gallery-image]');
   const caption = root.querySelector<HTMLElement>('[data-gallery-caption]');
+  const counter = root.querySelector<HTMLElement>('[data-gallery-counter]');
   const items = [...root.querySelectorAll<HTMLAnchorElement>('[data-gallery-item]')];
-  if (!dialog || !stage || !image || !caption || items.length === 0) return null;
-  return { items, dialog, stage, image, caption, positionTemplate: root.dataset.positionTemplate ?? '{n}/{total}' };
+  if (!dialog || !stage || !image || !caption || !counter || items.length === 0) return null;
+  return {
+    items,
+    dialog,
+    stage,
+    image,
+    caption,
+    counter,
+    positionTemplate: root.dataset.positionTemplate ?? '{n}/{total}',
+  };
 }
 
 /** The photo files already asked for, kept so the browser does not drop a half-loaded one. */
@@ -38,11 +51,14 @@ function request(url: string): HTMLImageElement {
   return image;
 }
 
+/** How far a finger or a mouse may move and still be a tap, in pixels. */
+const TAP_SLOP_PX = 10;
+
 /** Whether the visitor asked the system for less motion. */
 const calm = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /**
- * Shows one photo in the viewer, with its position spoken. The words change at once. The picture changes after the new file
+ * Shows one photo in the viewer: the counter for the eyes, and its description and position spoken. The words change at once. The picture changes after the new file
  * is ready (the old one stays until then, so the frame is never empty), with a short fade unless the visitor wants less
  * motion; `latest` makes a quick series of presses end on the last one. The two neighbours start loading, so the next
  * press finds its photo ready.
@@ -53,6 +69,7 @@ function showPhoto(parts: GalleryParts, index: number, latest: { value: number }
   const alt = item.dataset.alt ?? '';
   const position = fillTemplate(parts.positionTemplate, { n: index + 1, total });
   parts.caption.textContent = `${alt} (${position})`;
+  parts.counter.textContent = `${index + 1} / ${total}`;
 
   latest.value += 1;
   const mine = latest.value;
@@ -76,7 +93,8 @@ function showPhoto(parts: GalleryParts, index: number, latest: { value: number }
 }
 
 /**
- * Turns the photo links into a viewer: native dialog (focus kept inside, Escape closes), arrows move, focus returns.
+ * Turns the photo links into a viewer: native dialog (focus kept inside, Escape closes), arrows move, focus returns, and a
+ * tap on the dark space around the photo (not on the photo itself, an arrow or the close button) closes it.
  * The arrow keys follow the page's direction: in a right-to-left page the right arrow goes back. The "all photos" button
  * opens the viewer at the first photo. On a touch screen a swipe across the photo moves too (`swipeDirection`). Marks the
  * gallery as enhanced, so the grid may hide what the viewer reaches.
@@ -119,6 +137,38 @@ export function initGallery(root: HTMLElement): void {
     if (event.key === back) move(-1);
   });
   parts.dialog.addEventListener('close', () => opener?.focus());
+
+  // a tap outside the photo closes the viewer: on the dialog's own space, the backdrop, the counter, and the dark bars of the stage
+  // that lie beside a photo that does not fill it. A drag is never a tap (a swipe ends with a click on some phones).
+  const controls = '[data-gallery-prev], [data-gallery-next], [data-gallery-close]';
+  let down: { x: number; y: number } | null = null;
+  let dragged = false;
+  parts.dialog.addEventListener('pointerdown', (event) => {
+    down = { x: event.clientX, y: event.clientY };
+    dragged = false;
+  });
+  parts.dialog.addEventListener('pointermove', (event) => {
+    if (down && Math.hypot(event.clientX - down.x, event.clientY - down.y) > TAP_SLOP_PX) dragged = true;
+  });
+  // the pointer is up: a mouse that only moves over the viewer afterwards is not a drag (the click follows the up at once)
+  for (const name of ['pointerup', 'pointercancel']) {
+    parts.dialog.addEventListener(name, () => {
+      down = null;
+    });
+  }
+  parts.dialog.addEventListener('click', (event) => {
+    const moved = dragged;
+    dragged = false;
+    if (moved) return;
+    const target = event.target as Element;
+    if (target.closest(controls)) return;
+    if (target === parts.image) {
+      const box = parts.image.getBoundingClientRect();
+      const photo = containedArea(box.width, box.height, parts.image.naturalWidth, parts.image.naturalHeight);
+      if (isInsideArea(photo, event.clientX - box.left, event.clientY - box.top)) return;
+    }
+    parts.dialog.close();
+  });
 
   // a swipe: where a finger went down and where it came up (touch only: a mouse has the arrows)
   let start: { x: number; y: number } | null = null;

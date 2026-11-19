@@ -3,7 +3,6 @@
 import HeartRule from '@components/ui/HeartRule.astro';
 import Icon from '@components/ui/Icon.astro';
 import { SITE, WHATSAPP_PHONE } from '@config/site';
-import { gmailComposeLink } from '@domain/booking/gmail-link';
 import { toInternationalDigits } from '@domain/booking/phone-number';
 import { telLink } from '@domain/booking/tel-link';
 import { whatsappLink } from '@domain/booking/whatsapp-link';
@@ -63,11 +62,6 @@ const phoneDigits = toInternationalDigits(WHATSAPP_PHONE);
           <span class="visually-hidden">{t.common.email}: </span>
           <a href={`mailto:${SITE.email}`}>
             <bdi dir="ltr">{SITE.email}</bdi>
-          </a>
-          {' · '}
-          <a href={gmailComposeLink(SITE.email, '', '')} target="_blank" rel="noopener noreferrer">
-            {t.common.gmail}
-            <span class="visually-hidden"> {t.contact.newTabHint}</span>
           </a>
         </li>
         {SITE.location && (

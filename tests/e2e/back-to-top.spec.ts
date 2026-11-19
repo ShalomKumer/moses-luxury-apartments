@@ -85,7 +85,8 @@ for (const { label, path, labelText, endIsLeft } of PAGES) {
 }
 
 test('on a phone, an apartment page lifts the button above the request bar and never overlaps it', async ({ page }) => {
-  await page.goto('/cabins/nobility-1/');
+  // the Artist's Estate: its details are long enough for the bar to be stuck while the button shows (the samples below rely on it)
+  await page.goto('/cabins/artist-estate/');
   const view = page.viewportSize();
   if (!view || view.width >= 992) test.skip(true, 'the request bar is only on a phone');
   // the bar's height is published for the button to rise above it

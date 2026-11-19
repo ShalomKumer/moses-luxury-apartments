@@ -36,7 +36,7 @@ async function frame(page: Page) {
       previous: box('[data-gallery-prev]'),
       next: box('[data-gallery-next]'),
       close: box('[data-gallery-close]'),
-      caption: box('[data-gallery-caption]'),
+      caption: box('.gallery__caption'),
     };
   });
 }
@@ -93,6 +93,74 @@ for (const { label, path, forward, rtl, position } of PAGES) {
       );
       // on a phone the viewer takes the whole screen
       if (view.width < 768) expect([width, height]).toEqual([view.width, view.height]);
+    });
+
+    test('shows a counter under the photo and no description, which a screen reader still gets', async ({ page }) => {
+      await page.goto(path);
+      await page.locator('[data-gallery-all]').click();
+      const counter = page.locator('[data-gallery-counter]');
+      await expect(counter).toHaveText('1 / 10');
+      await expect(counter).toBeVisible();
+      await expect(counter).toHaveAttribute('aria-hidden', 'true');
+      // the words of the photo are in the live line, out of sight (visually hidden), with the position
+      const caption = page.locator('[data-gallery-caption]');
+      await expect(caption).toContainText(position(1));
+      await expect(caption).toHaveAttribute('aria-live', 'polite');
+      expect(((await caption.textContent()) ?? '').length).toBeGreaterThan(position(1).length + 3);
+      expect((await caption.boundingBox())?.width ?? 99).toBeLessThanOrEqual(1);
+      await page.keyboard.press(forward);
+      await expect(counter).toHaveText('2 / 10');
+    });
+
+    test('a tap outside the photo closes the viewer; a tap on the photo, an arrow or a drag does not', async ({
+      page,
+    }) => {
+      await page.goto(path);
+      const dialog = page.locator('[data-gallery-dialog]');
+      const open = async () => {
+        await page.locator('[data-gallery-all]').click();
+        await expect(dialog).toBeVisible();
+        await shown(page, 0);
+      };
+      await open();
+      const boxes = await frame(page);
+      if (!boxes.dialog || !boxes.stage) throw new Error('no boxes');
+      const [dx, dy, , dh] = boxes.dialog;
+      const [sx, sy, sw, sh] = boxes.stage;
+      // the middle of the stage is on the photo: nothing happens
+      await page.mouse.click(sx + sw / 2, sy + sh / 2);
+      await expect(dialog).toBeVisible();
+      // an arrow moves the photo and leaves the viewer open
+      await page.keyboard.press(forward);
+      await page.locator('[data-gallery-next]').click();
+      await expect(dialog).toBeVisible();
+      // a drag that ends on the empty space is not a tap
+      await page.mouse.move(sx + sw / 2, sy + sh / 2);
+      await page.mouse.down();
+      await page.mouse.move(dx + 4, dy + 4, { steps: 6 });
+      await page.mouse.up();
+      await expect(dialog).toBeVisible();
+      // the space around the stage (the dialog's own padding) closes it
+      await page.mouse.click(dx + 6, dy + dh - 6);
+      await expect(dialog).toBeHidden();
+      // the dark bars of the stage count as empty space too: a click there closes, wherever the photo leaves some
+      await open();
+      const bar = await page.evaluate(() => {
+        const image = document.querySelector<HTMLImageElement>('[data-gallery-image]');
+        if (!image) return null;
+        const box = image.getBoundingClientRect();
+        const scale = Math.min(box.width / image.naturalWidth, box.height / image.naturalHeight);
+        const sideBar = (box.width - image.naturalWidth * scale) / 2;
+        const topBar = (box.height - image.naturalHeight * scale) / 2;
+        // the arrows sit at the middle of the stage's sides, so a point on a side bar is taken near its top
+        if (sideBar > 8) return { x: box.left + sideBar / 2, y: box.top + 24 };
+        if (topBar > 8) return { x: box.left + box.width / 2, y: box.top + topBar / 2 };
+        return null;
+      });
+      // Tarpat 18's first photo leaves bars on both widths; if a change of layout ever removes them this must fail, not skip
+      expect(bar, 'a bar beside the photo to tap').not.toBeNull();
+      await page.mouse.click(bar!.x, bar!.y);
+      await expect(dialog).toBeHidden();
     });
 
     test('puts the previous arrow at the start of the line and the next at its end', async ({ page }) => {

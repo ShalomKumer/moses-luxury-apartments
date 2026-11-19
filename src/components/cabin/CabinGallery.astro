@@ -3,10 +3,13 @@
  * An apartment's photos: one large photo and up to four small ones, with "all photos" opening the viewer. Each photo is a
  * link to the full file, so the page works without JavaScript (the grid's photos then show in a plain grid, and the rest
  * as links named by their alt text: a photo beyond the grid is not an <img> in the page, so it weighs nothing until it is
- * opened); the controller turns the links into a viewer dialog with keyboard control (A3). On a phone the grid shows
- * the first photo only. The viewer is a frame of one fixed size: the photo fits inside a dark stage (a tall photo and a wide
- * one take the same room), the arrows stay at the sides of the stage and the caption has a box of three lines, so no control
- * moves from photo to photo. Every label is in the page's language.
+ * opened); the controller turns the links into a viewer dialog with keyboard control (A3). On a phone the grid shows the
+ * main photo and, under it, three small ones; a tap on
+ * any of them opens the viewer. The viewer is a frame of one fixed size: the photo fits inside a dark stage (a tall photo
+ * and a wide one take the same room), the arrows stay at the sides of the stage and under it is only a counter, "3 / 12",
+ * so no control moves from photo to photo; the photo's description stays in a visually hidden line that a screen reader
+ * announces (A2). A tap outside the photo and the controls closes the viewer (`gallery-controller.ts`). Every label is in
+ * the page's language.
  */
 import type { PagePhoto } from '@components/cabin/cabin-photo';
 import Icon from '@components/ui/Icon.astro';
@@ -49,7 +52,7 @@ const shape = galleryShape(photos.length);
             <img
               src={photo.src}
               srcset={photo.srcset}
-              sizes={index === 0 ? '(min-width: 48rem) 66vw, 100vw' : '(min-width: 48rem) 33vw, 100vw'}
+              sizes={index === 0 ? '(min-width: 48rem) 66vw, 100vw' : '(min-width: 48rem) 33vw, 34vw'}
               alt=""
               width={photo.width}
               height={photo.height}
@@ -93,7 +96,11 @@ const shape = galleryShape(photos.length);
           </>
         )}
       </div>
-      <figcaption data-gallery-caption aria-live="polite"></figcaption>
+      <figcaption class="gallery__caption">
+        {/* the counter is for the eyes; the line a screen reader announces (the description and the position) is hidden */}
+        <span class="gallery__counter" data-gallery-counter dir="ltr" aria-hidden="true"></span>
+        <span class="visually-hidden" data-gallery-caption aria-live="polite"></span>
+      </figcaption>
     </figure>
     <button type="button" class="gallery__close" data-gallery-close>
       <Icon name="x" />
@@ -140,26 +147,51 @@ const shape = galleryShape(photos.length);
     padding-block: var(--space-2);
   }
 
-  .gallery__all {
-    position: absolute;
-    inset-block-end: var(--space-3);
-    inset-inline-end: var(--space-3);
-  }
-
   .gallery:not([data-enhanced]) .gallery__all {
     display: none;
   }
 
-  /* with the script, a phone shows the first photo and the "all photos" button; the viewer reaches the rest */
+  /*
+   * With the script, a phone shows the main photo, up to three small ones under it in a row and the
+   * "all photos" button below them; the viewer reaches the rest. A photo beyond the small ones is hidden, and a hidden lazy
+   * picture is never fetched.
+   */
   .gallery[data-enhanced] .gallery__grid {
-    display: block;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
   }
 
-  .gallery[data-enhanced] .gallery__item:not(:first-child) {
+  /* a gallery of two or three photos has fewer small ones: they share the width, with no empty cell */
+  .gallery--n1[data-enhanced] .gallery__grid,
+  .gallery--n2[data-enhanced] .gallery__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .gallery--n3[data-enhanced] .gallery__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery[data-enhanced] .gallery__item:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .gallery[data-enhanced] .gallery__item:nth-child(n + 5) {
     display: none;
   }
 
+  .gallery[data-enhanced] .gallery__all {
+    margin-block-start: var(--space-3);
+  }
+
   @media (min-width: 48rem) {
+    .gallery__all {
+      position: absolute;
+      inset-block-end: var(--space-3);
+      inset-inline-end: var(--space-3);
+      margin-block-start: 0;
+    }
+
     .gallery[data-enhanced] .gallery__grid {
       --gallery-height: clamp(20rem, 38vw, 30rem);
 
@@ -171,6 +203,10 @@ const shape = galleryShape(photos.length);
 
     .gallery[data-enhanced] .gallery__item:not(:first-child) {
       display: block;
+    }
+
+    .gallery[data-enhanced] .gallery__item:first-child {
+      grid-column: auto;
     }
 
     .gallery[data-enhanced] .gallery__item.gallery__item--extra {
@@ -218,7 +254,7 @@ const shape = galleryShape(photos.length);
    * The viewer is one frame of a fixed size, so nothing in it moves from photo to photo: a wide window on a desktop, the whole
    * screen on a phone. It is a grid only while open (a closed dialog stays hidden). Inside, the photo fits a dark stage
    * (object-fit: contain), so a tall photo and a wide one take the same room; the arrows sit at the sides of the stage, the
-   * close button in the corner, and the caption has a box of three lines (a longer text ends in "...").
+   * close button in the corner, and under the stage is one line with the counter.
    */
   .gallery__dialog {
     box-sizing: border-box;
@@ -291,17 +327,21 @@ const shape = galleryShape(photos.length);
     object-fit: contain;
   }
 
-  .gallery__figure figcaption {
-    /* three lines, always: the stage above never grows or shrinks with the words. A longer text ends in "..." here;
-       the whole of it stays in the page for a screen reader (a box that scrolls cannot be reached by keyboard) */
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    height: 4.5em;
-    overflow: hidden;
-    line-height: 1.5;
+  /* one line, always: the stage above never grows or shrinks; the counter is a small pill in the middle of it */
+  .gallery__caption {
+    display: grid;
+    place-items: center;
+    height: 2.25rem;
+  }
+
+  .gallery__counter {
+    padding: var(--space-1) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
     font-size: var(--text-sm);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
   }
 
   .gallery__arrow,

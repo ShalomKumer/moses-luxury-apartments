@@ -29,7 +29,6 @@ export const en: Messages = {
     lastUpdated: 'Last updated',
     phone: 'Phone',
     email: 'Email',
-    gmail: 'Gmail',
     pageTitle: '{title} | {site}',
   },
   nav: {
@@ -60,10 +59,6 @@ export const en: Messages = {
         inStay: 'in your stay',
         nightsOne: '1 night',
         nights: '{count} nights',
-        flexLabel: 'How flexible are your dates?',
-        flexExact: 'Exact dates',
-        flexOne: '±1 day',
-        flexMany: '±{count} days',
         clear: 'Clear',
         done: 'Done',
         close: 'Close',
@@ -78,7 +73,6 @@ export const en: Messages = {
       totalHint: 'Worked out for you; you can change it',
       capNote: 'This apartment takes up to {count} guests.',
       name: 'Name (optional)',
-      previewLabel: 'The message that will open, where you add your dates:',
       problems: {
         'check-in-past': 'The check-in date has already passed.',
         'check-out-not-after': 'The check-out date must be after the check-in date.',
@@ -109,7 +103,8 @@ export const en: Messages = {
     guestsUpTo: 'Up to {count} guests',
     details: 'Details and booking',
     about: 'About the apartment',
-    more: 'More apartments',
+    more: 'You might also like',
+    end: 'That is everything about {name}',
     jumpToRequest: 'Go to the booking request',
   },
   facts: {
@@ -157,7 +152,7 @@ export const en: Messages = {
   },
   booking: {
     whatsapp: 'Send a request on WhatsApp',
-    gmail: 'Send a request by Gmail',
+    email: 'Send a request by email',
     newTabHint: '{name} (opens in a new tab)',
     message: {
       intro: "Hello, I'd like to check availability and book {cabin}.",
@@ -175,8 +170,6 @@ export const en: Messages = {
       childMany: '{count} children',
       name: 'Name: {name}',
       namePlaceholder: 'Name: ',
-      flexOne: 'Flexible dates: ±1 day',
-      flexMany: 'Flexible dates: ±{count} days',
       subject: 'Booking request - {cabin}',
     },
   },

@@ -24,7 +24,7 @@ const shownPhotos = (page: Page) => page.locator('.gallery__item:visible').count
 
 for (const { base, label, position } of PAGES) {
   test.describe(`apartment page, ${label}`, () => {
-    test('the request names the apartment, has no apartment choice and carries the same message in the preview', async ({
+    test('the request names the apartment, has no apartment choice and carries the message in its links', async ({
       page,
     }) => {
       await page.goto(`${base}/artist-estate/`);
@@ -32,7 +32,6 @@ for (const { base, label, position } of PAGES) {
       const name = (await page.locator('h1').textContent())?.trim() ?? '';
       const text = await whatsappText(page);
       expect(text).toContain(name);
-      expect(await page.locator('[data-request-message]').textContent()).toBe(text);
     });
 
     test('takes no more guests than the apartment', async ({ page }) => {
@@ -65,20 +64,45 @@ for (const { base, label, position } of PAGES) {
       expect(await axeViolations(page)).toEqual([]);
     });
 
-    test('ten photos: the grid shows five (one large, four small) on a wide screen, the first alone on a phone', async ({
+    test('ten photos: the grid shows five (one large, four small) on a wide screen, the main one and three small ones on a phone', async ({
       page,
       viewport,
     }) => {
       await page.goto(`${base}/artist-estate/`);
       const wide = (viewport?.width ?? 0) >= 768;
-      expect(await shownPhotos(page)).toBe(wide ? 5 : 1);
+      expect(await shownPhotos(page)).toBe(wide ? 5 : 4);
       await expect(page.locator('[data-gallery-all]')).toContainText('10');
       if (wide) {
         const widths = await page
           .locator('.gallery__item:visible')
           .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().width));
         expect(widths[0]).toBeGreaterThan(widths[1] * 1.5);
+      } else {
+        // a phone: the main photo across the width, the three small ones in one row under it, and the button below them
+        const boxes = await page
+          .locator('.gallery__item:visible')
+          .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect()).map((r) => [r.x, r.y, r.width]));
+        expect(boxes[0][2]).toBeGreaterThan(boxes[1][2] * 2.5);
+        expect(new Set(boxes.slice(1).map((box) => Math.round(box[1]))).size).toBe(1);
+        expect(boxes[1][1]).toBeGreaterThan(boxes[0][1]);
+        const all = await page.locator('[data-gallery-all]').boundingBox();
+        expect(all?.y ?? 0).toBeGreaterThan(boxes[1][1]);
       }
+    });
+
+    test('a tap on a small photo opens the viewer at that photo (a phone), and a tap on the main one at the first', async ({
+      page,
+      viewport,
+    }) => {
+      test.skip((viewport?.width ?? 0) >= 768, 'the small photos under the main one are a phone layout');
+      await page.goto(`${base}/artist-estate/`);
+      const caption = page.locator('[data-gallery-caption]');
+      await page.locator('[data-gallery-item="2"]').click();
+      await expect(page.locator('[data-gallery-dialog]')).toBeVisible();
+      await expect(caption).toHaveText(/3 (מתוך|of) 10/);
+      await page.keyboard.press('Escape');
+      await page.locator('[data-gallery-item="0"]').click();
+      await expect(caption).toHaveText(position);
     });
 
     test('"all photos" opens the viewer at the first photo and gives focus back to the button on Escape', async ({
@@ -132,9 +156,9 @@ for (const { base, label, position } of PAGES) {
 
     test('lists the next three apartments and not this one', async ({ page }) => {
       await page.goto(`${base}/artist-estate/`);
-      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
+      await expect(page.locator('.cabin__more .card')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/artist-estate"]')).toHaveCount(0);
-      const links = page.locator('.cabin__more .row a.button');
+      const links = page.locator('.cabin__more .card h3 a');
       for (const [index, id] of ['atzulat-hakikar-b', 'atzulat-hakikar-a', 'tarpat-18'].entries()) {
         await expect(links.nth(index)).toHaveAttribute('href', new RegExp(`${base}/${id}/?$`));
       }
@@ -142,12 +166,32 @@ for (const { base, label, position } of PAGES) {
 
     test('the list wraps to the start, so the last apartment is not left without others', async ({ page }) => {
       await page.goto(`${base}/tet-zayin-8/`);
-      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
+      await expect(page.locator('.cabin__more .card')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/tet-zayin-8"]')).toHaveCount(0);
-      await expect(page.locator('.cabin__more .row a.button').first()).toHaveAttribute(
+      await expect(page.locator('.cabin__more .card h3 a').first()).toHaveAttribute(
         'href',
         new RegExp(`${base}/artist-estate/?$`),
       );
+    });
+
+    test('the apartment ends with a closing line and a link back to the request, and the other apartments sit in a band of their own', async ({
+      page,
+    }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const end = page.locator('.end');
+      await expect(end).toBeVisible();
+      await expect(end.locator('a')).toHaveAttribute('href', '#request');
+      await expect(end).toContainText(/אחוזת האמן|Artist/);
+      const band = page.locator('.cabin__more');
+      const colour = await band.evaluate((node) => getComputedStyle(node).backgroundColor);
+      const page_ = await page.locator('body').evaluate((node) => getComputedStyle(node).backgroundColor);
+      expect(colour).not.toBe(page_);
+      // the closing line comes before the band, and the band before the contact section
+      const order = await page.evaluate(() => {
+        const y = (selector: string) => document.querySelector(selector)?.getBoundingClientRect().top ?? -1;
+        return [y('.cabin__columns'), y('.end'), y('.cabin__more'), y('#contact')];
+      });
+      expect([...order].sort((a, b) => a - b)).toEqual(order);
     });
 
     test('a button leads to the list of all the apartments on the home page', async ({ page }) => {
@@ -160,10 +204,10 @@ for (const { base, label, position } of PAGES) {
       expect(await page.locator('#cabins .row').count()).toBeGreaterThan(3);
     });
 
-    test('on a phone a row loads the smallest file of its photo', async ({ page, viewport }) => {
+    test('on a phone a card loads the smallest file of its photo', async ({ page, viewport }) => {
       test.skip((viewport?.width ?? 0) > 480, 'only a phone is given the smallest file');
       await page.goto(`${base}/artist-estate/`);
-      const photo = page.locator('.cabin__more .row__photo[srcset]').first();
+      const photo = page.locator('.cabin__more .card__photo[srcset]').first();
       await photo.scrollIntoViewIfNeeded();
       await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.currentSrc)).toMatch(/-640\.webp$/);
     });

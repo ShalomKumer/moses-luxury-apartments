@@ -52,7 +52,6 @@ describe('no availability for visitors', () => {
    */
   const PICKER_FILES = [
     'src/components/booking/DateRangePicker.astro',
-    'src/components/booking/FlexChips.astro',
     'src/components/booking/calendar-render.ts',
     'src/components/booking/picker-controller.ts',
   ];
@@ -88,7 +87,9 @@ describe('no availability for visitors', () => {
     const en = readText(join(ROOT, 'src/i18n/messages/en.ts'));
     const he = readText(join(ROOT, 'src/i18n/messages/he.ts'));
     for (const text of [en, he]) {
-      const picker = text.slice(text.indexOf('picker: {'), text.indexOf('previewLabel'));
+      const start = text.indexOf('picker: {');
+      // the whole picker block: up to the line that closes it (a `{from}` placeholder holds a brace of its own)
+      const picker = text.slice(start, text.indexOf('\n      },', start));
       expect(picker.length).toBeGreaterThan(100);
       expect(picker).not.toMatch(wording);
     }

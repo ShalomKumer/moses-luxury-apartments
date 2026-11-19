@@ -2,6 +2,7 @@
 // typed over, each within the apartment's guests; a name that goes into the message only. On the home page and on an
 // apartment's page, in both languages, on a desktop and a phone.
 import { expect, test, type Page } from '@playwright/test';
+import { bookingMessage, emailLink } from './helpers/booking-message';
 import { axeViolations } from './helpers/run-axe';
 
 const LOCALES = [
@@ -32,7 +33,7 @@ const children = (page: Page) => page.locator('[data-counter="children"] [data-c
 const more = (page: Page, kind: 'couples' | 'children') => page.locator(`[data-counter="${kind}"] [data-counter-more]`);
 const less = (page: Page, kind: 'couples' | 'children') => page.locator(`[data-counter="${kind}"] [data-counter-less]`);
 const total = (page: Page) => page.locator('[data-request-guests]');
-const message = async (page: Page) => (await page.locator('[data-request-message]').textContent()) ?? '';
+const message = bookingMessage;
 
 for (const { label, home, apartment, big, twoCouples, oneChild, guests, nameLine } of LOCALES) {
   test.describe(`the party and the name, ${label}`, () => {
@@ -131,11 +132,11 @@ for (const { label, home, apartment, big, twoCouples, oneChild, guests, nameLine
       await expect(total(page)).toHaveValue('3');
     });
 
-    test('the name goes into the message and into the WhatsApp and Gmail links, with its characters encoded', async ({
+    test('the name goes into the message and into the WhatsApp and email links, with its characters encoded', async ({
       page,
     }) => {
       await page.goto(apartment);
-      await expect(page.locator('[data-request-message]')).toContainText(nameLine('').trim());
+      expect(await message(page)).toContain(nameLine('').trim());
       await page.locator('[data-request-name]').fill('Dana & Co #1 100%');
       const text = await message(page);
       expect(text).toContain(nameLine('Dana & Co #1 100%'));
@@ -143,14 +144,13 @@ for (const { label, home, apartment, big, twoCouples, oneChild, guests, nameLine
         (await page.locator('[data-request-bar] [data-booking-whatsapp]').getAttribute('href')) ?? '',
       );
       expect(whatsapp.searchParams.get('text')).toBe(text);
-      const gmail = new URL((await page.locator('[data-request-bar] [data-booking-gmail]').getAttribute('href')) ?? '');
-      expect(gmail.searchParams.get('body')).toBe(text);
+      expect((await emailLink(page)).body).toBe(text);
     });
 
-    test('a name with markup is text in the preview, never markup', async ({ page }) => {
+    test('a name with markup is text in the message, never markup', async ({ page }) => {
       await page.goto(apartment);
       await page.locator('[data-request-name]').fill('<img src=x onerror=alert(1)><b>x</b>');
-      await expect(page.locator('[data-request-message] img, [data-request-message] b')).toHaveCount(0);
+      await expect(page.locator('[data-request-bar] img, [data-request-bar] b')).toHaveCount(0);
       expect(await message(page)).toContain('<img src=x onerror=alert(1)>');
     });
 

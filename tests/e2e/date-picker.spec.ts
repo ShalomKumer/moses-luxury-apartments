@@ -1,8 +1,9 @@
 // The date picker of the booking request (2026-11-10), in a real browser: one field "When?" that opens a calendar,
 // "from date to date", only to fill the dates of the message. A desktop shows two months, a phone one. Past days and days
-// more than a year ahead cannot be chosen; the flexibility buttons add a line to the message; the keys follow the
+// more than a year ahead cannot be chosen; the keys follow the
 // page's direction; nothing is stored; and the calendar never says a day is free or taken (H7, L3, A3).
 import { expect, test, type Page } from '@playwright/test';
+import { bookingMessage } from './helpers/booking-message';
 import { clickDay, dayFromNow, openPicker, pickStay, showDay } from './helpers/date-picker';
 import { axeViolations } from './helpers/run-axe';
 
@@ -15,8 +16,6 @@ const LOCALES = [
     firstWeekday: 'יום ראשון',
     threeNights: '3 לילות',
     inStay: 'בתוך השהייה',
-    flexTwo: 'גמישות בתאריכים: ±2 ימים',
-    flexLine: /גמישות בתאריכים/,
     placeholder: 'בחירת תאריכים',
     wording: /פנוי|תפוס|זמין/,
   },
@@ -28,30 +27,16 @@ const LOCALES = [
     firstWeekday: 'Sunday',
     threeNights: '3 nights',
     inStay: 'in your stay',
-    flexTwo: 'Flexible dates: ±2 days',
-    flexLine: /Flexible dates/,
     placeholder: 'Choose dates',
     wording: /free|taken|available|availability|vacant|booked/i,
   },
 ];
 
-const message = async (page: Page) => (await page.locator('[data-request-message]').textContent()) ?? '';
+const message = bookingMessage;
 const summary = (page: Page) => page.locator('[data-request-bar] [data-picker-summary]');
 const dialog = (page: Page) => page.locator('[data-request-bar] [data-picker-dialog]');
 
-for (const {
-  label,
-  home,
-  apartment,
-  rtl,
-  firstWeekday,
-  threeNights,
-  inStay,
-  flexTwo,
-  flexLine,
-  placeholder,
-  wording,
-} of LOCALES) {
+for (const { label, home, apartment, rtl, firstWeekday, threeNights, inStay, placeholder, wording } of LOCALES) {
   test.describe(`the date picker, ${label}`, () => {
     test('the field says "choose dates" and the message leaves the dates to fill in', async ({ page }) => {
       await page.goto(home);
@@ -108,25 +93,6 @@ for (const {
       await expect(page.locator('[data-picker-hint]')).not.toBeEmpty();
     });
 
-    test('the flexibility buttons add a line to the message; exact dates and Clear take it away', async ({ page }) => {
-      await page.goto(home);
-      await pickStay(page, 10, 13);
-      expect(await message(page)).not.toMatch(flexLine);
-      await openPicker(page);
-      await page.locator('[data-flex="2"]').click();
-      await expect(page.locator('[data-flex="2"]')).toHaveAttribute('aria-pressed', 'true');
-      await expect(page.locator('[data-flex="0"]')).toHaveAttribute('aria-pressed', 'false');
-      expect(await message(page)).toContain(flexTwo);
-      await page.locator('[data-flex="0"]').click();
-      expect(await message(page)).not.toMatch(flexLine);
-      await page.locator('[data-flex="7"]').click();
-      await page.locator('[data-picker-clear]').click();
-      await expect(page.locator('[data-flex="0"]')).toHaveAttribute('aria-pressed', 'true');
-      await expect(summary(page)).toHaveText(placeholder);
-      expect(await message(page)).not.toMatch(flexLine);
-      expect(await message(page)).not.toMatch(/\d{2}\.\d{2}\.\d{4}/);
-    });
-
     test('the keys follow the direction of the page, Enter chooses, and Escape closes with the focus back on the field', async ({
       page,
     }) => {
@@ -162,8 +128,6 @@ for (const {
       await page.goto(home);
       await openPicker(page);
       await expect(dialog(page)).not.toContainText(wording);
-      expect(await axeViolations(page)).toEqual([]);
-      await page.locator('[data-flex="3"]').click();
       expect(await axeViolations(page)).toEqual([]);
     });
 
