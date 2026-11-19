@@ -132,12 +132,12 @@ describe('booking message with a name and a party', () => {
   it('writes the couples and children after the total, with a plural only where one is needed', () => {
     const message = (couples: number, children: number, total: number) =>
       buildBookingMessage(he.booking.message, null, total, noDates, { split: { couples, children } });
-    expect(message(2, 3, 7)).toContain('מספר אורחים: 7 (2 זוגות, 3 ילדים)');
-    expect(message(1, 1, 3)).toContain('מספר אורחים: 3 (זוג אחד, ילד אחד)');
+    expect(message(2, 3, 7)).toContain('מספר אורחים: 7 (2 זוגות, 3 יחידים)');
+    expect(message(1, 1, 3)).toContain('מספר אורחים: 3 (זוג אחד, יחיד אחד)');
     expect(message(1, 0, 2)).toContain('מספר אורחים: 2 (זוג אחד)');
-    expect(message(0, 4, 4)).toContain('מספר אורחים: 4 (4 ילדים)');
+    expect(message(0, 4, 4)).toContain('מספר אורחים: 4 (4 יחידים)');
     expect(buildBookingMessage(en.booking.message, null, 5, noDates, { split: { couples: 2, children: 1 } })).toContain(
-      'Number of guests: 5 (2 couples, 1 child)',
+      'Number of guests: 5 (2 couples, 1 individual)',
     );
   });
 

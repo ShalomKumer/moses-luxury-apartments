@@ -118,23 +118,31 @@ Not drawn here, because the page has none: loading, empty and error states of da
 4. **Two columns:** the details ("about the apartment", then "what it has": guests, bedrooms, bathrooms, a row of badges, the features) and, beside
    them, the **request card** that stays in view while the details scroll. On a phone, one column: the details, then
    the card, and a button stuck to the bottom under the details that jumps to the card's first field (from 5).
-5. **More apartments** as the home page's alternating rows (from 2; since 2026-11-18 compact cards in a band, see below), then the contact area. **Changed 2026-11-04 (approved by the user,
+5. **More apartments** as the home page's alternating rows (from 2; in a band of their own since 2026-11-18, see below), then the contact area. **Changed 2026-11-04 (approved by the user,
    `feature/lighter-apartment-rows`):** the page shows the **next three** apartments in the list (wrapping to the start; never itself) and an
    "All apartments" button to the home page's list, not every other apartment; on a phone a row loads the smallest file of its photo. Why: every
    row costs a photo, so the page grew with each apartment the site gained and reached the 1 MB ceiling at five. The home page still lists all of them.
 
 **Changed 2026-11-18 (the user's list of fixes, items 7, 9, 10 and 11):**
-- **The end of the apartment (7, option B of `explorations/launch-fixes-options.html`).** After the details and the request comes a closing line (a heart
+- **The end of the apartment (7, option B; replaced by option A on 2026-11-19, see below).** After the details and the request comes a closing line (a heart
   rule, "that is everything about {name}", a link back up to the request), then the other apartments in a band of their own (`--color-band`, a hairline
   above and below) headed "you might also like", as **compact cards**: the photo, the name as a link stretched over the whole card, the guests. On a phone the
   cards are one row that moves sideways, 72% wide each, so the next shows its edge; from 48 rem three side by side. The "All apartments" button stays under them.
 - **The viewer (9, 10).** Under the photo there is only a counter, "3 / 12" (a small pill, left to right in both languages); the description of the photo
-  stays in a visually hidden live line with its position, so a screen reader still announces it (A2). A tap on the dark space around the photo, on the
-  bars beside a photo that does not fill the stage, or on the backdrop closes the viewer; a tap on the photo, an arrow or the close button does not, and
-  neither does a drag or a swipe (`domain/gallery/photo-area.ts` tells where the photo is).
+  stays in a visually hidden live line with its position, so a screen reader still announces it (A2). (Replaced on 2026-11-19, see below: a tap anywhere closes the viewer.)
 - **The grid on a phone (11).** The main photo and three small ones in a row under it (fewer where the apartment has fewer photos; the heaviest page stays
   under the 1 MB ceiling, 842 KB, so the two-photo fallback was not needed), each opening the viewer at its photo; the "All photos" button is under them. A computer keeps one large photo and four small.
 - **How many photos (8).** The viewer has no limit; the "about ten" of the intake was a choice of the photos, not of the page.
+
+**Changed 2026-11-19 (the user's second list, items 5, 6 and 7, `fix/launch-polish`):**
+- **The end of the apartment (6, 7: option A of `explorations/launch-fixes-options.html`, replacing option B above).** The closing line ("that is everything about
+  {name}") and the compact cards are gone. After the details and the request comes the band alone (`--color-band`, a hairline above and below, the full width of
+  the window), headed "More apartments" with the heart rule, and in it the home page's **large rows** as they were before 2026-11-18, the next three, then the
+  "All apartments" button.
+- **The viewer on a phone (5).** A window about 70% of the screen high and 92% wide, the page dimmed around it, not the whole screen. **A tap anywhere closes it**,
+  the photo included (this reverses the "a tap on the photo does nothing" of 2026-11-18, on every screen size); only the arrows and the close button have their
+  own work, and a drag or a swipe never closes it. `domain/gallery/photo-area.ts` was removed with the rule that needed it.
+- **The button (4)** says "All photos", with no number.
 
 **Rules for the build (stage 4):**
 - The request card is the home page's card without the apartment choice; its message names the apartment, and its

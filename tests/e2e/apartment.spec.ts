@@ -71,7 +71,8 @@ for (const { base, label, position } of PAGES) {
       await page.goto(`${base}/artist-estate/`);
       const wide = (viewport?.width ?? 0) >= 768;
       expect(await shownPhotos(page)).toBe(wide ? 5 : 4);
-      await expect(page.locator('[data-gallery-all]')).toContainText('10');
+      // the button names no number (the user, 2026-11-19)
+      await expect(page.locator('[data-gallery-all]')).toHaveText(/^(כל התמונות|All photos)$/);
       if (wide) {
         const widths = await page
           .locator('.gallery__item:visible')
@@ -156,9 +157,9 @@ for (const { base, label, position } of PAGES) {
 
     test('lists the next three apartments and not this one', async ({ page }) => {
       await page.goto(`${base}/artist-estate/`);
-      await expect(page.locator('.cabin__more .card')).toHaveCount(3);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/artist-estate"]')).toHaveCount(0);
-      const links = page.locator('.cabin__more .card h3 a');
+      const links = page.locator('.cabin__more .row a.button');
       for (const [index, id] of ['atzulat-hakikar-b', 'atzulat-hakikar-a', 'tarpat-18'].entries()) {
         await expect(links.nth(index)).toHaveAttribute('href', new RegExp(`${base}/${id}/?$`));
       }
@@ -166,30 +167,32 @@ for (const { base, label, position } of PAGES) {
 
     test('the list wraps to the start, so the last apartment is not left without others', async ({ page }) => {
       await page.goto(`${base}/tet-zayin-8/`);
-      await expect(page.locator('.cabin__more .card')).toHaveCount(3);
+      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/tet-zayin-8"]')).toHaveCount(0);
-      await expect(page.locator('.cabin__more .card h3 a').first()).toHaveAttribute(
+      await expect(page.locator('.cabin__more .row a.button').first()).toHaveAttribute(
         'href',
         new RegExp(`${base}/artist-estate/?$`),
       );
     });
 
-    test('the apartment ends with a closing line and a link back to the request, and the other apartments sit in a band of their own', async ({
+    test('the other apartments sit in a band of their own, with no closing line before it (the user, 2026-11-19)', async ({
       page,
     }) => {
       await page.goto(`${base}/artist-estate/`);
-      const end = page.locator('.end');
-      await expect(end).toBeVisible();
-      await expect(end.locator('a')).toHaveAttribute('href', '#request');
-      await expect(end).toContainText(/אחוזת האמן|Artist/);
+      await expect(page.locator('.end')).toHaveCount(0);
       const band = page.locator('.cabin__more');
+      await expect(band.locator('h2')).toHaveText(/^(דירות נוספות|More apartments)$/);
       const colour = await band.evaluate((node) => getComputedStyle(node).backgroundColor);
       const page_ = await page.locator('body').evaluate((node) => getComputedStyle(node).backgroundColor);
       expect(colour).not.toBe(page_);
-      // the closing line comes before the band, and the band before the contact section
+      // the band spans the whole width of the window
+      const box = await band.boundingBox();
+      const view = page.viewportSize();
+      expect(box?.width).toBe(view?.width);
+      // the details and the request come first, then the band, then the contact section
       const order = await page.evaluate(() => {
         const y = (selector: string) => document.querySelector(selector)?.getBoundingClientRect().top ?? -1;
-        return [y('.cabin__columns'), y('.end'), y('.cabin__more'), y('#contact')];
+        return [y('.cabin__columns'), y('.cabin__more'), y('#contact')];
       });
       expect([...order].sort((a, b) => a - b)).toEqual(order);
     });
@@ -207,7 +210,7 @@ for (const { base, label, position } of PAGES) {
     test('on a phone a card loads the smallest file of its photo', async ({ page, viewport }) => {
       test.skip((viewport?.width ?? 0) > 480, 'only a phone is given the smallest file');
       await page.goto(`${base}/artist-estate/`);
-      const photo = page.locator('.cabin__more .card__photo[srcset]').first();
+      const photo = page.locator('.cabin__more .row__photo[srcset]').first();
       await photo.scrollIntoViewIfNeeded();
       await expect.poll(() => photo.evaluate((img: HTMLImageElement) => img.currentSrc)).toMatch(/-640\.webp$/);
     });

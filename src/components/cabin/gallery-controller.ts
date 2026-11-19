@@ -1,4 +1,3 @@
-import { containedArea, isInsideArea } from '@domain/gallery/photo-area';
 import { swipeDirection } from '@domain/gallery/swipe';
 import { fillTemplate } from '@domain/text/fill-template';
 
@@ -138,8 +137,8 @@ export function initGallery(root: HTMLElement): void {
   });
   parts.dialog.addEventListener('close', () => opener?.focus());
 
-  // a tap outside the photo closes the viewer: on the dialog's own space, the backdrop, the counter, and the dark bars of the stage
-  // that lie beside a photo that does not fill it. A drag is never a tap (a swipe ends with a click on some phones).
+  // a tap anywhere closes the viewer, the photo included (the user, 2026-11-19), except on an arrow or the close button, which have
+  // their own work. A drag is never a tap (a swipe ends with a click on some phones).
   const controls = '[data-gallery-prev], [data-gallery-next], [data-gallery-close]';
   let down: { x: number; y: number } | null = null;
   let dragged = false;
@@ -162,11 +161,6 @@ export function initGallery(root: HTMLElement): void {
     if (moved) return;
     const target = event.target as Element;
     if (target.closest(controls)) return;
-    if (target === parts.image) {
-      const box = parts.image.getBoundingClientRect();
-      const photo = containedArea(box.width, box.height, parts.image.naturalWidth, parts.image.naturalHeight);
-      if (isInsideArea(photo, event.clientX - box.left, event.clientY - box.top)) return;
-    }
     parts.dialog.close();
   });
 
