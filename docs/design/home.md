@@ -37,9 +37,9 @@ The request card works: choosing an apartment or the number of guests changes th
   screen, one month with arrows on a phone** (a sheet the width of the screen). A click on a day is the check-in, the next
   later day the check-out, the nights between are shaded; a click on the check-in again or on an earlier day starts over,
   so there is no error to show. Days that passed and days more than **12 months ahead** are faded and cannot be chosen;
-  the week starts on **Sunday** in both languages; no minimum nights. Under the calendar: the flexibility buttons
-  **exact dates, ±1, ±2, ±3, ±7 days** (no "flexible dates" tab), "Clear" and "Done". The choice adds to the message
-  "Dates: ... (3 nights)" and, when flexible, "Flexible dates: ±2 days". Keyboard: every day is a button; the arrows follow
+  the week starts on **Sunday** in both languages; no minimum nights. Under the calendar: "Clear" and "Done". The choice adds to the message
+  "Dates: ... (3 nights)". **Changed 2026-11-18 (the user's list of fixes, item 5):** the flexibility buttons (exact dates, ±1, ±2, ±3, ±7 days)
+  and their "Flexible dates" line in the message were removed, on a phone and on a computer. Keyboard: every day is a button; the arrows follow
   the page's direction (left is the next day in Hebrew), up and down a week, Home and End the week, Page Up and Page Down a
   month, Enter chooses, Escape closes and the focus returns to the field. A native modal dialog does the focus. Nothing is
   stored or sent; without JavaScript the fields stay hidden and the message keeps its "dates:" line to fill in.
@@ -64,8 +64,8 @@ The request card works: choosing an apartment or the number of guests changes th
 
 ## Accessibility notes that hold for all five
 
-- Every control has a visible label; the selects work from the keyboard (A3). The message preview is announced when it
-  changes.
+- Every control has a visible label; the selects work from the keyboard (A3). **Changed 2026-11-18 (item 12):** the message preview is gone
+  from every booking card (the guest does not need to see it); the message is in the WhatsApp and email links.
 - Buttons say what they do and where they lead ("שליחת בקשה בוואטסאפ (נפתח בוואטסאפ)"), and name the apartment where
   there are several (A4).
 - Photos carry a label; in the real site each carries `alt` from the cabin file (A2).
@@ -110,8 +110,18 @@ The code follows the decision above. Where it differs from the drawing, or the d
   photo and is solid under the heading, the slogan and the bar; `contrast.test.ts` pins white on that plate at 4.5:1 even
   over a pure white photo. The bar itself is a white card (A1).
 - **Changed 2026-11-10 (the user's list of ten, items 2 and 3):** the guests select is replaced by **couples**, **children** and a **total**. Each counter has "-" and "+" buttons and a field the guest can type in (digits only); a couple is two people and each child is one; the total is worked out from the two, shows empty while both are 0, and can be typed over (the guest's own number stays until a counter changes). Every number stays within the apartment's guests (couples first, children take what is left; a number too high is lowered with a short note). A **name** field (optional, at most 60 characters) adds a "Name:" line to the message; what is typed goes into the message only and is not stored. The message then reads: greeting, name, dates, "guests: 5 (2 couples, 1 child)".
+- **Changed 2026-11-19 (the user's second list, items 1 to 3, `fix/launch-polish`):** the counters are **"couples" and "individuals"** ("Individuals" in English; was "children", which
+  the counter still counts as one person each, and the message reads "2 couples, 3 individuals"). The label is **centred** over the number, the "-" is on the **left** and
+  the "+" on the right in both languages (the row is left to right, and the buttons come in that order, so Tab follows the eye), and the circle around the signs is
+  gone: a bare bold sign in a 44 px target.
 - **Guests start as "not chosen"**, not 1, so the message claims no number the guest did not pick. The options follow
   the chosen apartment's capacity (more than it takes are disabled; a number already too high resets).
+- **Changed 2026-11-18 (item 13, option A of `explorations/launch-fixes-options.html`):** on a phone the main photo has its own area, 60% of the
+  screen high (between 20 and 34 rem), the headline and the slogan sit on a dark plate over its bottom edge, and the booking card starts under it
+  and rises 1.5 rem over the edge, so nearly all of the photo shows. The desktop hero is unchanged.
+- **The email button (item 4):** named "email", not "Gmail". On a phone (a touch screen without a mouse) it is a `mailto:` link that opens a new
+  message in the mail app; on a computer with a mouse the script turns it into Gmail's compose window in a new tab; without the script it is the
+  `mailto:` link. This reverses the removal of the mail-app link of 2026-11-10. The contact section and the footer keep only the full address as a `mailto:` link.
 - **The hero is taller on a desktop** (50 rem, not 580 px): the bar with its message preview and notice is about 300 px
   high, and a lower hero would leave almost no photo. The hero photo is the cover of the first apartment (since 2026-11-03 the Artist's Estate's terrace at sunset, with a `srcset`); the sample drawing `hero.svg` is gone.
 - **`ApartmentRow` replaced `CabinCard`** (deleted: nothing else used it). The contact area gained the full logo, the

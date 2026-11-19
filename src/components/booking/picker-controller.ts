@@ -1,7 +1,6 @@
 import { clampViewMonth, isSelectable, monthIsReachable, monthOf, viewMonthFor } from '@domain/dates/calendar-month';
 import { dateKeyFromParts, toDateKey, type DateKey } from '@domain/dates/date-key';
 import { isNavigationKey, navigate } from '@domain/dates/day-navigation';
-import { parseFlex, type FlexDays } from '@domain/dates/flex-days';
 import { formatDateKey } from '@domain/dates/format-date';
 import { shiftMonth, type YearMonth } from '@domain/dates/month';
 import { EMPTY_RANGE, pickDay, rangeNights, type Range } from '@domain/dates/range-selection';
@@ -48,7 +47,6 @@ function findParts(root: HTMLElement) {
     close: find<HTMLButtonElement>('[data-picker-close]'),
     stayIn: find<HTMLInputElement>('[data-stay-in]'),
     stayOut: find<HTMLInputElement>('[data-stay-out]'),
-    flex: find<HTMLInputElement>('[data-stay-flex]'),
   };
   const missing = Object.values(parts).some((part) => part === null);
   return missing ? null : (parts as { [K in keyof typeof parts]: NonNullable<(typeof parts)[K]> });
@@ -61,9 +59,9 @@ function setArrow(button: HTMLElement, enabled: boolean): void {
 }
 
 /**
- * Starts the date picker of the booking request: a window with the calendar, "from date to date", and the flexibility
- * buttons. A click on a day makes it the check-in, and the next later day the check-out; an earlier day starts over, and a
- * day that passed or lies more than a year ahead cannot be chosen. The choice goes into three hidden fields and a
+ * Starts the date picker of the booking request: a window with the calendar, "from date to date". A click on a day makes
+ * it the check-in, and the next later day the check-out; an earlier day starts over, and a day that passed or lies more
+ * than a year ahead cannot be chosen. The choice goes into two hidden fields and a
  * `change` event that the request's script listens to; nothing is stored, sent or looked up, and no day is marked free or
  * taken (H7, L3). Every day is a button, the arrow keys follow the page's direction, Escape closes the window and the
  * browser returns the focus to the field (A3).
@@ -75,10 +73,8 @@ export function initDatePicker(root: HTMLElement): void {
   const locale = root.dataset.locale ?? 'he-IL';
   const rtl = root.hasAttribute('data-rtl');
   const wide = window.matchMedia('(min-width: 48rem)');
-  const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-flex]')];
 
   let range: Range = EMPTY_RANGE;
-  let flex: FlexDays = 0;
   let today: DateKey = toDateKey(new Date());
   /** The first month on screen; a second one follows on a wide screen. */
   let view: YearMonth = monthOf(today);
@@ -108,21 +104,19 @@ export function initDatePicker(root: HTMLElement): void {
   const publish = () => {
     parts.stayIn.value = range.start ?? '';
     parts.stayOut.value = range.end ?? '';
-    parts.flex.value = String(flex);
     parts.summary.textContent = summaryText();
     if (range.start) parts.summary.removeAttribute('data-empty');
     else parts.summary.setAttribute('data-empty', '');
     root.dispatchEvent(new Event('change', { bubbles: true }));
   };
 
-  /** Draws the months, the arrows, the hint and the pressed flexibility button. */
+  /** Draws the months, the arrows and the hint. */
   const render = () => {
     const months = Array.from({ length: visibleMonths() }, (_, index) => shiftMonth(view, index));
     renderMonths(parts.months, { months, today, range, focus, locale, texts });
     setArrow(parts.previous, monthIsReachable(shiftMonth(view, -1), today));
     setArrow(parts.next, monthIsReachable(shiftMonth(view, visibleMonths()), today));
     parts.hint.textContent = !range.start ? texts.hintStart : !range.end ? texts.hintEnd : texts.hintDone;
-    for (const chip of chips) chip.setAttribute('aria-pressed', String(parseFlex(chip.dataset.flex ?? '') === flex));
   };
 
   /** Draws again and puts the focus on a day's button. */
@@ -177,17 +171,8 @@ export function initDatePicker(root: HTMLElement): void {
   parts.previous.addEventListener('click', step(-1));
   parts.next.addEventListener('click', step(1));
 
-  for (const chip of chips) {
-    chip.addEventListener('click', () => {
-      flex = parseFlex(chip.dataset.flex ?? '');
-      publish();
-      render();
-    });
-  }
-
   parts.clear.addEventListener('click', () => {
     range = EMPTY_RANGE;
-    flex = 0;
     publish();
     renderAndFocus(focus);
   });

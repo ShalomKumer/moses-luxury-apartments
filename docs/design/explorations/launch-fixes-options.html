@@ -1,0 +1,271 @@
+<title>Moses fixes options</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700&family=Heebo:wght@400;500;700&display=swap">
+<style>
+  /* Layout: a working sheet. Two tabs (items 7 and 13), three phone frames each, then a scored table and a pick.
+     The site is light only (docs/design/brand.md), so this sheet commits to its one light look on purpose. */
+  :root {
+    color-scheme: light;
+    --bg: #faf8f3;
+    --surface: #ffffff;
+    --ink: #201f20;
+    --muted: #5b564d;
+    --border: #8c867a;
+    --hair: #ddd7ca;
+    --gold: #c9972c;
+    --bronze: #86601f;
+    --band: #f1ead9;
+    --scrim: #12100e;
+    --on-scrim: #ffffff;
+    --pick: #e4eddc;
+    --pick-ink: #27431f;
+    --font-head: 'Frank Ruhl Libre', Georgia, 'Noto Serif Hebrew', serif;
+    --font-body: Heebo, system-ui, 'Segoe UI', Arial, sans-serif;
+  }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+  .wrap { max-width: 72rem; margin: 0 auto; padding-block: 28px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  h1, h2, h3 { font-family: var(--font-head); margin: 0; text-wrap: balance; }
+  h1 { font-size: 1.9rem; }
+  .lede { color: var(--muted); max-width: 62ch; margin: 6px 0 22px; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid var(--hair); margin-bottom: 22px; }
+  .tab { font: inherit; font-weight: 500; padding: 10px 16px; border: 1px solid transparent; border-bottom: 0; background: none;
+    color: var(--muted); cursor: pointer; border-radius: 8px 8px 0 0; min-height: 44px; }
+  .tab[aria-selected="true"] { background: var(--surface); color: var(--ink); border-color: var(--hair); margin-bottom: -1px; }
+  .tab:focus-visible, .opt-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .problem { background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; padding: 14px 16px; margin-bottom: 22px; max-width: 70ch; }
+  .problem b { font-weight: 700; }
+  .phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 22px; align-items: start; }
+  .opt { display: grid; gap: 10px; min-width: 0; }
+  .opt h3 { font-size: 1.15rem; }
+  .opt p { margin: 0; color: var(--muted); font-size: 14px; }
+  .opt .tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--pick); color: var(--pick-ink); }
+
+  /* the phone frame: 375 px drawn at 0.68 */
+  .phone { width: 255px; height: 552px; border: 8px solid var(--ink); border-radius: 30px; overflow: hidden; background: var(--bg);
+    position: relative; margin-inline: auto; }
+  .screen { width: 375px; height: 812px; transform: scale(0.68); transform-origin: top right; position: absolute; top: 0; right: 0;
+    overflow: hidden; background: var(--bg); direction: rtl; }
+  .bar { height: 52px; background: var(--surface); border-bottom: 1px solid var(--hair); display: flex; align-items: center;
+    justify-content: space-between; padding-inline: 16px; font-weight: 700; font-family: var(--font-head); }
+  .bar small { font-family: var(--font-body); font-weight: 500; color: var(--muted); }
+  .photo { position: relative; background:
+      radial-gradient(120% 70% at 70% 20%, #e9c98a 0%, transparent 55%),
+      linear-gradient(160deg, #b98d55 0%, #7d5a35 38%, #4d3a28 70%, #2b221a 100%); }
+  .photo::after { content: 'תמונה ראשית'; position: absolute; top: 12px; left: 12px; font-size: 12px; color: var(--on-scrim);
+    background: rgb(18 16 14 / 0.66); padding: 2px 8px; border-radius: 6px; }
+  .plate { position: absolute; inset: auto 0 0 0; padding: 40px 16px 14px; color: var(--on-scrim);
+    background: linear-gradient(to bottom, transparent, rgb(18 16 14 / 0.72) 40px); }
+  .plate h4 { margin: 0; font-family: var(--font-head); font-size: 1.45rem; line-height: 1.25; }
+  .plate .script { font-size: 1rem; opacity: 0.95; }
+  .card { background: var(--surface); border: 1px solid var(--hair); border-top: 4px solid var(--gold); border-radius: 8px; padding: 14px;
+    display: grid; gap: 10px; }
+  .card .t { font-weight: 700; }
+  .fld { height: 44px; border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; padding-inline: 10px;
+    color: var(--muted); font-size: 14px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn { height: 44px; border-radius: 6px; background: var(--gold); color: var(--ink); font-weight: 700; display: flex; align-items: center;
+    justify-content: center; font-size: 14px; }
+  .btn.sec { background: var(--surface); border: 2px solid var(--ink); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding-inline: 16px; border: 1px solid var(--border);
+    border-radius: 999px; font-size: 14px; color: var(--muted); background: var(--surface); }
+  .section { padding: 16px; display: grid; gap: 12px; }
+  .lines { display: grid; gap: 7px; }
+  .lines i { display: block; height: 9px; border-radius: 5px; background: #e6e0d3; }
+  .lines i:nth-child(2) { width: 88%; } .lines i:nth-child(3) { width: 72%; }
+  .h { font-family: var(--font-head); font-weight: 700; font-size: 1.25rem; }
+  .heart { display: flex; align-items: center; gap: 10px; color: var(--gold); }
+  .heart::before, .heart::after { content: ''; flex: 1; height: 1px; background: var(--gold); }
+  .row { display: grid; gap: 8px; }
+  .row .ph { height: 150px; border-radius: 12px; }
+  .row .ph.p2 { background: linear-gradient(150deg, #9fb2b6, #4e6266); }
+  .row .ph.p3 { background: linear-gradient(150deg, #c9b79a, #6f5c45); }
+  .band { background: var(--band); border-top: 1px solid var(--hair); }
+  .strip { display: flex; gap: 10px; overflow: hidden; }
+  .mini { flex: 0 0 62%; background: var(--surface); border: 1px solid var(--hair); border-radius: 10px; overflow: hidden; }
+  .mini .ph { height: 100px; border-radius: 0; }
+  .mini div.txt { padding: 8px 10px; font-size: 13px; }
+  .mini b { display: block; font-family: var(--font-head); font-size: 1rem; }
+  .end { text-align: center; display: grid; gap: 6px; justify-items: center; padding: 18px 16px 6px; }
+  .end small { color: var(--muted); }
+  .note { font-size: 12px; color: var(--bronze); font-weight: 700; }
+  .down { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); background: var(--surface); color: var(--ink);
+    border-radius: 999px; padding: 8px 16px; font-weight: 700; font-size: 14px; }
+
+  /* the table */
+  .scores { overflow-x: auto; margin-top: 26px; }
+  table { border-collapse: collapse; min-width: 560px; width: 100%; background: var(--surface); font-variant-numeric: tabular-nums; }
+  th, td { border: 1px solid var(--hair); padding: 8px 10px; text-align: center; }
+  th:first-child, td:first-child { text-align: start; }
+  thead th { background: var(--bg); font-weight: 700; }
+  tr.best td { background: var(--pick); color: var(--pick-ink); font-weight: 700; }
+  .rec { margin-top: 18px; background: var(--surface); border: 1px solid var(--hair); border-inline-start: 4px solid var(--gold);
+    border-radius: 8px; padding: 14px 16px; max-width: 70ch; }
+  .rec h3 { font-size: 1.15rem; margin-bottom: 6px; }
+  .rec ul { margin: 0; padding-inline-start: 20px; }
+  [role="tabpanel"]:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+</style>
+
+<div class="wrap" dir="rtl" lang="he">
+  <h1>אפשרויות עיצוב לתיקונים</h1>
+  <p class="lede">פריטים 7 ו-13 מהרשימה. כל אפשרות מצוירת בטלפון ברוחב 375 פיקסלים, בצבעים ובגופנים של האתר, והתמונות הן מילוי צבע. מתחת לכל פריט יש טבלת ציונים וההמלצה שלי. בחר אות לכל פריט (למשל "7ב, 13א"), או שילוב.</p>
+
+  <div class="tabs" role="tablist" aria-label="הפריטים">
+    <button class="tab" role="tab" id="tab-7" aria-controls="p-7" aria-selected="true">פריט 7: דף הדירה</button>
+    <button class="tab" role="tab" id="tab-13" aria-controls="p-13" aria-selected="false" tabindex="-1">פריט 13: הדף הראשי בטלפון</button>
+  </div>
+
+  <!-- item 7 -->
+  <section id="p-7" role="tabpanel" aria-labelledby="tab-7" tabindex="0">
+    <div class="problem"><b>הבעיה:</b> בסוף דף הדירה מגיעות "דירות נוספות" באותו רקע ובאותן שורות גדולות של הדף הראשי, בלי סימן שהדירה הסתיימה. כרטיס ההזמנה והדירות האחרות מתערבבים.</div>
+    <div class="phones">
+      <article class="opt">
+        <h3>א. רצועה בצבע אחר</h3>
+        <div class="phone" aria-hidden="true"><div class="screen">
+          <div class="section"><div class="h">פרטי הדירה</div><div class="lines"><i></i><i></i><i></i></div></div>
+          <div class="section"><div class="card"><div class="t">בקשת הזמנה</div><div class="fld">תאריכים</div><div class="btn">שליחת בקשה בוואטסאפ</div></div></div>
+          <div class="band"><div class="section" style="padding-top:26px">
+            <div class="h">דירות נוספות</div><div class="heart">♥</div>
+            <div class="row"><div class="ph p2"></div><b>אצולת הכיכר א׳</b><div class="lines"><i></i><i></i></div></div>
+            <div class="row"><div class="ph p3"></div><b>תרפ״ט 18</b></div>
+          </div></div>
+        </div></div>
+        <p>הדירות הנוספות עוברות לרצועה ברוחב מלא ברקע חול כהה יותר. השורות הגדולות נשארות כמו היום.</p>
+      </article>
+
+      <article class="opt">
+        <h3>ב. סוף ברור וכרטיסים קטנים <span class="tag">ההמלצה</span></h3>
+        <div class="phone" aria-hidden="true"><div class="screen">
+          <div class="section"><div class="h">פרטי הדירה</div><div class="lines"><i></i><i></i><i></i></div></div>
+          <div class="section"><div class="card"><div class="t">בקשת הזמנה</div><div class="fld">תאריכים</div><div class="btn">שליחת בקשה בוואטסאפ</div></div></div>
+          <div class="end"><div class="heart" style="width:100%">♥</div><small>כאן מסתיימים פרטי אחוזת האמן</small><span class="pill">↑ לבקשת הזמנה</span></div>
+          <div class="band" style="margin-top:12px"><div class="section" style="padding-top:22px">
+            <div class="h">אולי יעניין אתכם גם</div>
+            <div class="strip">
+              <div class="mini"><div class="ph p2"></div><div class="txt"><b>אצולת הכיכר א׳</b>עד 10 אורחים</div></div>
+              <div class="mini"><div class="ph p3"></div><div class="txt"><b>תרפ״ט 18</b>עד 9 אורחים</div></div>
+            </div>
+            <span class="pill" style="justify-self:center">כל הדירות</span>
+          </div></div>
+        </div></div>
+        <p>שורה שסוגרת את הדירה ("כאן מסתיימים פרטי...") עם קישור חזרה להזמנה. אחריה רצועה בצבע אחר עם שלושה כרטיסים קטנים שגוללים לצדדים, כך שהם נראים משניים.</p>
+      </article>
+
+      <article class="opt">
+        <h3>ג. מקופל מאחורי כפתור</h3>
+        <div class="phone" aria-hidden="true"><div class="screen">
+          <div class="section"><div class="h">פרטי הדירה</div><div class="lines"><i></i><i></i><i></i></div></div>
+          <div class="section"><div class="card"><div class="t">בקשת הזמנה</div><div class="fld">תאריכים</div><div class="btn">שליחת בקשה בוואטסאפ</div></div></div>
+          <div class="section" style="padding-top:28px"><div style="display:flex;align-items:center;gap:10px"><span style="flex:1;height:1px;background:var(--hair)"></span><span class="pill">דירות נוספות (3) ▾</span><span style="flex:1;height:1px;background:var(--hair)"></span></div></div>
+          <div class="section"><div class="h" style="font-size:1.1rem">יצירת קשר</div><div class="lines"><i></i><i></i></div></div>
+        </div></div>
+        <p>הדף נגמר בדירה. הדירות הנוספות נפתחות רק בלחיצה על "דירות נוספות (3)", באותו כפתור שכבר יש בדף הראשי.</p>
+      </article>
+    </div>
+
+    <div class="scores">
+      <table>
+        <caption class="visually-hidden">ציוני האפשרויות של פריט 7, מ-1 עד 10</caption>
+        <thead><tr><th scope="col">אפשרות</th><th scope="col">שימושיות</th><th scope="col">אסתטיקה</th><th scope="col">נגישות</th><th scope="col">התאמה למוצר</th><th scope="col">ביצועים</th><th scope="col">תחזוקה</th><th scope="col">סה״כ</th></tr></thead>
+        <tbody>
+          <tr><td>א. רצועה בצבע אחר</td><td>7</td><td>7</td><td>9</td><td>7</td><td>9</td><td>10</td><td>49</td></tr>
+          <tr class="best"><td>ב. סוף ברור וכרטיסים קטנים</td><td>9</td><td>9</td><td>8</td><td>9</td><td>9</td><td>8</td><td>52</td></tr>
+          <tr><td>ג. מקופל מאחורי כפתור</td><td>7</td><td>8</td><td>9</td><td>6</td><td>10</td><td>9</td><td>49</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rec">
+      <h3>ההמלצה: ב.</h3>
+      <ul>
+        <li>ההפרדה הכי ברורה: גם שורת סיום וגם רצועה בצבע אחר, כך שאי אפשר לטעות איפה הדירה נגמרת.</li>
+        <li>הכרטיסים הקטנים נראים כ"המלצה", לא כהמשך של הדירה, ומשקל הדף לא משתנה (אותן תמונות קטנות כמו היום).</li>
+        <li>הקישור "לבקשת הזמנה" מחזיר מבקר שגלל רחוק אל ההזמנה, שהיא המטרה של הדף.</li>
+      </ul>
+      <p style="margin:8px 0 0">מ-א לוקחים את הרצועה ברוחב מלא. במחשב הכרטיסים יוצגו בשורה של שלושה, בלי גלילה לצדדים.</p>
+    </div>
+  </section>
+
+  <!-- item 13 -->
+  <section id="p-13" role="tabpanel" aria-labelledby="tab-13" tabindex="0" hidden>
+    <div class="problem"><b>הבעיה:</b> בטלפון כרטיס "בקשת הזמנה" יושב על התמונה הראשית, וכשהוא נפתח עם כל השדות הוא מכסה כמעט את כולה.</div>
+    <div class="phones">
+      <article class="opt">
+        <h3>א. תמונה, וכרטיס שעולה על הקצה <span class="tag">ההמלצה</span></h3>
+        <div class="phone" aria-hidden="true"><div class="screen">
+          <div class="bar">דירת מוזס <small>EN</small></div>
+          <div class="photo" style="height:420px"><div class="plate"><h4>דירות יוקרה בלב העיר העתיקה צפת</h4><div class="script">חוויה של יוקרה, שלווה ונוף עוצר נשימה</div></div></div>
+          <div style="padding-inline:16px;margin-top:-22px;position:relative">
+            <div class="card"><div class="t">בקשת הזמנה</div><div class="fld">כל דירה, אשמח להצעה</div><div class="fld">תאריכים</div><div class="two"><div class="fld">זוגות</div><div class="fld">ילדים</div></div><div class="btn">שליחת בקשה בוואטסאפ</div></div>
+          </div>
+        </div></div>
+        <p>לתמונה יש אזור משלה של כ-60% מגובה המסך, והכותרת על פס כהה בתחתיתה. הכרטיס מתחיל מתחת לתמונה ועולה עליה רק בפס דק.</p>
+      </article>
+
+      <article class="opt">
+        <h3>ב. פס הזמנה מקופל</h3>
+        <div class="phone" aria-hidden="true"><div class="screen">
+          <div class="bar">דירת מוזס <small>EN</small></div>
+          <div class="photo" style="height:620px"><div class="plate">
+            <h4>דירות יוקרה בלב העיר העתיקה צפת</h4><div class="script">חוויה של יוקרה, שלווה ונוף עוצר נשימה</div>
+            <div class="card" style="margin-top:12px;color:var(--ink)"><div style="display:flex;justify-content:space-between;align-items:center"><span class="t">בקשת הזמנה</span><span>▾</span></div><div class="btn">בחירת תאריכים ואורחים</div></div>
+          </div></div>
+        </div></div>
+        <p>על התמונה נשאר רק פס קטן. לחיצה פותחת את כל השדות מתחת לתמונה. התמונה כמעט כולה גלויה, אבל נוספת לחיצה לפני ההזמנה.</p>
+      </article>
+
+      <article class="opt">
+        <h3>ג. תמונה מלאה, כרטיס אחריה</h3>
+        <div class="phone" aria-hidden="true"><div class="screen">
+          <div class="bar">דירת מוזס <small>EN</small></div>
+          <div class="photo" style="height:640px"><div class="plate" style="padding-bottom:64px"><h4>דירות יוקרה בלב העיר העתיקה צפת</h4><div class="script">חוויה של יוקרה, שלווה ונוף עוצר נשימה</div></div><span class="down">↓ לבקשת הזמנה</span></div>
+          <div style="padding:16px"><div class="card"><div class="t">בקשת הזמנה</div><div class="fld">תאריכים</div></div></div>
+        </div></div>
+        <p>התמונה ממלאת את המסך הראשון, עם כפתור "לבקשת הזמנה" שגולל אל הכרטיס. הכרטיס כולו מתחת לתמונה, בלי חפיפה.</p>
+      </article>
+    </div>
+
+    <div class="scores">
+      <table>
+        <caption class="visually-hidden">ציוני האפשרויות של פריט 13, מ-1 עד 10</caption>
+        <thead><tr><th scope="col">אפשרות</th><th scope="col">שימושיות</th><th scope="col">אסתטיקה</th><th scope="col">נגישות</th><th scope="col">התאמה למוצר</th><th scope="col">ביצועים</th><th scope="col">תחזוקה</th><th scope="col">סה״כ</th></tr></thead>
+        <tbody>
+          <tr class="best"><td>א. תמונה, וכרטיס שעולה על הקצה</td><td>9</td><td>9</td><td>9</td><td>9</td><td>9</td><td>9</td><td>54</td></tr>
+          <tr><td>ב. פס הזמנה מקופל</td><td>6</td><td>8</td><td>7</td><td>7</td><td>9</td><td>6</td><td>43</td></tr>
+          <tr><td>ג. תמונה מלאה, כרטיס אחריה</td><td>7</td><td>9</td><td>9</td><td>7</td><td>8</td><td>9</td><td>49</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rec">
+      <h3>ההמלצה: א.</h3>
+      <ul>
+        <li>רוב התמונה גלויה, והכרטיס מתחיל כבר במסך הראשון, כך שהמבקר רואה מיד שאפשר להזמין.</li>
+        <li>אין לחיצה נוספת ואין קוד חדש לפתיחה וסגירה. זה שינוי של CSS בטלפון בלבד, והמחשב נשאר כמו שאושר.</li>
+        <li>הכותרת נשארת על פס כהה, כך שהניגודיות של הטקסט על התמונה לא משתנה.</li>
+      </ul>
+      <p style="margin:8px 0 0">מ-ג לוקחים את גובה התמונה: לא פחות מכ-60% מהמסך, גם בטלפון נמוך.</p>
+    </div>
+  </section>
+</div>
+
+<style>.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }</style>
+<script>
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  function show(tab, focus) {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+    }
+    if (focus) tab.focus();
+  }
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => show(tab, false));
+    tab.addEventListener('keydown', (e) => {
+      const step = e.key === 'ArrowLeft' ? 1 : e.key === 'ArrowRight' ? -1 : 0;
+      if (step) { e.preventDefault(); show(tabs[(i + step + tabs.length) % tabs.length], true); }
+    });
+  });
+  if (location.hash === '#item-13') show(tabs[1], false);
+</script>

@@ -3,10 +3,9 @@
  * The one date field of the booking request: "When?", a button that opens a window with the calendar, "from date to
  * date". The calendar only fills the dates of the message (WhatsApp or Gmail): it never looks anything up, shows no
  * day as free or taken and books nothing (H7, tests/policy/no-public-availability.test.ts). Three hidden fields carry the
- * choice to the request's script; nothing is stored or sent anywhere (L3, S9). The months are drawn by
+ * choice to the request's script (the check-in and the check-out); nothing is stored or sent anywhere (L3, S9). The months are drawn by
  * `picker-controller.ts`, because "today" is the visitor's day. Without the script the whole request's fields stay hidden.
  */
-import FlexChips from '@components/booking/FlexChips.astro';
 import Icon from '@components/ui/Icon.astro';
 import { getMessages } from '@i18n/get-messages';
 import type { Locale } from '@i18n/locales';
@@ -52,7 +51,6 @@ const texts = {
   </button>
   <input type="hidden" data-stay-in />
   <input type="hidden" data-stay-out />
-  <input type="hidden" data-stay-flex value="0" />
 
   <dialog class="picker__dialog" data-picker-dialog closedby="any" aria-labelledby={`${idPrefix}-dates-title`}>
     <div class="picker__bar">
@@ -76,7 +74,6 @@ const texts = {
         <span class="visually-hidden">{t.next}</span>
       </button>
     </div>
-    <FlexChips texts={t} />
     <div class="picker__actions">
       <button type="button" class="button button--secondary" data-picker-clear>
         {t.clear}

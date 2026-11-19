@@ -16,6 +16,8 @@
   --color-link: #86601f;
   --color-link-hover: #5f4312;
   --color-focus: #201f20;
+  /* The tinted band under an apartment's details that holds the other apartments (docs/design/apartment.md). */
+  --color-band: #f1ead9;
   --color-notice-bg: #fbefd0;
   --color-notice-text: #5a4300;
 

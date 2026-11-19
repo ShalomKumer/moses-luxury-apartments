@@ -111,7 +111,15 @@ Add the domain as a property (a DNS `TXT` record verifies it), then submit `http
 - **A bad deployment:** `npx wrangler rollback` (or the dashboard: the Worker, Deployments, the previous version, Rollback). It activates the previous version on
   every route at once. Then fix on a branch.
 - **The domain must come down:** remove the custom domain from the Worker; the preview address stays up and stays `noindex`.
-- Try the rollback once before the launch, on the preview address (S18).
+- **The rollback was tried on 2026-11-18** (S18). The custom domain and the `workers.dev` addresses are **the same Worker**, so a rollback changes what the live domain serves too: there is no way to try it on the
+  preview address alone (that would need a second Worker). The steps that worked, from the repository root:
+  1. `npx wrangler deployments list --name ahuzot-moses` shows the deployments and their version ids (the newest is the active one).
+  2. `npx wrangler rollback <version-id> --name ahuzot-moses --message "<why>" -y` deploys that version to 100% of traffic (about ten seconds).
+  3. Roll forward the same way, with the id of the version you want, or deploy again from `main` (`git checkout main`, `npx astro build`, `npx wrangler deploy`).
+  4. Check `npm run launch:live`.
+
+  The trial went back to the first version and forward to the current one; both were reported as deployed to 100% of traffic, the site answered 200 throughout the checks, and `launch:live` passed after it. The two builds
+  serve byte-identical home pages, so a visitor could not have told them apart: the trial proves the mechanism and its speed, not what a visitor saw during it.
 
 ## The first deployment (2026-11-17)
 
@@ -127,8 +135,37 @@ Done by the user with Claude, to the host's preview address only; the domain is 
 
 - The Cloudflare account is **the user's own**; the domain `mosesluxuryapartments.com` was bought there (2026-11-17, USD 11.17 a year, renewing at the same price,
   auto-renewal on) with **the client as registrant**: the registrant's email must confirm the registration (the client did so on 2026-11-17), or the registrar may suspend the domain.
-- So the user controls DNS, the Worker and the renewal payment, and the client is the registrant of record. Before the launch, decide with the client: move the account to the
-  client, or add him as an administrator of this one. The runbook's first rule (accounts belong to the client's business) is **not yet met**; note the decision here.
+- So the user controls DNS, the Worker and the renewal payment, and the client is the registrant of record.
+- **Decision (the user, 2026-11-18): the Cloudflare account stays the user's own.** The client is only the registrant of the domain; he is neither moved in as the account's owner nor added as
+  an administrator for now. The runbook's first rule (accounts belong to the client's business) is therefore **knowingly not met**: if the client ever asks for the account, the steps are to
+  add him as a Super Administrator (Manage Account, Members) or to transfer the domain and the Worker, and this decision is reopened then.
+
+## Dashboard settings log
+
+Settings that live in the Cloudflare dashboard and not in git. One line per change, with its date; add to it whenever one changes.
+
+**2026-11-17, the go-live** (done by the user in the dashboard, with Claude):
+
+- Production deployed from `main` (`04d1466`, release PR #54): Worker version `774ea829`, after `npm run verify` was green on `main`.
+- Workers and Pages, `ahuzot-moses`, Domains: custom domain **`www.mosesluxuryapartments.com`** added for Production (status Active). The `workers.dev` addresses stay on and stay `noindex`.
+- DNS: an `A` record for `@` (`192.0.2.1`, Proxied; a placeholder address that only has to exist so that a request reaches Cloudflare); `www` is the Worker's own record.
+- Redirect Rules, rule **`bare to www`**: Request URL `https://mosesluxuryapartments.com/*`, Target URL `https://www.mosesluxuryapartments.com/${1}`, status 301, **Preserve query string** on.
+- SSL/TLS: encryption mode **Full (strict)**; Edge Certificates: **Always Use HTTPS** on, **Minimum TLS Version 1.2**; **HSTS left off** in the dashboard (the site sends it from `public/_headers`; a second one would be sent twice).
+
+**Checked the same day:** `npm run launch:live -- --preview https://ahuzot-moses.ahuzot-moses.workers.dev` passed 11 checks (HTTP to HTTPS 301, the home page, every header of `public/_headers`, `live-indexable`, `robots.txt`, the sitemap). Two checks failed
+only because the local DNS resolver did not yet know the new names (`bare-to-www`: ENOTFOUND; `preview-noindex`: timeout); both were checked by hand with `curl --resolve` against an address from `nslookup <host> 1.1.1.1`:
+the bare domain answers 301 to `www` and keeps the path and the query string (`/cabins/x?b=2&c=3`), and the preview address answers `x-robots-tag: noindex`. The live home page carries no `cdn-cgi`, `email-protection`,
+`cloudflareinsights` or `rocket-loader`, and no `Set-Cookie`. `http://` on the bare domain makes two hops (HTTPS on the bare domain, then `www`); both are 301.
+
+**2026-11-18:**
+
+- **Search Console (step 8):** a *Domain* property for `mosesluxuryapartments.com` (it covers `www`, the bare domain, `http` and `https`), verified with the DNS `TXT` record `google-site-verification=...`
+  (**keep that record**: removing it loses the verification). The sitemap `https://www.mosesluxuryapartments.com/sitemap.xml` was submitted, in its full form (a Domain property refuses a bare `sitemap.xml`), and Search Console shows it as successful.
+- **Web Analytics switched off.** Cloudflare was injecting its Web Analytics script (`static.cloudflareinsights.com/beacon.min.js`) into every page of the zone, in the browser's page but not in the HTML a plain `curl` or `fetch` returns, so the by-hand check of step 7 has to be done in a
+  browser. Our content security policy blocked it (a console error on every load, and nothing was sent), but a third-party script on the site touches iron rules 2 and 6. Set in the dashboard under Observability, Analytics, **Web analytics**, **Manage site** for `mosesluxuryapartments.com`:
+  Real User Measurements (RUM) from "Enable, excluding visitor data in the EU" to **Disable**. Checked afterwards in a browser: the script is gone from `/`, `/en/` and `/en/cabins/artist-estate/`, and no new policy error appears.
+
+**Not done yet:** the `wrangler rollback` trial (S18), the screen-reader pass (A5), and the decision on whose Cloudflare account this is.
 
 ## What this guide could not test
 
@@ -140,6 +177,6 @@ What the first deployment settled, and what it did not:
 2. **The generated Worker config: checked.** The build writes `dist/client/wrangler.json` with the name `ahuzot-moses` and a `SESSION` KV binding that the adapter adds by default and
    the site never uses. `wrangler deploy` printed the binding but `wrangler kv namespace list` shows **no namespace**: nothing was created and nothing is charged. The unused binding stays.
 3. **The preview addresses of other branches** (version and preview URLs under `workers.dev`) are covered by the same rule but **not tested**: only the one Worker version was deployed. Confirm with one `curl` the first time a version address is opened.
-4. **Redirect rules and HTTPS settings** are dashboard settings, not code: they are not in git, and `launch:live` is what checks them. **Not done yet**, because the domain is not connected. Write down the date of each change here.
+4. **Redirect rules and HTTPS settings** are dashboard settings, not code: they are not in git, and `launch:live` is what checks them. **Done on 2026-11-17** (see "Dashboard settings log"); write down the date of each later change there.
 
 Iron rules: S2 (HTTPS and HSTS), S18 (environments, rollback), E3 and E4 (canonical address, sitemap, robots).

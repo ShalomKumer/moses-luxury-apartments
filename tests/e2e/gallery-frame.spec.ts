@@ -36,7 +36,7 @@ async function frame(page: Page) {
       previous: box('[data-gallery-prev]'),
       next: box('[data-gallery-next]'),
       close: box('[data-gallery-close]'),
-      caption: box('[data-gallery-caption]'),
+      caption: box('.gallery__caption'),
     };
   });
 }
@@ -91,8 +91,71 @@ for (const { label, path, forward, rtl, position } of PAGES) {
       expect(await page.locator('[data-gallery-image]').evaluate((img) => getComputedStyle(img).objectFit)).toBe(
         'contain',
       );
-      // on a phone the viewer takes the whole screen
-      if (view.width < 768) expect([width, height]).toEqual([view.width, view.height]);
+      // on a phone the viewer is a window, about 70% of the screen high, with the page showing around it
+      if (view.width < 768) {
+        expect(x).toBeGreaterThanOrEqual(8);
+        expect(x + width).toBeLessThanOrEqual(view.width - 8);
+        expect(height).toBeLessThanOrEqual(view.height * 0.75);
+        expect(height).toBeGreaterThanOrEqual(view.height * 0.6);
+      }
+    });
+
+    test('shows a counter under the photo and no description, which a screen reader still gets', async ({ page }) => {
+      await page.goto(path);
+      await page.locator('[data-gallery-all]').click();
+      const counter = page.locator('[data-gallery-counter]');
+      await expect(counter).toHaveText('1 / 10');
+      await expect(counter).toBeVisible();
+      await expect(counter).toHaveAttribute('aria-hidden', 'true');
+      // the words of the photo are in the live line, out of sight (visually hidden), with the position
+      const caption = page.locator('[data-gallery-caption]');
+      await expect(caption).toContainText(position(1));
+      await expect(caption).toHaveAttribute('aria-live', 'polite');
+      expect(((await caption.textContent()) ?? '').length).toBeGreaterThan(position(1).length + 3);
+      expect((await caption.boundingBox())?.width ?? 99).toBeLessThanOrEqual(1);
+      await page.keyboard.press(forward);
+      await expect(counter).toHaveText('2 / 10');
+    });
+
+    test('a tap anywhere closes the viewer, the photo included; an arrow, a key or a drag does not', async ({
+      page,
+    }) => {
+      await page.goto(path);
+      const dialog = page.locator('[data-gallery-dialog]');
+      const open = async () => {
+        await page.locator('[data-gallery-all]').click();
+        await expect(dialog).toBeVisible();
+        await shown(page, 0);
+      };
+      await open();
+      const boxes = await frame(page);
+      if (!boxes.dialog || !boxes.stage) throw new Error('no boxes');
+      const [dx, dy, , dh] = boxes.dialog;
+      const [sx, sy, sw, sh] = boxes.stage;
+      // an arrow and a key move the photo and leave the viewer open
+      await page.keyboard.press(forward);
+      await page.locator('[data-gallery-next]').click();
+      await expect(dialog).toBeVisible();
+      // a drag that ends on the empty space is not a tap
+      await page.mouse.move(sx + sw / 2, sy + sh / 2);
+      await page.mouse.down();
+      await page.mouse.move(dx + 4, dy + 4, { steps: 6 });
+      await page.mouse.up();
+      await expect(dialog).toBeVisible();
+      // a tap on the photo itself closes it (the user, 2026-11-19)
+      await page.mouse.click(sx + sw / 2, sy + sh / 2);
+      await expect(dialog).toBeHidden();
+      // so does a tap on the space around the stage, and the page behind is reachable again
+      await open();
+      await page.mouse.click(dx + 6, dy + dh - 6);
+      await expect(dialog).toBeHidden();
+      // and a tap on the dark backdrop outside the window, where there is one (a phone and a narrow window)
+      const view = page.viewportSize();
+      if (view && dx > 8) {
+        await open();
+        await page.mouse.click(2, view.height / 2);
+        await expect(dialog).toBeHidden();
+      }
     });
 
     test('puts the previous arrow at the start of the line and the next at its end', async ({ page }) => {

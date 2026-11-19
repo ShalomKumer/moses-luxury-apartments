@@ -3,7 +3,6 @@ import { cleanName } from '@domain/booking/guest-name';
 import { limitParty, maxChildren, maxCouples, parseCount, totalOf, typedTotal } from '@domain/booking/party';
 import { resolveStay, toChosenDates, type StayProblem } from '@domain/booking/stay-dates';
 import { toDateKey } from '@domain/dates/date-key';
-import { parseFlex } from '@domain/dates/flex-days';
 import { fillTemplate } from '@domain/text/fill-template';
 import { applyMessage, readLinkTarget } from './booking-links';
 
@@ -12,8 +11,6 @@ interface Parts {
   unit: HTMLSelectElement | null;
   checkIn: HTMLInputElement;
   checkOut: HTMLInputElement;
-  /** How many days either side the guest could move (the date picker's hidden field). */
-  flex: HTMLInputElement;
   couples: HTMLInputElement;
   children: HTMLInputElement;
   /** The total of guests: worked out from the two counters, or the guest's own number. */
@@ -22,7 +19,6 @@ interface Parts {
   /** The note that tells a number was lowered to the apartment's guests. */
   note: HTMLElement;
   problem: HTMLElement;
-  message: HTMLElement;
 }
 
 /** Finds the request's parts; null if the page lacks one, so a broken page leaves the plain links working. */
@@ -31,16 +27,14 @@ function findParts(root: HTMLElement): Parts | null {
   const unit = find<HTMLSelectElement>('[data-request-unit]');
   const checkIn = find<HTMLInputElement>('[data-stay-in]');
   const checkOut = find<HTMLInputElement>('[data-stay-out]');
-  const flex = find<HTMLInputElement>('[data-stay-flex]');
   const couples = find<HTMLInputElement>('[data-counter="couples"] [data-counter-input]');
   const children = find<HTMLInputElement>('[data-counter="children"] [data-counter-input]');
   const total = find<HTMLInputElement>('[data-request-guests]');
   const name = find<HTMLInputElement>('[data-request-name]');
   const note = find('[data-guests-note]');
   const problem = find('[data-request-problem]');
-  const message = find('[data-request-message]');
-  return checkIn && checkOut && flex && couples && children && total && name && note && problem && message
-    ? { unit, checkIn, checkOut, flex, couples, children, total, name, note, problem, message }
+  return checkIn && checkOut && couples && children && total && name && note && problem
+    ? { unit, checkIn, checkOut, couples, children, total, name, note, problem }
     : null;
 }
 
@@ -78,8 +72,7 @@ function setLimit(button: Element | null, atLimit: boolean): void {
 }
 
 /**
- * Starts the booking request: keeps the WhatsApp and email links, the message preview and the notes in step with the
- * fields. The party is couples (two people each), children (one each) and a total that is worked out from them, or typed
+ * Starts the booking request: keeps the WhatsApp and email links and the notes in step with the fields. The party is couples (two people each), children (one each) and a total that is worked out from them, or typed
  * over by the guest; every number stays within the apartment's guests. The name goes into the message only and is never
  * stored. Without this script the plain links still open a message with no dates and no apartment.
  */
@@ -137,11 +130,9 @@ export function initBookingRequest(root: HTMLElement): void {
     const split = total !== null && total === worked ? { couples: party.couples, children: party.children } : undefined;
     const message = buildBookingMessage(target.texts, unit.name, total, toChosenDates(stay), {
       name: cleanName(parts.name.value),
-      flexDays: parseFlex(parts.flex.value),
       split,
     });
     applyMessage(root, { ...target, cabinName: unit.name }, message);
-    parts.message.textContent = message;
   };
 
   // typing: only digits; a counter or the apartment changing makes the total worked out again, typing the total makes it the guest's own

@@ -16,11 +16,17 @@ export async function openPicker(page: Page): Promise<void> {
   await expect(page.locator('[data-request-bar] [data-picker-dialog]')).toBeVisible();
 }
 
-/** Turns the calendar forward until a day is on screen (a phone shows one month, a wide screen two). */
+/**
+ * Turns the calendar, forward or back, until a day is on screen (a phone shows one month, a wide screen two). Back as well as
+ * forward, because a test that picks a day a few days ahead and then an earlier one crosses a month's end on some dates.
+ */
 export async function showDay(page: Page, key: string): Promise<void> {
   const day = page.locator(`[data-request-bar] [data-picker-months] [data-date="${key}"]`);
+  const firstShown = page.locator('[data-request-bar] [data-picker-months] [data-date]').first();
   for (let turn = 0; turn < 14 && (await day.count()) === 0; turn += 1) {
-    await page.locator('[data-request-bar] [data-picker-next]').click();
+    const shown = (await firstShown.getAttribute('data-date')) ?? '';
+    const direction = key < shown ? 'prev' : 'next';
+    await page.locator(`[data-request-bar] [data-picker-${direction}]`).click();
   }
   await expect(day).toBeVisible();
 }

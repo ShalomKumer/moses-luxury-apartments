@@ -9,8 +9,22 @@ import { dayFromNow, openPicker, pickStay } from './helpers/date-picker';
 import { axeViolations } from './helpers/run-axe';
 
 const PAGES = [
-  { base: '/cabins', label: 'Hebrew', position: /1 מתוך 10/ },
-  { base: '/en/cabins', label: 'English', position: /1 of 10/ },
+  {
+    base: '/cabins',
+    label: 'Hebrew',
+    position: /1 מתוך 10/,
+    home: '/',
+    all: 'כל הדירות',
+    hide: 'הסתרת הדירות הנוספות',
+  },
+  {
+    base: '/en/cabins',
+    label: 'English',
+    position: /1 of 10/,
+    home: '/en/',
+    all: 'All apartments',
+    hide: 'Hide the other apartments',
+  },
 ];
 
 /** The message the WhatsApp link carries, decoded. */
@@ -22,9 +36,9 @@ async function whatsappText(page: Page): Promise<string> {
 /** How many of the gallery's photos the grid draws (not hidden). */
 const shownPhotos = (page: Page) => page.locator('.gallery__item:visible').count();
 
-for (const { base, label, position } of PAGES) {
+for (const { base, label, position, home, all, hide } of PAGES) {
   test.describe(`apartment page, ${label}`, () => {
-    test('the request names the apartment, has no apartment choice and carries the same message in the preview', async ({
+    test('the request names the apartment, has no apartment choice and carries the message in its links', async ({
       page,
     }) => {
       await page.goto(`${base}/artist-estate/`);
@@ -32,7 +46,6 @@ for (const { base, label, position } of PAGES) {
       const name = (await page.locator('h1').textContent())?.trim() ?? '';
       const text = await whatsappText(page);
       expect(text).toContain(name);
-      expect(await page.locator('[data-request-message]').textContent()).toBe(text);
     });
 
     test('takes no more guests than the apartment', async ({ page }) => {
@@ -65,20 +78,46 @@ for (const { base, label, position } of PAGES) {
       expect(await axeViolations(page)).toEqual([]);
     });
 
-    test('ten photos: the grid shows five (one large, four small) on a wide screen, the first alone on a phone', async ({
+    test('ten photos: the grid shows five (one large, four small) on a wide screen, the main one and three small ones on a phone', async ({
       page,
       viewport,
     }) => {
       await page.goto(`${base}/artist-estate/`);
       const wide = (viewport?.width ?? 0) >= 768;
-      expect(await shownPhotos(page)).toBe(wide ? 5 : 1);
-      await expect(page.locator('[data-gallery-all]')).toContainText('10');
+      expect(await shownPhotos(page)).toBe(wide ? 5 : 4);
+      // the button names no number (the user, 2026-11-19)
+      await expect(page.locator('[data-gallery-all]')).toHaveText(/^(כל התמונות|All photos)$/);
       if (wide) {
         const widths = await page
           .locator('.gallery__item:visible')
           .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().width));
         expect(widths[0]).toBeGreaterThan(widths[1] * 1.5);
+      } else {
+        // a phone: the main photo across the width, the three small ones in one row under it, and the button below them
+        const boxes = await page
+          .locator('.gallery__item:visible')
+          .evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect()).map((r) => [r.x, r.y, r.width]));
+        expect(boxes[0][2]).toBeGreaterThan(boxes[1][2] * 2.5);
+        expect(new Set(boxes.slice(1).map((box) => Math.round(box[1]))).size).toBe(1);
+        expect(boxes[1][1]).toBeGreaterThan(boxes[0][1]);
+        const all = await page.locator('[data-gallery-all]').boundingBox();
+        expect(all?.y ?? 0).toBeGreaterThan(boxes[1][1]);
       }
+    });
+
+    test('a tap on a small photo opens the viewer at that photo (a phone), and a tap on the main one at the first', async ({
+      page,
+      viewport,
+    }) => {
+      test.skip((viewport?.width ?? 0) >= 768, 'the small photos under the main one are a phone layout');
+      await page.goto(`${base}/artist-estate/`);
+      const caption = page.locator('[data-gallery-caption]');
+      await page.locator('[data-gallery-item="2"]').click();
+      await expect(page.locator('[data-gallery-dialog]')).toBeVisible();
+      await expect(caption).toHaveText(/3 (מתוך|of) 10/);
+      await page.keyboard.press('Escape');
+      await page.locator('[data-gallery-item="0"]').click();
+      await expect(caption).toHaveText(position);
     });
 
     test('"all photos" opens the viewer at the first photo and gives focus back to the button on Escape', async ({
@@ -132,7 +171,7 @@ for (const { base, label, position } of PAGES) {
 
     test('lists the next three apartments and not this one', async ({ page }) => {
       await page.goto(`${base}/artist-estate/`);
-      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
+      await expect(page.locator('.cabin__more .row:visible')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/artist-estate"]')).toHaveCount(0);
       const links = page.locator('.cabin__more .row a.button');
       for (const [index, id] of ['atzulat-hakikar-b', 'atzulat-hakikar-a', 'tarpat-18'].entries()) {
@@ -142,7 +181,7 @@ for (const { base, label, position } of PAGES) {
 
     test('the list wraps to the start, so the last apartment is not left without others', async ({ page }) => {
       await page.goto(`${base}/tet-zayin-8/`);
-      await expect(page.locator('.cabin__more .row')).toHaveCount(3);
+      await expect(page.locator('.cabin__more .row:visible')).toHaveCount(3);
       await expect(page.locator('.cabin__more a[href*="/cabins/tet-zayin-8"]')).toHaveCount(0);
       await expect(page.locator('.cabin__more .row a.button').first()).toHaveAttribute(
         'href',
@@ -150,17 +189,85 @@ for (const { base, label, position } of PAGES) {
       );
     });
 
-    test('a button leads to the list of all the apartments on the home page', async ({ page }) => {
+    test('the other apartments sit in a band of their own, with no closing line before it (the user, 2026-11-19)', async ({
+      page,
+    }) => {
       await page.goto(`${base}/artist-estate/`);
-      const all = page.locator('.cabin__all a');
-      await expect(all).toHaveCount(1);
-      await expect(all).toHaveAttribute('href', new RegExp(`${base === '/cabins' ? '/' : '/en/'}#cabins$`));
-      await all.click();
-      await expect(page.locator('#cabins')).toBeVisible();
-      expect(await page.locator('#cabins .row').count()).toBeGreaterThan(3);
+      await expect(page.locator('.end')).toHaveCount(0);
+      const band = page.locator('.cabin__more');
+      await expect(band.locator('h2')).toHaveText(/^(דירות נוספות|More apartments)$/);
+      const colour = await band.evaluate((node) => getComputedStyle(node).backgroundColor);
+      const page_ = await page.locator('body').evaluate((node) => getComputedStyle(node).backgroundColor);
+      expect(colour).not.toBe(page_);
+      // the band spans the whole width of the window
+      const box = await band.boundingBox();
+      const view = page.viewportSize();
+      expect(box?.width).toBe(view?.width);
+      // the details and the request come first, then the band, then the contact section
+      const order = await page.evaluate(() => {
+        const y = (selector: string) => document.querySelector(selector)?.getBoundingClientRect().top ?? -1;
+        return [y('.cabin__columns'), y('.cabin__more'), y('#contact')];
+      });
+      expect([...order].sort((a, b) => a - b)).toEqual(order);
     });
 
-    test('on a phone a row loads the smallest file of its photo', async ({ page, viewport }) => {
+    test('the rest of the apartments open on this page, folded until asked, and nothing leaves the page (the user, 2026-11-19)', async ({
+      page,
+    }) => {
+      await page.goto(`${home}`);
+      const total = await page.locator('#cabins .row').count();
+      await page.goto(`${base}/artist-estate/`);
+      const url = page.url();
+      const fold = page.locator('.cabin__more .more');
+      // there is no link to the home page's list any more: a fold opens the others where the visitor is
+      await expect(page.locator('.cabin__all')).toHaveCount(0);
+      await expect(fold).toHaveCount(1);
+      await expect(fold).not.toHaveAttribute('open', '');
+      // one click on "All apartments" opens every other apartment, with no second "show more" to press
+      await expect(page.locator('.more__show')).toHaveText(all);
+      // folded: the three stay in view, the rest are in the page but hidden, and their photos are lazy (the page keeps its weight)
+      await expect(page.locator('.cabin__more .row')).toHaveCount(total - 1);
+      await expect(page.locator('.cabin__more .row:visible')).toHaveCount(3);
+      const lazy = await page
+        .locator('.more__rows img')
+        .evaluateAll((images) => images.every((image) => image.getAttribute('loading') === 'lazy'));
+      expect(lazy).toBe(true);
+      await page.locator('.more__summary').click();
+      await expect(fold).toHaveAttribute('open', '');
+      await expect(page.locator('.cabin__more .row:visible')).toHaveCount(total - 1);
+      await expect(page.locator('.cabin__more a[href*="/cabins/artist-estate"]')).toHaveCount(0);
+      await expect(page.locator('.more__hide')).toHaveText(hide);
+      expect(page.url()).toBe(url);
+      await page.locator('.more__summary').click();
+      await expect(page.locator('.cabin__more .row:visible')).toHaveCount(3);
+      expect(page.url()).toBe(url);
+    });
+
+    test('the "All apartments" link at the top lands on the home page with every apartment already open', async ({
+      page,
+    }) => {
+      await page.goto(`${base}/artist-estate/`);
+      const link = page.locator('.cabin__back a');
+      await expect(link).toHaveAttribute('href', `${home}#all-cabins`);
+      await link.click();
+      await expect(page).toHaveURL(new RegExp(`${home}#all-cabins$`));
+      const total = await page.locator('#cabins .row').count();
+      await expect(page.locator('#cabins .more')).toHaveAttribute('open', '');
+      await expect(page.locator('#cabins .row:visible')).toHaveCount(total);
+      // the page stands at the start of the list, so the heading is in view
+      await expect(page.locator('#cabins-title')).toBeInViewport();
+    });
+
+    test('the fold opens from the keyboard', async ({ page }) => {
+      await page.goto(`${base}/artist-estate/`);
+      await page.locator('.more__summary').focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator('.cabin__more .more')).toHaveAttribute('open', '');
+      await page.keyboard.press('Space');
+      await expect(page.locator('.cabin__more .more')).not.toHaveAttribute('open', '');
+    });
+
+    test('on a phone a card loads the smallest file of its photo', async ({ page, viewport }) => {
       test.skip((viewport?.width ?? 0) > 480, 'only a phone is given the smallest file');
       await page.goto(`${base}/artist-estate/`);
       const photo = page.locator('.cabin__more .row__photo[srcset]').first();

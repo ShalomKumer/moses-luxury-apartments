@@ -193,7 +193,7 @@ for (const {
         await expect(page.locator('.gallery__item:not(.gallery__item--extra) img')).toHaveCount(5);
         await expect(page.locator('[data-gallery-item]')).toHaveCount(photos);
         await expect(page.locator('.gallery__item--extra img')).toHaveCount(0);
-        await expect(page.locator('[data-gallery-all]')).toContainText(String(photos));
+        await expect(page.locator('[data-gallery-all]')).toHaveText(/^(כל התמונות|All photos)$/);
         // once the script runs, the five beyond the grid are hidden (a rule once showed them on a wide screen)
         for (const extra of await page.locator('.gallery__item--extra').all()) await expect(extra).toBeHidden();
       });
